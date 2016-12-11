@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+
+    <link href="Content/bootstrap.css" rel="stylesheet" />
+    <link href="Content/Site.css" rel="stylesheet" />
+    <link href="Angular/directives/loadScreen/loadScreen.css" rel="stylesheet" />
+
+    <script src="Scripts/angular.js"></script>
+    <script src="Scripts/angular-route.js"></script>
+    <script src="Scripts/angular-resource.js"></script>
+    <script src="Angular/application.js"></script>
+    <script src="Angular/services/resourceServices.js"></script>
+    <script src="Angular/services/services.js"></script>
+    <script src="Angular/services/batchedListSvc.js"></script>
+    <script src="Angular/services/stateSvc.js"></script>
+    <script src="Angular/directives/loadScreen/loadScreen.js"></script>
+    <script src="Angular/directives/loaderButton/loaderButton.js"></script>
+    <script src="Angular/directives/modalBox/modalBox.js"></script>
+    <script src="Angular/controllers/ReleaseListCtrl.js"></script>
+    <script src="Angular/controllers/ReleaseViewCtrl.js"></script>
+    <script src="Angular/controllers/ReleaseEditCtrl.js"></script>
+    
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Record Label 2</title>
+	<meta charset="utf-8" />
+</head>
+<body ng-app="RecordLabel">
+    <div class="container body-content">
+        <div>
+            <div ng-repeat="error in errors">
+                <div class="alert alert-danger" role="alert">
+                    <span class="glyphicon glyphicon-exclamation-sign"></span>
+                    {{error.statusText}} ({{error.status}})
+                </div>
+            </div>
+            <div ng-show="infoMessage" class="alert alert-success">{{infoMessage}}</div>
+            <div ng-view></div>
+        </div>
+        <hr />
+        <footer>
+            <p>&copy; 2016 - Record Label 2</p>
+        </footer>
+    </div>
+
+    <script src="Scripts/jquery-3.1.1.min.js"></script>
+    <script src="Scripts/bootstrap.min.js"></script>
+</body>
+</html>

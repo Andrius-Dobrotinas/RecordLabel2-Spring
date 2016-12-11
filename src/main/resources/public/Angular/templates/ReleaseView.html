@@ -1,0 +1,88 @@
+﻿<div load-screen ls-show="isLoading" ls-class="default-load-screen">
+
+    <article class="release-page">
+        <div class="row">
+            <h1 class="view-page-title dark-blanket">{{model.artist.name}} - {{model.title}}</h1>
+        </div>
+        <div class="row">
+            <section class="col-md-6">
+                <div class="sm-margin-right">
+                    <section class="row frame shadow-box release-info default-padding">
+                        <!--@Html.DisplayFor(model => model.Cover, "Thumbnail", new { @class = "album-cover album-cover-thumb" })-->
+                        <div>
+                            <div id="tracklist">
+                                <div class="track" ng-repeat="track in model.tracks">
+                                    <div class="track">
+                                        <span class="text-muted">{{$index + 1}}.</span>
+                                        <span>{{track.title}}
+                                            <a ng-show="track.reference" href="{{track.reference}}" target="_blank" class="glyphicon glyphicon-facetime-video"></a>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="row frame shadow-box default-padding article" id="description">
+                        <article>
+                            {{model.text}}
+                        </article>
+                    </section>
+
+                    <section class="row frame shadow-box default-padding key-value">
+                        <div>
+                            <label class="text-muted">Date</label>: <span class="val">{{model.date}}</span>
+                        </div>
+                        <div>
+                            <label class="text-muted">Media</label>: <span class="val">{{model.media.text}}</span>
+                        </div>
+                        <div>
+                            <label class="text-muted">CatalogueNumber</label>: <span class="val">{{model.catalogueNumber}}</span>
+                        </div>
+                        <div>
+                            <!--TODO-->
+                            <label class="text-muted">PrintStatus</label>: <span class="val">{{model.printStatus}}</span>
+                        </div>
+                        <div>
+                            <label class="text-muted">Length</label>: <span class="val">{{model.length}}</span>
+                        </div>
+                    </section>
+
+                    <section ng-show="model.references" class="row frame shadow-box default-padding contains-labels" id="references">
+                        <div class="text-muted">References</div>
+                        <div ng-repeat="ref in model.references">
+                            <a href="{{ref.target}}" target="_blank" class="label2 invert2 border">{{ref.target}}</a>
+                        </div>
+                    </section>
+
+                    <section ng-show="model.metadata" class="row frame shadow-box default-padding label-container">
+                        <div ng-repeat="meta in model.metadata | orderBy: 'Type'">
+                            <a class="label2 invert2 border" href="#">{{meta.text}}</a>
+                        </div>
+                    </section>
+                </div>
+            </section>
+            <section class="col-md-6">
+                <div class="sm-margin-left">
+                    <!--Images-->
+                    <aside id="images" class="row">
+                        <!--@Html.DisplayFor(model => Model.Images, new { id = "Images", @class = "row" })-->
+                    </aside>
+
+                    <!--<object data="{{model.hyperActiveLink}}" width="600" height="400">
+                        <param name="autoplay" value="false" />
+                    </object>
+                    http://stackoverflow.com/questions/14903112/angularjs-expression-in-html-object-tag-->
+
+                    <section ng-show="model.youtubeReferences" class="row">
+                        <aside ng-repeat="ref in model.youtubeReferences" class="row frame shadow-box reset-margins col-sm-6 col-md-12 col-lg-6">
+                            <div class="embed-responsive embed-responsive-16by9">
+                                <iframe src="{{ref.target}}" frameborder="0"></iframe>
+                            </div>
+                        </aside>
+                    </section>
+                </div>
+            </section>
+        </div>
+    </article>
+</div>
