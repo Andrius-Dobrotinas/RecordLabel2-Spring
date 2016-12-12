@@ -15,7 +15,7 @@ public class ReleaseService {
         repositry.save(entity);
     }
 
-    public Release getRelease(int id) {
+    public Release getRelease(int id) { //com.andrewd.recordlabel.supermodel.
         return repositry.getRelease(id);
     }
 }

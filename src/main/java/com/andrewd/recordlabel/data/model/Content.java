@@ -12,7 +12,7 @@ public class Content {
     public int id;
 
     @ManyToMany
-    List<Metadata> metadata = new ArrayList<Metadata>();
+    public List<Metadata> metadata = new ArrayList<Metadata>();
 
     // TODO: references
 }

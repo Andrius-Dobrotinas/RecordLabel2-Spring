@@ -10,7 +10,7 @@ public class Metadata {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    public Long id;
+    public int id;
 
     public MetadataType type;
 
