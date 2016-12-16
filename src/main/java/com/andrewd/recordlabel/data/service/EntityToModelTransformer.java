@@ -1,7 +1,12 @@
-package com.andrewd.recordlabel.service;
+package com.andrewd.recordlabel.data.service;
 
 import com.andrewd.recordlabel.data.model.*;
-import java.util.*;
+import com.andrewd.recordlabel.data.model.Artist;
+import com.andrewd.recordlabel.data.model.Content;
+import com.andrewd.recordlabel.data.model.Metadata;
+import com.andrewd.recordlabel.data.model.Reference;
+import com.andrewd.recordlabel.data.model.Release;
+
 import java.util.*;
 import java.util.function.Function;
 
@@ -19,7 +24,8 @@ public class EntityToModelTransformer {
         if (entity.artist != null) {
             model.artist = getArtist(entity.artist);
         }
-        model.metadata = transformList(entity.metadata, this::getMetadata);
+        model.tracks = transformList(entity.tracks, this::getTrack);
+        transformContent(entity, model);
         return model;
     }
 
@@ -28,7 +34,8 @@ public class EntityToModelTransformer {
         model.id = entity.id;
         model.name = entity.name;
         model.text = entity.text;
-        model.metadata = transformList(entity.metadata, this::getMetadata);
+
+        transformContent(entity, model);
         return model;
     }
 
@@ -38,6 +45,29 @@ public class EntityToModelTransformer {
         model.text = entity.text;
         model.type = entity.type;
         return model;
+    }
+
+    public com.andrewd.recordlabel.supermodel.Reference getReference(Reference entity) {
+        com.andrewd.recordlabel.supermodel.Reference model = new com.andrewd.recordlabel.supermodel.Reference();
+        model.id = entity.id;
+        model.target = entity.target;
+        model.type = entity.type;
+        model.order = entity.order;
+        return model;
+    }
+
+    public com.andrewd.recordlabel.supermodel.Track getTrack(Track entity) {
+        com.andrewd.recordlabel.supermodel.Track model = new com.andrewd.recordlabel.supermodel.Track();
+        model.id = entity.id;
+        model.reference = entity.reference;
+        model.title = entity.title;
+        return model;
+    }
+
+    private <TEntity extends Content, TModel extends com.andrewd.recordlabel.supermodel.Content>
+    void transformContent(TEntity entity, TModel model) {
+        model.metadata = transformList(entity.metadata, this::getMetadata);
+        model.references = transformList(entity.references, this::getReference);
     }
 
     public <T, Tm> ArrayList<Tm> transformList(List<T> list, Function<T, Tm> function) {
