@@ -10,7 +10,7 @@ import java.util.*;
 public class EntityToModelTransformerTests {
 
     @Test
-    public void TransformRelease() {
+    public void transformRelease() {
         Release entity = new Release();
 
         entity.id = 1;
@@ -22,7 +22,9 @@ public class EntityToModelTransformerTests {
 
         EntityToModelTransformer transformer = new EntityToModelTransformer();
         com.andrewd.recordlabel.supermodel.Release model = transformer.getRelease(entity);
+    }
 
+    private void verifyRelease(Release entity, com.andrewd.recordlabel.supermodel.Release model) {
         Assert.assertEquals(entity.id, model.id);
         Assert.assertEquals(entity.date, model.date);
         Assert.assertEquals(entity.catalogueNumber, model.catalogueNumber);
@@ -32,7 +34,7 @@ public class EntityToModelTransformerTests {
     }
 
     @Test
-    public void TransformRelease_Artist() {
+    public void transformRelease_MakeSureArtistIsTransformedToo() {
         Release entity = new Release();
         entity.artist = getArtistEntity();
 
@@ -42,20 +44,36 @@ public class EntityToModelTransformerTests {
         Assert.assertNotNull("Must transform release artist too", model.artist);
     }
 
-   /* @Test
-    public void TransformRelease_Metadata() {
+    @Test
+    public void transformRelease_MakeSureMetadataIsTransformedToo() {
         Release entity = new Release();
-        entity.metadata = new ArrayList<Metadata>();
         entity.metadata.add(getMetadata());
 
         EntityToModelTransformer transformer = new EntityToModelTransformer();
         com.andrewd.recordlabel.supermodel.Release model = transformer.getRelease(entity);
 
-        Assert.assertEquals("Must transform release metadata too", 1, model.metadata.size());
-    }*/
+        Assert.assertNotNull("Must transform release metadata too", model.metadata);
+        Assert.assertEquals("Must transform release metadata and add it to the list", 1, model.metadata.size());
+    }
 
     @Test
-    public void TransformArtist() {
+    public void transformListOfEntities() {
+        List<Release> list = new ArrayList<Release>();
+        Release entity1 = new Release();
+        list.add(entity1);
+
+        EntityToModelTransformer transformer = new EntityToModelTransformer();
+        List<com.andrewd.recordlabel.supermodel.Release> results =
+                transformer.transformList(list, transformer::getRelease);
+
+        Assert.assertEquals(1, results.size());
+
+        com.andrewd.recordlabel.supermodel.Release result1 = results.get(0);
+        verifyRelease(entity1, result1);
+    }
+
+    @Test
+    public void transformArtist() {
         Artist entity = getArtistEntity();
 
         entity.id = 1;
@@ -71,7 +89,19 @@ public class EntityToModelTransformerTests {
     }
 
     @Test
-    public void TransformMetadata() {
+    public void transformArtist_MakeSureMetadataIsTransformedToo() {
+        Artist entity = new Artist();
+        entity.metadata.add(getMetadata());
+
+        EntityToModelTransformer transformer = new EntityToModelTransformer();
+        com.andrewd.recordlabel.supermodel.Artist model = transformer.getArtist(entity);
+
+        Assert.assertNotNull("Must transform artist metadata too", model.metadata);
+        Assert.assertEquals("Must transform artist metadata and add it to the list", 1, model.metadata.size());
+    }
+
+    @Test
+    public void transformMetadata() {
         Metadata entity = getMetadata();
 
         EntityToModelTransformer transformer = new EntityToModelTransformer();
@@ -81,6 +111,8 @@ public class EntityToModelTransformerTests {
         Assert.assertEquals(entity.text, model.text);
         Assert.assertEquals(entity.type, model.type);
     }
+
+
 
     private Artist getArtistEntity() {
         Artist entity = new Artist();

@@ -2,7 +2,7 @@ package com.andrewd.recordlabel.service;
 
 import com.andrewd.recordlabel.data.model.*;
 import java.util.*;
-import java.util.function.Consumer;
+import java.util.*;
 import java.util.function.Function;
 
 public class EntityToModelTransformer {
@@ -19,6 +19,7 @@ public class EntityToModelTransformer {
         if (entity.artist != null) {
             model.artist = getArtist(entity.artist);
         }
+        model.metadata = transformList(entity.metadata, this::getMetadata);
         return model;
     }
 
@@ -27,6 +28,7 @@ public class EntityToModelTransformer {
         model.id = entity.id;
         model.name = entity.name;
         model.text = entity.text;
+        model.metadata = transformList(entity.metadata, this::getMetadata);
         return model;
     }
 
@@ -36,5 +38,13 @@ public class EntityToModelTransformer {
         model.text = entity.text;
         model.type = entity.type;
         return model;
+    }
+
+    public <T, Tm> ArrayList<Tm> transformList(List<T> list, Function<T, Tm> function) {
+        ArrayList<Tm> superModels = new ArrayList<Tm>();
+        for (T item : list) {
+            superModels.add(function.apply(item));
+        }
+        return superModels;
     }
 }
