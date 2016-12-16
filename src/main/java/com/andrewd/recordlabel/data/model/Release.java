@@ -4,6 +4,7 @@ import com.andrewd.recordlabel.common.PrintStatus;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.*;
 
 @Entity
 @Table(name="releases")
@@ -30,5 +31,5 @@ public class Release extends Content {
 
     public PrintStatus printStatus;
 
-    // TODO: tracks
+    public List<Track> tracks = new ArrayList<>();
 }

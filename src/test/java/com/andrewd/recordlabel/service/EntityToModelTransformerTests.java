@@ -101,6 +101,39 @@ public class EntityToModelTransformerTests {
     }
 
     @Test
+    public void transformRelease_MakeSureTracksAreTransformedToo() {
+        Release entity = new Release();
+        entity.tracks.add(getTrack());
+
+        EntityToModelTransformer transformer = new EntityToModelTransformer();
+        com.andrewd.recordlabel.supermodel.Release model = transformer.getRelease(entity);
+
+        Assert.assertNotNull("Must transform release tracks too", model.tracks);
+    }
+
+    @Test
+    public void transformRelease_MakeSureReferencesAreTransformedToo() {
+        Release entity = new Release();
+        entity.references.add(getReference());
+
+        EntityToModelTransformer transformer = new EntityToModelTransformer();
+        com.andrewd.recordlabel.supermodel.Release model = transformer.getRelease(entity);
+
+        Assert.assertNotNull("Must transform release references too", model.references);
+    }
+
+    @Test
+    public void transformArtist_MakeSureReferencesAreTransformedToo() {
+        Artist entity = new Artist();
+        entity.references.add(getReference());
+
+        EntityToModelTransformer transformer = new EntityToModelTransformer();
+        com.andrewd.recordlabel.supermodel.Artist model = transformer.getArtist(entity);
+
+        Assert.assertNotNull("Must transform artist references too", model.references);
+    }
+
+    @Test
     public void transformMetadata() {
         Metadata entity = getMetadata();
 
@@ -112,6 +145,30 @@ public class EntityToModelTransformerTests {
         Assert.assertEquals(entity.type, model.type);
     }
 
+    @Test
+    public void transformReference() {
+        Reference entity = getReference();
+
+        EntityToModelTransformer transformer = new EntityToModelTransformer();
+        com.andrewd.recordlabel.supermodel.Reference model = transformer.getReference(entity);
+
+        Assert.assertEquals(entity.id, model.id);
+        Assert.assertEquals(entity.target, model.target);
+        Assert.assertEquals(entity.type, model.type);
+        Assert.assertEquals(entity.order, model.order);
+    }
+
+    @Test
+    public void transformTrack() {
+        Track entity = getTrack();
+
+        EntityToModelTransformer transformer = new EntityToModelTransformer();
+        com.andrewd.recordlabel.supermodel.Track model = transformer.getTrack(entity);
+
+        Assert.assertEquals(entity.id, model.id);
+        Assert.assertEquals(entity.reference, model.reference);
+        Assert.assertEquals(entity.title, model.title);
+    }
 
 
     private Artist getArtistEntity() {
@@ -127,6 +184,23 @@ public class EntityToModelTransformerTests {
         entity.id = 1;
         entity.text = "Rock";
         entity.type = MetadataType.Genre;
+        return entity;
+    }
+
+    private Reference getReference() {
+        Reference entity = new Reference();
+        entity.id = 1;
+        entity.target = "https://www.youtube.com/v/BJIqnXTqg8I";
+        entity.type = ReferenceType.Youtube;
+        entity.order = 2;
+        return entity;
+    }
+
+    private Track getTrack() {
+        Track entity = new Track();
+        entity.id = 1;
+        entity.reference = "https://www.youtube.com/watch?v=BJIqnXTqg8I";
+        entity.title = "Search And Destroy";
         return entity;
     }
 }
