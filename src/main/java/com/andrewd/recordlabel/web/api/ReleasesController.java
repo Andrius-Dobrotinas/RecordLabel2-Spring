@@ -1,7 +1,7 @@
 package com.andrewd.recordlabel.web.api;
 
 import com.andrewd.recordlabel.common.*;
-import com.andrewd.recordlabel.data.service.ReleaseService;
+import com.andrewd.recordlabel.data.service.DefaultReleaseService;
 import com.andrewd.recordlabel.supermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 public class ReleasesController {
 
     @Autowired
-    private ReleaseService releaseSvc;
+    private DefaultReleaseService releaseSvc;
 
     @RequestMapping(value = "get/{id}", method = RequestMethod.GET)
     public Release get(@PathVariable int id) {

@@ -1,21 +1,12 @@
 package com.andrewd.recordlabel.data.service;
 
-import com.andrewd.recordlabel.data.repository.ReleaseRepository;
 import com.andrewd.recordlabel.data.model.Release;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.andrewd.recordlabel.supermodel.MediaType;
 
-@Service
-public class ReleaseService {
+import java.util.List;
 
-    @Autowired
-    private ReleaseRepository repositry;
-
-    public void save(Release entity) {
-        repositry.save(entity);
-    }
-
-    public Release getRelease(int id) { //com.andrewd.recordlabel.supermodel.
-        return repositry.getRelease(id);
-    }
+public interface ReleaseService {
+    void save(Release entity); // TODO: change to super model
+    com.andrewd.recordlabel.supermodel.Release getRelease(int id);
+    List<MediaType> getMediaTypeList();
 }
