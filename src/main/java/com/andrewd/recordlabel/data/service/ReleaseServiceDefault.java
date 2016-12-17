@@ -8,13 +8,16 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 @Service
-public class DefaultReleaseService implements ReleaseService {
+public class ReleaseServiceDefault implements ReleaseService {
 
     @Autowired
     private ReleaseRepository repository;
 
     @Autowired
     private EntityToModelTransformer entityTransformer;
+
+    @Autowired
+    private ModelToEntityTransformer modelTransformer;
 
     // TODO: change to super model
     public void save(Release entity) {

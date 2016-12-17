@@ -1,13 +1,13 @@
 package com.andrewd.recordlabel.supermodel;
 
-import java.util.*;
-import com.andrewd.recordlabel.common.*;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.andrewd.recordlabel.common.PrintStatus;
 
-public class Release extends Content {
+import java.util.*;
+
+public class ReleaseSlim extends ContentSlim {
     //@JsonProperty
-    public Artist artist;
-    public MediaType media;
+    public int artistId;
+    public int mediaId;
     public String title;
     public String text;
     public short date;

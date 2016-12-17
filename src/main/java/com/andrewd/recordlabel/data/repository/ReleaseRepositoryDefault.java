@@ -8,7 +8,7 @@ import javax.transaction.Transactional;
 import java.util.*;
 
 @Repository
-public class DefaultReleaseRepository {
+public class ReleaseRepositoryDefault {
 
     @PersistenceContext
     private EntityManager em;

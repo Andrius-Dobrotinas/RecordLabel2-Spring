@@ -10,7 +10,7 @@ import com.andrewd.recordlabel.data.model.Release;
 import java.util.*;
 import java.util.function.Function;
 
-public class DefaultEntityToModelTransformer implements EntityToModelTransformer {
+public class EntityToModelTransformerDefault implements EntityToModelTransformer {
 
     public com.andrewd.recordlabel.supermodel.Release getRelease(Release entity) {
         com.andrewd.recordlabel.supermodel.Release model = new com.andrewd.recordlabel.supermodel.Release();

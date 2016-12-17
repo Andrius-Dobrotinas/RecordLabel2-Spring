@@ -4,7 +4,7 @@ import com.andrewd.recordlabel.data.model.MediaType;
 import com.andrewd.recordlabel.data.model.Release;
 import com.andrewd.recordlabel.data.repository.ReleaseRepository;
 import com.andrewd.recordlabel.data.service.EntityToModelTransformer;
-import com.andrewd.recordlabel.data.service.DefaultReleaseService;
+import com.andrewd.recordlabel.data.service.ReleaseServiceDefault;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.*;
@@ -13,10 +13,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DefaultReleaseServiceTests {
+public class ReleaseServiceDefaultTests {
 
     @InjectMocks
-    DefaultReleaseService svc = new DefaultReleaseService();
+    ReleaseServiceDefault svc = new ReleaseServiceDefault();
 
     @Mock
     ReleaseRepository repository;
