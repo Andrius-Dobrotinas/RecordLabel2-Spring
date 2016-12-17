@@ -10,5 +10,7 @@ public interface IEntityToModelTransformer {
     com.andrewd.recordlabel.supermodel.Metadata getMetadata(Metadata entity);
     com.andrewd.recordlabel.supermodel.Reference getReference(Reference entity);
     com.andrewd.recordlabel.supermodel.Track getTrack(Track entity);
-    <T, Tm> ArrayList<Tm> transformList(List<T> list, Function<T, Tm> function);
+    com.andrewd.recordlabel.supermodel.MediaType getMediaType(MediaType entity);
+    com.andrewd.recordlabel.supermodel.Artist getArtist(Artist entity);
+    <T, Tm> List<Tm> transformList(List<T> list, Function<T, Tm> function);
 }

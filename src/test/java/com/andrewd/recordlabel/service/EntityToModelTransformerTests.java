@@ -3,6 +3,7 @@ package com.andrewd.recordlabel.service;
 import com.andrewd.recordlabel.data.service.EntityToModelTransformer;
 import com.andrewd.recordlabel.common.*;
 import com.andrewd.recordlabel.data.model.*;
+import com.sun.media.jfxmedia.Media;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -55,6 +56,17 @@ public class EntityToModelTransformerTests {
 
         Assert.assertNotNull("Must transform release metadata too", model.metadata);
         Assert.assertEquals("Must transform release metadata and add it to the list", 1, model.metadata.size());
+    }
+
+    @Test
+    public void transformRelease_MakeSureMediaTypeIsTransformedToo() {
+        Release entity = new Release();
+        entity.media = getMediaType();
+
+        EntityToModelTransformer transformer = new EntityToModelTransformer();
+        com.andrewd.recordlabel.supermodel.Release model = transformer.getRelease(entity);
+
+        Assert.assertNotNull("Must transform release media too", model.metadata);
     }
 
     @Test
@@ -171,6 +183,17 @@ public class EntityToModelTransformerTests {
         Assert.assertEquals(entity.title, model.title);
     }
 
+    @Test
+    public void transformMediaType() {
+        MediaType entity = getMediaType();
+
+        EntityToModelTransformer transformer = new EntityToModelTransformer();
+        com.andrewd.recordlabel.supermodel.MediaType model = transformer.getMediaType(entity);
+
+        Assert.assertEquals(entity.id, model.id);
+        Assert.assertEquals(entity.text, model.text);
+    }
+
 
     private Artist getArtistEntity() {
         Artist entity = new Artist();
@@ -202,6 +225,13 @@ public class EntityToModelTransformerTests {
         entity.id = 1;
         entity.reference = "https://www.youtube.com/watch?v=BJIqnXTqg8I";
         entity.title = "Search And Destroy";
+        return entity;
+    }
+
+    private MediaType getMediaType() {
+        MediaType entity = new MediaType();
+        entity.id = 1;
+        entity.text = "LP";
         return entity;
     }
 }

@@ -64,13 +64,20 @@ public class EntityToModelTransformer implements IEntityToModelTransformer {
         return model;
     }
 
+    public com.andrewd.recordlabel.supermodel.MediaType getMediaType(MediaType entity) {
+        com.andrewd.recordlabel.supermodel.MediaType model = new com.andrewd.recordlabel.supermodel.MediaType();
+        model.id = entity.id;
+        model.text = entity.text;
+        return model;
+    }
+
     private <TEntity extends Content, TModel extends com.andrewd.recordlabel.supermodel.Content>
     void transformContent(TEntity entity, TModel model) {
         model.metadata = transformList(entity.metadata, this::getMetadata);
         model.references = transformList(entity.references, this::getReference);
     }
 
-    public <T, Tm> ArrayList<Tm> transformList(List<T> list, Function<T, Tm> function) {
+    public <T, Tm> List<Tm> transformList(List<T> list, Function<T, Tm> function) {
         ArrayList<Tm> superModels = new ArrayList<Tm>();
         for (T item : list) {
             superModels.add(function.apply(item));
