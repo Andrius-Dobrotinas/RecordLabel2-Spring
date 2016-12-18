@@ -1,10 +1,13 @@
 package com.andrewd.recordlabel.data.service;
 
 import com.andrewd.recordlabel.data.model.*;
+import org.springframework.stereotype.Component;
+
 import java.util.*;
 import java.util.function.Function;
 
-public class ModelToEntityTransformerDefault {
+@Component
+public class ModelToEntityTransformerDefault implements ModelToEntityTransformer {
 
     public Release getRelease(com.andrewd.recordlabel.supermodel.ReleaseSlim model) {
         Release entity = new Release();

@@ -1,15 +1,12 @@
 package com.andrewd.recordlabel.data.service;
 
 import com.andrewd.recordlabel.data.model.*;
-import com.andrewd.recordlabel.data.model.Artist;
-import com.andrewd.recordlabel.data.model.Content;
-import com.andrewd.recordlabel.data.model.Metadata;
-import com.andrewd.recordlabel.data.model.Reference;
-import com.andrewd.recordlabel.data.model.Release;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.function.Function;
 
+@Component
 public class EntityToModelTransformerDefault implements EntityToModelTransformer {
 
     public com.andrewd.recordlabel.supermodel.Release getRelease(Release entity) {
