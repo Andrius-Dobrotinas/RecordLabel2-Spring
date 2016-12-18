@@ -1,5 +1,6 @@
 package com.andrewd.recordlabel.web.api;
 
+import com.andrewd.recordlabel.common.BatchedResult;
 import com.andrewd.recordlabel.data.service.ReleaseService;
 import com.andrewd.recordlabel.supermodel.*;
 import com.andrewd.recordlabel.web.model.ReleaseViewModel;
@@ -9,6 +10,7 @@ import org.junit.runner.RunWith;
 import org.mockito.*;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -66,5 +68,22 @@ public class ReleaseControllerTests {
         Mockito.verifyZeroInteractions(viewModelTransformer);
 
         Assert.assertEquals(null, result);
+    }
+
+    @Test
+    public void getBatch_MustHitTheServiceAndReturn() {
+        BatchedResult<Release> model = new BatchedResult<>();
+        model.entries = new ArrayList<>();
+        model.entries.add(new Release());
+
+        Mockito.when(svc.getReleases(Matchers.anyInt(), Matchers.anyInt())).thenReturn(model);
+
+        // Run
+        BatchedResult<Release> result = controller.get(1, 2);
+
+        // Verify
+        Mockito.verify(svc, Mockito.times(1)).getReleases(Matchers.anyInt(), Matchers.anyInt());
+
+        Assert.assertEquals(model, result);
     }
 }

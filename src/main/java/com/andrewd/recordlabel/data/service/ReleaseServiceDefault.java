@@ -1,5 +1,7 @@
 package com.andrewd.recordlabel.data.service;
 
+import com.andrewd.recordlabel.common.BatchedResult;
+import com.andrewd.recordlabel.common.service.BatchCountCalculator;
 import com.andrewd.recordlabel.data.repository.ReleaseRepository;
 import com.andrewd.recordlabel.data.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,17 @@ public class ReleaseServiceDefault implements ReleaseService {
             return entityTransformer.getRelease(entity);
         }
         return null;
+    }
+
+    public BatchedResult<com.andrewd.recordlabel.supermodel.Release> getReleases(int batchNumber, int batchSize) {
+        List<Release> entities = repository.getAllReleases();
+        int totalCount = repository.getTotalReleaseCount();
+        List<com.andrewd.recordlabel.supermodel.Release> superModels = entityTransformer.transformList(entities, entityTransformer::getRelease);
+
+        BatchedResult<com.andrewd.recordlabel.supermodel.Release> result = new BatchedResult<>();
+        result.entries = superModels;
+        result.batchCount = BatchCountCalculator.calc(totalCount, batchSize);
+        return result;
     }
 
     public List<com.andrewd.recordlabel.supermodel.MediaType> getMediaTypeList() {

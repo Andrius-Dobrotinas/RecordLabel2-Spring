@@ -1,5 +1,7 @@
 package com.andrewd.recordlabel.service;
 
+import com.andrewd.recordlabel.common.BatchedResult;
+import com.andrewd.recordlabel.common.service.BatchCountCalculator;
 import com.andrewd.recordlabel.data.model.*;
 import com.andrewd.recordlabel.data.repository.ReleaseRepository;
 import com.andrewd.recordlabel.data.service.EntityToModelTransformer;
@@ -56,6 +58,31 @@ public class ReleaseServiceDefaultTests {
         com.andrewd.recordlabel.supermodel.Release model = svc.getRelease(entityId);
 
         Assert.assertNull("Null must be returned in case no release is found", model);
+    }
+
+    @Test
+    public void getReleases() {
+        List<Release> entites = new ArrayList<>();
+        int totalCount = 6;
+        int batchNumber = 1;
+        int batchSize = 2;
+
+        List<com.andrewd.recordlabel.supermodel.Release> superModels = new ArrayList<>();
+        com.andrewd.recordlabel.supermodel.Release superModel1 = new com.andrewd.recordlabel.supermodel.Release();
+        com.andrewd.recordlabel.supermodel.Release superModel2 = new com.andrewd.recordlabel.supermodel.Release();
+        superModels.add(superModel1);
+        superModels.add(superModel2);
+
+        Mockito.when(repository.getAllReleases()).thenReturn(entites);
+        Mockito.when(repository.getTotalReleaseCount()).thenReturn(totalCount);
+        Mockito.doAnswer(x -> superModels)
+                .when(entityTransformer)
+                .transformList(Matchers.eq(entites), Matchers.any(Function.class));
+
+        BatchedResult<?> result = svc.getReleases(batchNumber, batchSize);
+
+        Assert.assertEquals("Must include transformed entries", superModels, result.entries);
+        Assert.assertEquals("Must include calculated total batch count",BatchCountCalculator.calc(totalCount, batchSize), result.batchCount);
     }
 
     @Test

@@ -7,6 +7,8 @@ import java.util.List;
 public interface ReleaseRepository {
     void save(Release entity);
     Release getRelease(int id);
+    List<Release> getAllReleases();
+    int getTotalReleaseCount();
     List<MediaType> getMediaTypeList();
     List<Metadata> getMetadataList();
 }
