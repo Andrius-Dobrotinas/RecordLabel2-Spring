@@ -3,10 +3,12 @@ package com.andrewd.recordlabel.web.service;
 import com.andrewd.recordlabel.common.ReferenceType;
 import com.andrewd.recordlabel.supermodel.*;
 import com.andrewd.recordlabel.web.model.ReleaseViewModel;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Component
 public class ReleaseViewModelTransformerDefault implements ReleaseViewModelTransformer {
 
     public ReleaseViewModel transform(Release model) {
