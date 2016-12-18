@@ -19,8 +19,8 @@ public class ReleaseServiceDefault implements ReleaseService {
     @Autowired
     private ModelToEntityTransformer modelTransformer;
 
-    // TODO: change to super model
-    public void save(Release entity) {
+    public void save(com.andrewd.recordlabel.supermodel.ReleaseSlim model) {
+        Release entity = modelTransformer.getRelease(model);
         repository.save(entity);
     }
 
@@ -35,5 +35,10 @@ public class ReleaseServiceDefault implements ReleaseService {
     public List<com.andrewd.recordlabel.supermodel.MediaType> getMediaTypeList() {
         List<MediaType> entities = repository.getMediaTypeList();
         return entityTransformer.transformList(entities, entityTransformer::getMediaType);
+    }
+
+    public List<com.andrewd.recordlabel.supermodel.Metadata> getMetadataList() {
+        List<Metadata> entities = repository.getMetadataList();
+        return entityTransformer.transformList(entities, entityTransformer::getMetadata);
     }
 }

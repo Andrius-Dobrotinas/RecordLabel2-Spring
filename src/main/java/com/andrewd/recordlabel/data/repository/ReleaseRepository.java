@@ -8,4 +8,5 @@ public interface ReleaseRepository {
     void save(Release entity);
     Release getRelease(int id);
     List<MediaType> getMediaTypeList();
+    List<Metadata> getMetadataList();
 }

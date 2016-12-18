@@ -1,6 +1,8 @@
 package com.andrewd.recordlabel.web.api;
 
+import com.andrewd.recordlabel.data.service.ReleaseService;
 import com.andrewd.recordlabel.supermodel.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -9,22 +11,11 @@ import java.util.*;
 @RequestMapping("api/mediatypes/")
 public class MediaTypesController {
 
+    @Autowired
+    ReleaseService svc;
+
     @RequestMapping(value = "get", method = RequestMethod.GET)
     public List<MediaType> get() {
-        // TODO: replace with a real call to repository
-        List<MediaType> result = new ArrayList<>();
-
-        MediaType model = new MediaType();
-        model.id = 1;
-        model.text = "LP";
-
-        MediaType model2 = new MediaType();
-        model2.id = 2;
-        model2.text = "FLAC";
-
-        result.add(model);
-        result.add(model2);
-
-        return result;
+        return svc.getMediaTypeList();
     }
 }
