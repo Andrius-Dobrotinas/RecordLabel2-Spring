@@ -19,7 +19,7 @@
     }]);
 
     application.factory("constantsService", ["$resource", function ($resource) {
-        return $resource("api/Constants/:act", { id: "@id" }, {
+        return $resource("/api/constants/:act", { id: "@id" }, {
             get: { method: "GET", params: { act: "get" }, cache: true },
         });
     }]);
