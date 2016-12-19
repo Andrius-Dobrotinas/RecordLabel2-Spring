@@ -4,6 +4,7 @@ import java.util.*;
 import com.andrewd.recordlabel.common.MetadataType;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class Metadata {
@@ -14,6 +15,7 @@ public class Metadata {
 
     public MetadataType type;
 
+    @NotNull
     public String text;
 
     @ManyToMany(mappedBy = "metadata")

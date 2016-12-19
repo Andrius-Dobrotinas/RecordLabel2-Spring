@@ -14,6 +14,6 @@ public class Content {
     @ManyToMany
     public List<Metadata> metadata = new ArrayList<>();
 
-    @ManyToMany
+    @OneToMany
     public List<Reference> references = new ArrayList<>();
 }

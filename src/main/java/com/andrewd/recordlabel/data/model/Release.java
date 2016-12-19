@@ -23,13 +23,12 @@ public class Release extends Content {
     @ManyToOne(fetch = FetchType.EAGER)
     //@JoinColumn(name = "release_Id")
     public Artist artist;
-    //private int artistId;
-    public int mediaId;
 
     @ManyToOne(fetch = FetchType.EAGER)
     public MediaType media;
 
     public PrintStatus printStatus;
 
+    @OneToMany
     public List<Track> tracks = new ArrayList<>();
 }

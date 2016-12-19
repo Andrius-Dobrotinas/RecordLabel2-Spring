@@ -12,7 +12,9 @@ public class Reference {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int id;
 
-    @NotNull
+    @ManyToOne//(mappedBy = "references")
+    public Content owner;
+
     public String target;
     public ReferenceType type;
     public int order;
