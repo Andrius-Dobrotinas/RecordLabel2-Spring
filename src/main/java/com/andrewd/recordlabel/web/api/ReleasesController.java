@@ -1,5 +1,6 @@
 package com.andrewd.recordlabel.web.api;
 
+import com.andrewd.recordlabel.Settings;
 import com.andrewd.recordlabel.common.*;
 import com.andrewd.recordlabel.data.service.ReleaseService;
 import com.andrewd.recordlabel.supermodel.*;
@@ -8,7 +9,6 @@ import com.andrewd.recordlabel.web.service.ReleaseViewModelTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Calendar;
 
 @RestController
@@ -20,6 +20,8 @@ public class ReleasesController {
 
     @Autowired
     private ReleaseViewModelTransformer viewModelTransformer;
+
+    public final static int DEFAULT_BATCH_NUMBER = 1;
 
     @RequestMapping(value = "post", method = RequestMethod.POST)
     public ResponseEntity post(@RequestBody com.andrewd.recordlabel.supermodel.ReleaseSlim model) {
@@ -63,7 +65,10 @@ public class ReleasesController {
     }
 
     @RequestMapping(value = "getBatch", method = RequestMethod.GET)
-    public BatchedResult<Release> get(@RequestParam(value = "number") int number, @RequestParam(value = "size") int size) {
+    public BatchedResult<Release> getBatch(@RequestParam(value = "number") int number, @RequestParam(value = "size") int size) {
+        if (number < 1) number = DEFAULT_BATCH_NUMBER;
+        if (size < 1) size = Settings.getItemsPerPage();
+
         return releaseSvc.getReleases(number, size);
     }
 

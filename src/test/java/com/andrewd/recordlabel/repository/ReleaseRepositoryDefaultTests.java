@@ -6,8 +6,8 @@ import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.*;
 import org.mockito.runners.MockitoJUnitRunner;
-
 import javax.persistence.EntityManager;
+import static org.mockito.Mockito.times;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ReleaseRepositoryDefaultTests {
@@ -22,24 +22,40 @@ public class ReleaseRepositoryDefaultTests {
     public void save_MustPersistNewEntity () {
         Release entity = new Release();
 
-        Release result = repository.save(entity);
+        repository.save(entity);
 
-        Mockito.verify(em, Mockito.times(1)).persist(Matchers.eq(entity));
-        Mockito.verify(em, Mockito.times(1)).flush();
-
-        Assert.assertEquals("Entity must be returned from the method", entity, result);
+        Mockito.verify(em, times(1)).persist(Matchers.eq(entity));
     }
 
     @Test
-    public void save_MustMergeExistingEntity () {
+    public void save_MustMergeExistingEntity_ThatHasAnIdValue () {
         Release entity = new Release();
         entity.id = 1;
 
-        Release result = repository.save(entity);
+        repository.save(entity);
 
-        Mockito.verify(em, Mockito.times(1)).merge(Matchers.eq(entity));
-        Mockito.verify(em, Mockito.times(1)).flush();
+        Mockito.verify(em, times(1)).merge(Matchers.eq(entity));
+    }
+
+    @Test
+    public void save_MustFlashAfterSaving () {
+        Release entity = new Release();
+
+        repository.save(entity);
+
+        Mockito.verify(em, times(1)).persist(Matchers.eq(entity));
+    }
+
+    @Test
+    public void save_MustReturnSameEntity() {
+        Release entity = new Release();
+        entity.title = "Raw Power";
+
+        Release result = repository.save(entity);
 
         Assert.assertEquals("Entity must be returned from the method", entity, result);
     }
+
+    // TODO?: getMetadataList()
+
 }

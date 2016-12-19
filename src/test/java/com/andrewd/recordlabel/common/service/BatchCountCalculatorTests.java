@@ -21,4 +21,10 @@ public class BatchCountCalculatorTests {
         int result = BatchCountCalculator.calc(1, 2);
         Assert.assertEquals(1, result);
     }
+
+    @Test
+    public void TestCase4() {
+        int result = BatchCountCalculator.calc(0, 2);
+        Assert.assertEquals(1, result);
+    }
 }

@@ -11,9 +11,10 @@ import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.*;
 import org.mockito.runners.MockitoJUnitRunner;
-
 import java.util.*;
 import java.util.function.Function;
+
+import static org.mockito.Mockito.times;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ReleaseServiceDefaultTests {
@@ -31,20 +32,44 @@ public class ReleaseServiceDefaultTests {
     ModelToEntityTransformer modelTransformer;
 
     @Test
+    public void getRelease_MustHitTheRepositoryWithTheSuppliedArgument() {
+        int entityId = 1;
+
+        // Run
+        svc.getRelease(entityId);
+
+        // Verify
+        Mockito.verify(repository, times(1)).getRelease(Matchers.eq(entityId));
+    }
+
+    @Test
+    public void getRelease_TransformEntityToModel() {
+        int entityId = 1;
+        Release entity = new Release();
+
+        Mockito.when(repository.getRelease(Matchers.eq(entityId))).thenReturn(entity);
+
+        // Run
+        svc.getRelease(entityId);
+
+        // Verify
+        Mockito.verify(entityTransformer, times(1)).getRelease(Matchers.eq(entity));
+    }
+
+    @Test
     public void getRelease_MustReturnSuperModel() {
         int entityId = 1;
         Release entity = new Release();
         com.andrewd.recordlabel.supermodel.Release expectedModel =
                 new com.andrewd.recordlabel.supermodel.Release();
 
-        Mockito.when(repository.getRelease(Matchers.anyInt())).thenReturn(entity);
-        Mockito.when(entityTransformer.getRelease(Matchers.any(Release.class))).thenReturn(expectedModel);
+        Mockito.when(repository.getRelease(Matchers.eq(entityId))).thenReturn(entity);
+        Mockito.when(entityTransformer.getRelease(Matchers.eq(entity))).thenReturn(expectedModel);
 
         // Run
         com.andrewd.recordlabel.supermodel.Release result = svc.getRelease(entityId);
 
         // Verify
-        Mockito.verify(entityTransformer, Mockito.times(1)).getRelease(entity);
         Assert.assertEquals("A transformed release model must be returned", expectedModel, result);
     }
 
@@ -52,12 +77,37 @@ public class ReleaseServiceDefaultTests {
     public void getRelease_MustReturnNullWhenNotFound() {
         int entityId = 1;
         Release entity = new Release();
-        Mockito.when(repository.getRelease(Matchers.anyInt())).thenReturn(entity);
+        Mockito.when(repository.getRelease(Matchers.eq(entityId))).thenReturn(entity);
 
         // Run
         com.andrewd.recordlabel.supermodel.Release model = svc.getRelease(entityId);
 
+        // Verify
         Assert.assertNull("Null must be returned in case no release is found", model);
+    }
+
+    @Test
+    public void getReleaseSlim_MustHitTheRepositoryWithTheSuppliedArgument() {
+        int entityId = 1;
+
+        // Run
+        svc.getReleaseSlim(entityId);
+
+        // Verify
+        Mockito.verify(repository, times(1)).getRelease(Matchers.eq(entityId));
+    }
+
+    @Test
+    public void getReleaseSlim_MustTransformEntityToModel() {
+        int entityId = 1;
+        Release entity = new Release();
+        Mockito.when(repository.getRelease(Matchers.eq(entityId))).thenReturn(entity);
+
+        // Run
+        svc.getReleaseSlim(entityId);
+
+        // Verify
+        Mockito.verify(entityTransformer, times(1)).getReleaseSlim(Matchers.eq(entity));
     }
 
     @Test
@@ -67,14 +117,13 @@ public class ReleaseServiceDefaultTests {
         com.andrewd.recordlabel.supermodel.ReleaseSlim expectedModel =
                 new com.andrewd.recordlabel.supermodel.ReleaseSlim();
 
-        Mockito.when(repository.getRelease(Matchers.anyInt())).thenReturn(entity);
-        Mockito.when(entityTransformer.getReleaseSlim(Matchers.any(Release.class))).thenReturn(expectedModel);
+        Mockito.when(repository.getRelease(Matchers.eq(entityId))).thenReturn(entity);
+        Mockito.when(entityTransformer.getReleaseSlim(Matchers.eq(entity))).thenReturn(expectedModel);
 
         // Run
         com.andrewd.recordlabel.supermodel.ReleaseSlim result = svc.getReleaseSlim(entityId);
 
         // Verify
-        Mockito.verify(entityTransformer, Mockito.times(1)).getReleaseSlim(entity);
         Assert.assertEquals("A transformed release model must be returned", expectedModel, result);
     }
 
@@ -82,7 +131,7 @@ public class ReleaseServiceDefaultTests {
     public void getReleaseSlim_MustReturnNullWhenNotFound() {
         int entityId = 1;
         Release entity = new Release();
-        Mockito.when(repository.getRelease(Matchers.anyInt())).thenReturn(entity);
+        Mockito.when(repository.getRelease(Matchers.eq(entityId))).thenReturn(entity);
 
         // Run
         com.andrewd.recordlabel.supermodel.ReleaseSlim model = svc.getReleaseSlim(entityId);
@@ -91,11 +140,66 @@ public class ReleaseServiceDefaultTests {
     }
 
     @Test
-    public void getReleases() {
-        List<Release> entites = new ArrayList<>();
+    public void getReleases_MustHitTheRepositoryWithTheSuppliedArguments() {
+        int batchNumber = 1;
+        int batchSize = 2;
+
+        // Run
+        svc.getReleases(batchNumber, batchSize);
+
+        // Verify
+        // TODO: when I actually implement this stuff in the repository, check the arguments
+        Mockito.verify(repository, times(1)).getAllReleases();
+    }
+
+    @Test
+    public void getReleases_MustTransformEntitiesToModels() {
+        int batchNumber = 1;
+        int batchSize = 2;
+        List<Release> entities = new ArrayList<>();
+
+        Mockito.when(repository.getAllReleases()).thenReturn(entities);
+
+        // Run
+        svc.getReleases(batchNumber, batchSize);
+
+        // Verify
+        Mockito.verify(entityTransformer, times(1)).transformList(Matchers.eq(entities), Matchers.any(Function.class));
+    }
+
+    @Test
+    public void getReleases_MustRetrieveTotalItemCountFromRepository() {
+        int batchNumber = 1;
+        int batchSize = 2;
+
+        // Run
+        svc.getReleases(batchNumber, batchSize);
+
+        // Verify
+        Mockito.verify(repository, times(1)).getTotalReleaseCount();
+    }
+
+    @Test
+    public void getReleases_MustReturnTotalBatchCountInRepository() {
         int totalCount = 6;
         int batchNumber = 1;
         int batchSize = 2;
+
+        Mockito.when(repository.getTotalReleaseCount()).thenReturn(totalCount);
+
+        // Run
+        BatchedResult<?> result = svc.getReleases(batchNumber, batchSize);
+
+        // Verify
+        Assert.assertEquals("Must include calculated total batch count for the supplied batch size",
+                BatchCountCalculator.calc(totalCount, batchSize), result.batchCount);
+    }
+
+    @Test
+    public void getReleases_MustReturnAListOfSuperModels() {
+        int batchNumber = 1;
+        int batchSize = 2;
+        List<Release> entities = new ArrayList<>();
 
         List<com.andrewd.recordlabel.supermodel.Release> superModels = new ArrayList<>();
         com.andrewd.recordlabel.supermodel.Release superModel1 = new com.andrewd.recordlabel.supermodel.Release();
@@ -103,20 +207,43 @@ public class ReleaseServiceDefaultTests {
         superModels.add(superModel1);
         superModels.add(superModel2);
 
-        Mockito.when(repository.getAllReleases()).thenReturn(entites);
-        Mockito.when(repository.getTotalReleaseCount()).thenReturn(totalCount);
+        Mockito.when(repository.getAllReleases()).thenReturn(entities);
+
         Mockito.doAnswer(x -> superModels)
                 .when(entityTransformer)
-                .transformList(Matchers.eq(entites), Matchers.any(Function.class));
+                .transformList(Matchers.eq(entities), Matchers.any(Function.class));
 
         BatchedResult<?> result = svc.getReleases(batchNumber, batchSize);
 
         Assert.assertEquals("Must include transformed entries", superModels, result.entries);
-        Assert.assertEquals("Must include calculated total batch count",BatchCountCalculator.calc(totalCount, batchSize), result.batchCount);
     }
 
     @Test
-    public void getMediaTypeList_MustHitTheRepositoryAndReturnSuperModel() {
+    public void getMediaTypeList_MustHitTheRepository() {
+        // Run
+        svc.getMediaTypeList();
+
+        // Verify
+        Mockito.verify(repository, times(1)).getMediaTypeList();
+    }
+
+    @Test
+    public void getMediaTypeList_TransformEntitiesToModels() {
+        List<MediaType> entities = new ArrayList<>();
+        entities.add(new MediaType());
+
+        Mockito.when(repository.getMediaTypeList()).thenReturn(entities);
+
+        // Run
+        svc.getMediaTypeList();
+
+        // Verify
+        Mockito.verify(entityTransformer, times(1))
+                .transformList(Matchers.eq(entities), Matchers.any(Function.class));
+    }
+
+    @Test
+    public void getMediaTypeList_MustReturnAListOfSuperModels() {
         List<MediaType> entities = new ArrayList<>();
         entities.add(new MediaType());
 
@@ -124,22 +251,45 @@ public class ReleaseServiceDefaultTests {
         fake.add(new com.andrewd.recordlabel.supermodel.MediaType());
 
         Mockito.when(repository.getMediaTypeList()).thenReturn(entities);
-        Mockito.doAnswer(invocation -> {return fake;}).when(entityTransformer)
+
+        Mockito.doAnswer(invocation -> fake)
+                .when(entityTransformer)
                 .transformList(Matchers.eq(entities), Matchers.any(Function.class));
 
         // Run
         List<com.andrewd.recordlabel.supermodel.MediaType> result = svc.getMediaTypeList();
 
         // Verify
-        Mockito.verify(repository, Mockito.times(1)).getMediaTypeList();
-        Mockito.verify(entityTransformer, Mockito.times(1))
-                .transformList(Mockito.eq(entities), Mockito.any(Function.class));
         Assert.assertNotNull("Result cannot ever be null", result);
         Assert.assertEquals("Result must match what is returned by the service", fake, result);
     }
 
     @Test
-    public void getMetadataList_MustHitTheRepositoryAndReturnSuperModel() {
+    public void getMetadataList_MustHitTheRepository() {
+        // Run
+        List<com.andrewd.recordlabel.supermodel.Metadata> result = svc.getMetadataList();
+
+        // Verify
+        Mockito.verify(repository, times(1)).getMetadataList();
+    }
+
+    @Test
+    public void getMetadataList_TransformEntitiesToModels() {
+        List<Metadata> entities = new ArrayList<>();
+        entities.add(new Metadata());
+
+        Mockito.when(repository.getMetadataList()).thenReturn(entities);
+
+        // Run
+        List<com.andrewd.recordlabel.supermodel.Metadata> result = svc.getMetadataList();
+
+        // Verify
+        Mockito.verify(entityTransformer, times(1))
+                .transformList(Mockito.eq(entities), Mockito.any(Function.class));
+    }
+
+    @Test
+    public void getMetadataList_MustReturnAListOfSuperModels() {
         List<Metadata> entities = new ArrayList<>();
         entities.add(new Metadata());
 
@@ -154,21 +304,7 @@ public class ReleaseServiceDefaultTests {
         List<com.andrewd.recordlabel.supermodel.Metadata> result = svc.getMetadataList();
 
         // Verify
-        Mockito.verify(repository, Mockito.times(1)).getMetadataList();
-        Mockito.verify(entityTransformer, Mockito.times(1))
-                .transformList(Mockito.eq(entities), Mockito.any(Function.class));
         Assert.assertNotNull("Result cannot ever be null", result);
         Assert.assertEquals("Result must match what is returned by the service", fake, result);
-    }
-
-    @Test
-    public void save_MustTransformModelAndHitTheService() {
-        com.andrewd.recordlabel.supermodel.ReleaseSlim superModel = new com.andrewd.recordlabel.supermodel.ReleaseSlim();
-        superModel.id = 1;
-
-        svc.save(superModel);
-
-        Mockito.verify(modelTransformer, Mockito.times(1)).getRelease(Matchers.eq(superModel));
-        Mockito.verify(repository, Mockito.times(1)).save(Matchers.any(Release.class));
     }
 }
