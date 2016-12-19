@@ -22,8 +22,23 @@ public class ReleasesController {
     private ReleaseViewModelTransformer viewModelTransformer;
 
     @RequestMapping(value = "post", method = RequestMethod.POST)
-    public void save(@RequestBody com.andrewd.recordlabel.supermodel.ReleaseSlim model) {
-        releaseSvc.save(model);
+    public ResponseEntity post(@RequestBody com.andrewd.recordlabel.supermodel.ReleaseSlim model) {
+        return save(model);
+    }
+
+    /** This method is a work-around for my Angular JS front-end... because it adds id to the path*/
+    @RequestMapping(value = "post/{id}", method = RequestMethod.POST)
+    public ResponseEntity post(@PathVariable int id, @RequestBody com.andrewd.recordlabel.supermodel.ReleaseSlim model) {
+        return save(model);
+    }
+    private ResponseEntity save(com.andrewd.recordlabel.supermodel.ReleaseSlim model) {
+        // TODO: add model validations
+        try {
+            releaseSvc.save(model);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e);
+        }
+        return ResponseEntity.ok().build();
     }
 
     @RequestMapping(value = "get/{id}", method = RequestMethod.GET)

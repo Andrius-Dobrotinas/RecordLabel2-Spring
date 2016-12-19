@@ -14,12 +14,13 @@
             queryBatch: { method: "GET", params: { act: "getBatch" } },
             getForEdit: { method: "GET", params: { act: "getForEdit" } },
             getTemplate: { method: "GET", params: { act: "getTemplate" }, cache: true },
-            save: { method: "POST", params: { act: "post" } }
+            create: { method: "POST", params: { act: "post", id: undefined } },
+            update: { method: "POST", params: { act: "post" } }
         });
     }]);
 
     application.factory("constantsService", ["$resource", function ($resource) {
-        return $resource("/api/constants/:act", { id: "@id" }, {
+        return $resource("/api/constants/:act", { }, {
             get: { method: "GET", params: { act: "get" }, cache: true },
         });
     }]);

@@ -160,4 +160,15 @@ public class ReleaseServiceDefaultTests {
         Assert.assertNotNull("Result cannot ever be null", result);
         Assert.assertEquals("Result must match what is returned by the service", fake, result);
     }
+
+    @Test
+    public void save_MustTransformModelAndHitTheService() {
+        com.andrewd.recordlabel.supermodel.ReleaseSlim superModel = new com.andrewd.recordlabel.supermodel.ReleaseSlim();
+        superModel.id = 1;
+
+        svc.save(superModel);
+
+        Mockito.verify(modelTransformer, Mockito.times(1)).getRelease(Matchers.eq(superModel));
+        Mockito.verify(repository, Mockito.times(1)).save(Matchers.any(Release.class));
+    }
 }

@@ -15,13 +15,23 @@ public class ReleaseRepositoryDefault implements ReleaseRepository {
     private EntityManager em;
 
     @Transactional
-    public void save(Release entity) {
-        Artist artist = new Artist();
-        artist.name = "Andrew D.";
-        entity.artist = artist;
-        em.persist(entity.artist);
-        em.persist(entity);
+    public Release save(Release entity) {
+        // TODO: temporary, in development
+        entity.artist = null;
+        entity.references = null;
+        entity.tracks = null;
+        entity.media = null;
+        entity.metadata = null;
+
+        if (entity.id == 0) {
+            em.persist(entity);
+        }
+        else {
+            em.merge(entity);
+        }
         em.flush();
+
+        return entity;
     }
 
     public Release getRelease(int id) {

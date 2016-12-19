@@ -117,4 +117,30 @@ public class ReleaseControllerTests {
 
         Assert.assertEquals(model, result);
     }
+
+    @Test
+    public void post_MustHitTheServiceAndReturnProperResponse() {
+        ReleaseSlim superModel = new ReleaseSlim();
+        superModel.id = 1;
+
+        ResponseEntity response = controller.post(superModel);
+
+        Mockito.verify(svc, Mockito.times(1)).save(Matchers.eq(superModel));
+
+        Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    public void post_MustReturnBadRequestOnException() {
+        ReleaseSlim superModel = new ReleaseSlim();
+        superModel.id = 1;
+
+        Mockito.doThrow(Exception.class).when(svc).save(Matchers.eq(superModel));
+
+        ResponseEntity response = controller.post(superModel);
+
+        Assert.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    // TODO: save: a case when a model is invalid
 }
