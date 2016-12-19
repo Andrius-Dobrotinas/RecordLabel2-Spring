@@ -38,7 +38,7 @@ public class ReleaseRepositoryDefault implements ReleaseRepository {
 
     // TODO: add the whole batching mechanism
     public List<Release> getAllReleases() {
-        return em.createQuery("select i from Release", Release.class).getResultList();
+        return em.createQuery("select i from Release i", Release.class).getResultList();
     }
 
     public int getTotalReleaseCount() {
