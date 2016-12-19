@@ -34,6 +34,14 @@ public class ReleaseServiceDefault implements ReleaseService {
         return null;
     }
 
+    public com.andrewd.recordlabel.supermodel.ReleaseSlim getReleaseSlim(int id) {
+        Release entity = repository.getRelease(id);
+        if (entity != null) {
+            return entityTransformer.getReleaseSlim(entity);
+        }
+        return null;
+    }
+
     public BatchedResult<com.andrewd.recordlabel.supermodel.Release> getReleases(int batchNumber, int batchSize) {
         List<Release> entities = repository.getAllReleases();
         int totalCount = repository.getTotalReleaseCount();

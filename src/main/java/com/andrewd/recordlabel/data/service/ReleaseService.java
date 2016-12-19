@@ -8,6 +8,7 @@ import java.util.List;
 public interface ReleaseService {
     void save(ReleaseSlim model);
     Release getRelease(int id);
+    ReleaseSlim getReleaseSlim(int id);
     BatchedResult<Release> getReleases(int batchNumber, int batchSize);
     List<MediaType> getMediaTypeList();
     List<Metadata> getMetadataList();

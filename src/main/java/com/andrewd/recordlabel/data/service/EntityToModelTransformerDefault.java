@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Component
 public class EntityToModelTransformerDefault implements EntityToModelTransformer {
@@ -23,6 +24,26 @@ public class EntityToModelTransformerDefault implements EntityToModelTransformer
         }
         model.tracks = transformList(entity.tracks, this::getTrack);
         transformContent(entity, model);
+        return model;
+    }
+
+    public com.andrewd.recordlabel.supermodel.ReleaseSlim getReleaseSlim(Release entity) {
+        com.andrewd.recordlabel.supermodel.ReleaseSlim model = new com.andrewd.recordlabel.supermodel.ReleaseSlim();
+        model.date = entity.date;
+        model.id = entity.id;
+        model.printStatus = entity.printStatus;
+        model.title = entity.title;
+        model.catalogueNumber = entity.catalogueNumber;
+        model.date = entity.date;
+        model.length = entity.length;
+        if (entity.artist != null) {
+            model.artistId = entity.artist.id;
+        }
+        if (entity.media != null) {
+            model.mediaId = entity.media.id;
+        }
+        model.tracks = transformList(entity.tracks, this::getTrack);
+        transformContentSlim(entity, model);
         return model;
     }
 
@@ -71,6 +92,12 @@ public class EntityToModelTransformerDefault implements EntityToModelTransformer
     private <TEntity extends Content, TModel extends com.andrewd.recordlabel.supermodel.Content>
     void transformContent(TEntity entity, TModel model) {
         model.metadata = transformList(entity.metadata, this::getMetadata);
+        model.references = transformList(entity.references, this::getReference);
+    }
+
+    private <TEntity extends Content, TModel extends com.andrewd.recordlabel.supermodel.ContentSlim>
+    void transformContentSlim(TEntity entity, TModel model) {
+        model.metadataIds = entity.metadata.stream().mapToInt(x -> x.id).boxed().collect(Collectors.toList());
         model.references = transformList(entity.references, this::getReference);
     }
 

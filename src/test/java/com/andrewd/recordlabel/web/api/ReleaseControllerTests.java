@@ -9,6 +9,7 @@ import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.*;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.http.*;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -46,28 +47,58 @@ public class ReleaseControllerTests {
                 .thenReturn(viewModel);
 
         // Run
-        ReleaseViewModel result = controller.get(id);
+        ResponseEntity<ReleaseViewModel> response = controller.get(id);
+        ReleaseViewModel result = response.getBody();
 
         // Verify
-        Assert.assertEquals(viewModel, result);
+        Assert.assertEquals("HTTP Status of a successful operation must be OK", HttpStatus.OK, response.getStatusCode());
+        Assert.assertNotNull("Must contain a response body", result);
+        Assert.assertEquals("Must return the view model", viewModel, result);
     }
 
     @Test
     public void get_MustHitTheServiceAndReturnNullIfNothingFound() {
         int id = 5;
-        Release release = new Release();
-        release.id = id;
-
         Mockito.when(svc.getRelease(Matchers.eq(id))).thenReturn(null);
 
         // Run
-        ReleaseViewModel result = controller.get(id);
+        ResponseEntity<ReleaseViewModel> response = controller.get(id);
 
         // Verify
         // Not supposed to call this when no model found in the repository
         Mockito.verifyZeroInteractions(viewModelTransformer);
 
-        Assert.assertEquals(null, result);
+        Assert.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    public void getForEdit_MustHitTheServiceAndTransformModel() {
+        int id = 5;
+        ReleaseSlim model = new ReleaseSlim();
+        model.id = id;
+
+        Mockito.when(svc.getReleaseSlim(Matchers.eq(id))).thenReturn(model);
+
+        // Run
+        ResponseEntity<ReleaseSlim> response = controller.getForEdit(id);
+        ReleaseSlim result = response.getBody();
+
+        // Verify
+        Assert.assertEquals("HTTP Status of a successful operation must be OK", HttpStatus.OK, response.getStatusCode());
+        Assert.assertNotNull("Must contain a response body", result);
+        Assert.assertEquals("Must return the super model", model, result);
+    }
+
+    @Test
+    public void getForEdit_MustHitTheServiceAndReturnNotFoundWhenNotFound() {
+        int id = 5;
+        Mockito.when(svc.getReleaseSlim(Matchers.eq(id))).thenReturn(null);
+
+        // Run
+        ResponseEntity<ReleaseSlim> result = controller.getForEdit(id);
+
+        // Verify
+        Assert.assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
     }
 
     @Test

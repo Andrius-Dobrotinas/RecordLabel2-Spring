@@ -7,6 +7,7 @@ import java.util.function.Function;
 
 public interface EntityToModelTransformer {
     com.andrewd.recordlabel.supermodel.Release getRelease(Release entity);
+    com.andrewd.recordlabel.supermodel.ReleaseSlim getReleaseSlim(Release entity);
     com.andrewd.recordlabel.supermodel.Metadata getMetadata(Metadata entity);
     com.andrewd.recordlabel.supermodel.Reference getReference(Reference entity);
     com.andrewd.recordlabel.supermodel.Track getTrack(Track entity);

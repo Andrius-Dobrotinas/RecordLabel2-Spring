@@ -61,6 +61,36 @@ public class ReleaseServiceDefaultTests {
     }
 
     @Test
+    public void getReleaseSlim_MustReturnSuperModel() {
+        int entityId = 1;
+        Release entity = new Release();
+        com.andrewd.recordlabel.supermodel.ReleaseSlim expectedModel =
+                new com.andrewd.recordlabel.supermodel.ReleaseSlim();
+
+        Mockito.when(repository.getRelease(Matchers.anyInt())).thenReturn(entity);
+        Mockito.when(entityTransformer.getReleaseSlim(Matchers.any(Release.class))).thenReturn(expectedModel);
+
+        // Run
+        com.andrewd.recordlabel.supermodel.ReleaseSlim result = svc.getReleaseSlim(entityId);
+
+        // Verify
+        Mockito.verify(entityTransformer, Mockito.times(1)).getReleaseSlim(entity);
+        Assert.assertEquals("A transformed release model must be returned", expectedModel, result);
+    }
+
+    @Test
+    public void getReleaseSlim_MustReturnNullWhenNotFound() {
+        int entityId = 1;
+        Release entity = new Release();
+        Mockito.when(repository.getRelease(Matchers.anyInt())).thenReturn(entity);
+
+        // Run
+        com.andrewd.recordlabel.supermodel.ReleaseSlim model = svc.getReleaseSlim(entityId);
+
+        Assert.assertNull("Null must be returned in case no release is found", model);
+    }
+
+    @Test
     public void getReleases() {
         List<Release> entites = new ArrayList<>();
         int totalCount = 6;
