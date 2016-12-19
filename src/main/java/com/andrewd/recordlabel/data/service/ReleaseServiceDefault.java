@@ -62,4 +62,9 @@ public class ReleaseServiceDefault implements ReleaseService {
         List<Metadata> entities = repository.getMetadataList();
         return entityTransformer.transformList(entities, entityTransformer::getMetadata);
     }
+
+    public List<com.andrewd.recordlabel.supermodel.ArtistBarebones> getArtistBarebonesList() {
+        List<Artist> entities = repository.getAllArtists();
+        return entityTransformer.transformList(entities, entityTransformer::getArtistBarebones);
+    }
 }

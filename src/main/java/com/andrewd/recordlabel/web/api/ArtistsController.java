@@ -1,6 +1,8 @@
 package com.andrewd.recordlabel.web.api;
 
+import com.andrewd.recordlabel.data.service.ReleaseService;
 import com.andrewd.recordlabel.supermodel.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -9,15 +11,15 @@ import java.util.*;
 @RequestMapping("api/artists/")
 public class ArtistsController {
 
+    @Autowired
+    ReleaseService svc;
+
+    /* TODO: this method and action name should probably be renamed
+    because this thing here returns a simple list of artists,
+    with no extra info about references, metadata and so on...
+     */
     @RequestMapping(value = "getList", method = RequestMethod.GET)
     public List<ArtistBarebones> getList() {
-        // TODO: replace with a real call to repository
-        List<ArtistBarebones> result = new ArrayList<>();
-        ArtistBarebones fake = new ArtistBarebones();
-        fake.id = 1;
-        fake.name = "Iggy";
-
-        result.add(fake);
-        return result;
+        return svc.getArtistBarebonesList();
     }
 }

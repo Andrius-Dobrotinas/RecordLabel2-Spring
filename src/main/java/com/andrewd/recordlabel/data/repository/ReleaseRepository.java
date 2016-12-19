@@ -8,6 +8,10 @@ public interface ReleaseRepository {
     Release save(Release entity);
     Release getRelease(int id);
     List<Release> getAllReleases();
+
+    /* TODO: probably move this out to a separate repository.
+    Keeping it here for now in case I decide to implement a generic thing */
+    List<Artist> getAllArtists();
     int getTotalReleaseCount();
     List<MediaType> getMediaTypeList();
     List<Metadata> getMetadataList();

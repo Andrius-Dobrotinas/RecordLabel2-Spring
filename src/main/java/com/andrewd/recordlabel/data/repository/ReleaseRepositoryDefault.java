@@ -17,10 +17,8 @@ public class ReleaseRepositoryDefault implements ReleaseRepository {
     @Transactional
     public Release save(Release entity) {
         // TODO: temporary, in development
-        entity.artist = null;
         entity.references = null;
         entity.tracks = null;
-        entity.media = null;
         entity.metadata = null;
 
         if (entity.id == 0) {
@@ -49,47 +47,25 @@ public class ReleaseRepositoryDefault implements ReleaseRepository {
     }
 
     public int getTotalReleaseCount() {
-        // TODO
-        return 6;
+        return (int)((Long)em.createQuery("select count(i) from Release i")
+                .getSingleResult()).longValue();
     }
 
     public List<MediaType> getMediaTypeList() {
-
-        // This is fake data. TODO: implement properly (hit the database)
-        List<MediaType> result = new ArrayList<>();
-
-        MediaType model = new MediaType();
-        model.id = 1;
-        model.text = "LP";
-
-        MediaType model2 = new MediaType();
-        model2.id = 2;
-        model2.text = "FLAC";
-
-        result.add(model);
-        result.add(model2);
-
-        return result;
+        return em.createQuery("select i from MediaType i", MediaType.class)
+                .getResultList();
     }
 
     public List<Metadata> getMetadataList() {
+        return em.createQuery("select i from Metadata i", Metadata.class)
+                .getResultList();
+    }
 
-        // This is fake data. TODO: implement properly (hit the database)
-        List<Metadata> result = new ArrayList<>();
-        Metadata model1 = new Metadata();
-        model1.id = 1;
-        model1.text = "artpop";
-        model1.type = MetadataType.Genre;
-
-        Metadata model2 = new Metadata();
-        model2.id = 1;
-        model2.text = "heavy metal";
-        model2.type = MetadataType.Genre;
-
-        result.add(model1);
-        result.add(model2);
-
-        return result;
+    /* TODO: might want to make Artist properties lazily-loaded and then
+    make a separate query that returns a barebones model from this same query
+     */
+    public List<Artist> getAllArtists() {
+        return em.createQuery("select i from Artist i", Artist.class).getResultList();
     }
 
 

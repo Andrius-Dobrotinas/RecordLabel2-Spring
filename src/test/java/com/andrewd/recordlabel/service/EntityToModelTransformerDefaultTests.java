@@ -130,6 +130,17 @@ public class EntityToModelTransformerDefaultTests {
     }
 
     @Test
+    public void transformArtistToBarebones() {
+        Artist entity = getArtistEntity();
+
+        com.andrewd.recordlabel.supermodel.ArtistBarebones model = transformer.getArtistBarebones(entity);
+
+        Assert.assertEquals(entity.id, model.id);
+        Assert.assertEquals(entity.name, model.name);
+        Assert.assertEquals(entity.text, model.text);
+    }
+
+    @Test
     public void transformMetadata() {
         Metadata entity = getMetadata();
 

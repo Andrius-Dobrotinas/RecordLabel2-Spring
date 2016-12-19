@@ -12,4 +12,5 @@ public interface ReleaseService {
     BatchedResult<Release> getReleases(int batchNumber, int batchSize);
     List<MediaType> getMediaTypeList();
     List<Metadata> getMetadataList();
+    List<ArtistBarebones> getArtistBarebonesList();
 }

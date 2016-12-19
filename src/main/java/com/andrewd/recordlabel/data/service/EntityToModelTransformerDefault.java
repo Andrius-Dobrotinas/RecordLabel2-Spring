@@ -57,6 +57,14 @@ public class EntityToModelTransformerDefault implements EntityToModelTransformer
         return model;
     }
 
+    public com.andrewd.recordlabel.supermodel.ArtistBarebones getArtistBarebones(Artist entity) {
+        com.andrewd.recordlabel.supermodel.ArtistBarebones model = new com.andrewd.recordlabel.supermodel.ArtistBarebones();
+        model.id = entity.id;
+        model.name = entity.name;
+        model.text = entity.text;
+        return model;
+    }
+
     public com.andrewd.recordlabel.supermodel.Metadata getMetadata(Metadata entity) {
         com.andrewd.recordlabel.supermodel.Metadata model = new com.andrewd.recordlabel.supermodel.Metadata();
         model.id = entity.id;

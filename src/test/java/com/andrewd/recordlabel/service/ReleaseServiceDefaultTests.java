@@ -267,21 +267,21 @@ public class ReleaseServiceDefaultTests {
     @Test
     public void getMetadataList_MustHitTheRepository() {
         // Run
-        List<com.andrewd.recordlabel.supermodel.Metadata> result = svc.getMetadataList();
+        svc.getMetadataList();
 
         // Verify
         Mockito.verify(repository, times(1)).getMetadataList();
     }
 
     @Test
-    public void getMetadataList_TransformEntitiesToModels() {
+    public void getMetadataList_MustTransformEntitiesToModels() {
         List<Metadata> entities = new ArrayList<>();
         entities.add(new Metadata());
 
         Mockito.when(repository.getMetadataList()).thenReturn(entities);
 
         // Run
-        List<com.andrewd.recordlabel.supermodel.Metadata> result = svc.getMetadataList();
+        svc.getMetadataList();
 
         // Verify
         Mockito.verify(entityTransformer, times(1))
@@ -297,7 +297,7 @@ public class ReleaseServiceDefaultTests {
         fake.add(new com.andrewd.recordlabel.supermodel.Metadata());
 
         Mockito.when(repository.getMetadataList()).thenReturn(entities);
-        Mockito.doAnswer(invocation -> {return fake;}).when(entityTransformer)
+        Mockito.doAnswer(invocation -> fake).when(entityTransformer)
                 .transformList(Matchers.eq(entities), Matchers.any(Function.class));
 
         // Run
@@ -306,5 +306,75 @@ public class ReleaseServiceDefaultTests {
         // Verify
         Assert.assertNotNull("Result cannot ever be null", result);
         Assert.assertEquals("Result must match what is returned by the service", fake, result);
+    }
+
+    @Test
+    public void getArtistBarebonesList_MustHitTheRepository() {
+        svc.getArtistBarebonesList();
+
+        Mockito.verify(repository, times(1)).getAllArtists();
+    }
+
+    @Test
+    public void getArtistBarebonesList_MustTransformEntitiesToModels() {
+        List<Artist> entities = new ArrayList<>();
+        entities.add(new Artist());
+
+        Mockito.when(repository.getAllArtists()).thenReturn(entities);
+
+        // Run
+        svc.getArtistBarebonesList();
+
+        // Verify
+        Mockito.verify(entityTransformer, times(1))
+                .transformList(Matchers.eq(entities), Matchers.any(Function.class));
+    }
+
+    @Test
+    public void getArtistBarebonesList_MustListOfSuperModels() {
+        List<Artist> entities = new ArrayList<>();
+        entities.add(new Artist());
+
+        List<com.andrewd.recordlabel.supermodel.ArtistBarebones> fake = new ArrayList<>();
+        fake.add(new com.andrewd.recordlabel.supermodel.ArtistBarebones());
+
+        Mockito.when(repository.getAllArtists()).thenReturn(entities);
+        Mockito.doAnswer(invocation -> fake).when(entityTransformer)
+                .transformList(Matchers.eq(entities), Matchers.any(Function.class));
+
+        // Run
+        List<com.andrewd.recordlabel.supermodel.ArtistBarebones> result = svc.getArtistBarebonesList();
+
+        // Verify
+        Assert.assertNotNull("Result cannot ever be null", result);
+        Assert.assertEquals("Result must match what is returned by the service", fake, result);
+    }
+
+    @Test
+    public void saveReleaseSlim_MustTransformModelToEntity() {
+        com.andrewd.recordlabel.supermodel.ReleaseSlim superModel = new com.andrewd.recordlabel.supermodel.ReleaseSlim();
+        superModel.id = 1;
+
+        // Run
+        svc.save(superModel);
+
+        // Verify
+        Mockito.verify(modelTransformer, times(1)).getRelease(Matchers.eq(superModel));
+    }
+
+    @Test
+    public void saveReleaseSlim_MustTheService() {
+        com.andrewd.recordlabel.supermodel.ReleaseSlim superModel = new com.andrewd.recordlabel.supermodel.ReleaseSlim();
+        superModel.id = 1;
+
+        Release entity = new Release();
+
+        Mockito.doAnswer(x -> entity).when(modelTransformer).getRelease(Matchers.eq(superModel));
+
+        // Run
+        svc.save(superModel);
+
+        // Verify
+        Mockito.verify(repository, times(1)).save(Matchers.eq(entity));
     }
 }
