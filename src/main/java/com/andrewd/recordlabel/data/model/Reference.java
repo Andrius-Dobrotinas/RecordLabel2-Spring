@@ -6,21 +6,18 @@ import javax.validation.constraints.NotNull;
 import com.andrewd.recordlabel.common.*;
 
 @Entity
-@Table(name = "refs")
+@Table(name = "content_references")
 public class Reference {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int id;
 
-    @ManyToOne//(mappedBy = "references")
-    public ContentBase owner;
-
     @NotNull
     public String target;
 
     public ReferenceType type;
 
-    @Column(name = "ref_order")
+    @Column(name = "item_order")
     public int order;
 }

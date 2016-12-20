@@ -14,6 +14,7 @@ public class ContentBase {
     @ManyToMany
     public List<Metadata> metadata = new ArrayList<>();
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "owner_id")
     public List<Reference> references = new ArrayList<>();
 }

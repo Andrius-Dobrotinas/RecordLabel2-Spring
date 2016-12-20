@@ -21,7 +21,6 @@ public class Release extends ContentBase {
     public String catalogueNumber;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    //@JoinColumn(name = "release_Id")
     public Artist artist;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -29,6 +28,7 @@ public class Release extends ContentBase {
 
     public PrintStatus printStatus;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "release_id")
     public List<Track> tracks = new ArrayList<>();
 }
