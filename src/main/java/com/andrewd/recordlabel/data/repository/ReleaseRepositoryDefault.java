@@ -1,9 +1,10 @@
 package com.andrewd.recordlabel.data.repository;
 
 import com.andrewd.recordlabel.common.*;
+import com.andrewd.recordlabel.data.entitytools.IdComparer;
 import com.andrewd.recordlabel.data.model.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
 import javax.persistence.*;
 import javax.transaction.Transactional;
 import java.util.*;
@@ -14,21 +15,17 @@ public class ReleaseRepositoryDefault implements ReleaseRepository {
     @PersistenceContext
     private EntityManager em;
 
-    @Transactional
-    public Release save(Release entity) {
-        // TODO: temporary, in development
-        entity.references = null;
-        entity.tracks = null;
-        entity.metadata = null;
+    @Autowired
+    private IdComparer idComparer;
 
-        if (entity.id == 0) {
+    @Transactional
+    public <T> T save(T entity) {
+        if (idComparer.isIdDefault(entity)) {
             em.persist(entity);
-        }
-        else {
-            em.merge(entity);
+        } else {
+            entity = em.merge(entity);
         }
         em.flush();
-
         return entity;
     }
 

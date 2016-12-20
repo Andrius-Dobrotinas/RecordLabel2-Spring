@@ -5,7 +5,7 @@ import com.andrewd.recordlabel.data.model.*;
 import java.util.List;
 
 public interface ReleaseRepository {
-    Release save(Release entity);
+    <T> T save(T entity);
     Release getRelease(int id);
     List<Release> getAllReleases();
 

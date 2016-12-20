@@ -363,7 +363,7 @@ public class ReleaseServiceDefaultTests {
     }
 
     @Test
-    public void saveReleaseSlim_MustTheService() {
+    public void saveReleaseSlim_MustHitTheService() {
         com.andrewd.recordlabel.supermodel.ReleaseSlim superModel = new com.andrewd.recordlabel.supermodel.ReleaseSlim();
         superModel.id = 1;
 
