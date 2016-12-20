@@ -19,5 +19,5 @@ public class Metadata {
     public String text;
 
     @ManyToMany(mappedBy = "metadata")
-    public List<Content> targets = new ArrayList<Content>();
+    public List<ContentBase> targets = new ArrayList<ContentBase>();
 }

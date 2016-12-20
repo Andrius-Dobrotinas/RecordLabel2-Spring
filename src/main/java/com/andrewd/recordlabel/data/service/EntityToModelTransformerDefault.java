@@ -1,6 +1,7 @@
 package com.andrewd.recordlabel.data.service;
 
 import com.andrewd.recordlabel.data.model.*;
+import com.andrewd.recordlabel.supermodel.ContentBaseSlim;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -21,6 +22,9 @@ public class EntityToModelTransformerDefault implements EntityToModelTransformer
         model.length = entity.length;
         if (entity.artist != null) {
             model.artist = getArtist(entity.artist);
+        }
+        if (entity.media != null) {
+            model.media = getMediaType(entity.media);
         }
         model.tracks = transformList(entity.tracks, this::getTrack);
         transformContent(entity, model);
@@ -97,13 +101,13 @@ public class EntityToModelTransformerDefault implements EntityToModelTransformer
         return model;
     }
 
-    private <TEntity extends Content, TModel extends com.andrewd.recordlabel.supermodel.Content>
+    private <TEntity extends ContentBase, TModel extends com.andrewd.recordlabel.supermodel.ContentBase>
     void transformContent(TEntity entity, TModel model) {
         model.metadata = transformList(entity.metadata, this::getMetadata);
         model.references = transformList(entity.references, this::getReference);
     }
 
-    private <TEntity extends Content, TModel extends com.andrewd.recordlabel.supermodel.ContentSlim>
+    private <TEntity extends ContentBase, TModel extends ContentBaseSlim>
     void transformContentSlim(TEntity entity, TModel model) {
         model.metadataIds = entity.metadata.stream().mapToInt(x -> x.id).boxed().collect(Collectors.toList());
         model.references = transformList(entity.references, this::getReference);

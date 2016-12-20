@@ -5,7 +5,7 @@ import java.util.*;
 
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
-public class Content {
+public class ContentBase {
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)

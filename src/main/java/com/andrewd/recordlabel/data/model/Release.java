@@ -9,7 +9,7 @@ import java.util.*;
 @Entity
 @Table(name="releases")
 @PrimaryKeyJoinColumn(name="id")
-public class Release extends Content {
+public class Release extends ContentBase {
 
     @NotNull
     public String title;

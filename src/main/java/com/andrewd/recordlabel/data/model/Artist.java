@@ -8,7 +8,7 @@ import java.util.List;
 @Entity
 @Table(name="artists")
 @PrimaryKeyJoinColumn(name="id")
-public class Artist extends Content {
+public class Artist extends ContentBase {
 
     @NotNull
     public String name;
