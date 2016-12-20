@@ -27,7 +27,8 @@ public class EntityToModelTransformerDefault implements EntityToModelTransformer
             model.media = getMediaType(entity.media);
         }
         model.tracks = transformList(entity.tracks, this::getTrack);
-        transformContent(entity, model);
+
+        transformContentBase(entity, model);
         return model;
     }
 
@@ -47,7 +48,8 @@ public class EntityToModelTransformerDefault implements EntityToModelTransformer
             model.mediaId = entity.media.id;
         }
         model.tracks = transformList(entity.tracks, this::getTrack);
-        transformContentSlim(entity, model);
+
+        transformContentBaseSlim(entity, model);
         return model;
     }
 
@@ -57,7 +59,7 @@ public class EntityToModelTransformerDefault implements EntityToModelTransformer
         model.name = entity.name;
         model.text = entity.text;
 
-        transformContent(entity, model);
+        transformContentBase(entity, model);
         return model;
     }
 
@@ -102,13 +104,13 @@ public class EntityToModelTransformerDefault implements EntityToModelTransformer
     }
 
     private <TEntity extends ContentBase, TModel extends com.andrewd.recordlabel.supermodel.ContentBase>
-    void transformContent(TEntity entity, TModel model) {
+    void transformContentBase(TEntity entity, TModel model) {
         model.metadata = transformList(entity.metadata, this::getMetadata);
         model.references = transformList(entity.references, this::getReference);
     }
 
     private <TEntity extends ContentBase, TModel extends ContentBaseSlim>
-    void transformContentSlim(TEntity entity, TModel model) {
+    void transformContentBaseSlim(TEntity entity, TModel model) {
         model.metadataIds = entity.metadata.stream().mapToInt(x -> x.id).boxed().collect(Collectors.toList());
         model.references = transformList(entity.references, this::getReference);
     }

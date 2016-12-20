@@ -3,6 +3,7 @@ package com.andrewd.recordlabel.service;
 import com.andrewd.recordlabel.data.service.EntityToModelTransformerDefault;
 import com.andrewd.recordlabel.common.*;
 import com.andrewd.recordlabel.data.model.*;
+import com.sun.media.jfxmedia.Media;
 import org.junit.*;
 
 import java.util.*;
@@ -29,47 +30,43 @@ public class EntityToModelTransformerDefaultTests {
 
         com.andrewd.recordlabel.supermodel.Release model = transformer.getRelease(entity);
 
-        verifyRelease(entity, model);
-    }
-
-    private void verifyRelease(Release entity, com.andrewd.recordlabel.supermodel.Release model) {
-        Assert.assertEquals(entity.id, model.id);
-        Assert.assertEquals(entity.date, model.date);
-        Assert.assertEquals(entity.catalogueNumber, model.catalogueNumber);
-        Assert.assertEquals(entity.length, model.length);
-        Assert.assertEquals(entity.printStatus, model.printStatus);
-        Assert.assertEquals(entity.title, model.title);
+        // Verify
+        EntityModelTransformationVerifiers.verifyRelease(entity, model);
     }
 
     @Test
-    public void transformRelease_MakeSureArtistIsTransformedToo() {
+    public void transformRelease_MustTransformArtist() {
         Release entity = new Release();
         entity.artist = getArtistEntity();
 
         com.andrewd.recordlabel.supermodel.Release model = transformer.getRelease(entity);
 
-        Assert.assertNotNull("Must transform release artist too", model.artist);
+        Assert.assertNotNull("Must transform release artist", model.artist);
+        EntityModelTransformationVerifiers.verifyArtist(entity.artist, model.artist);
     }
 
     @Test
-    public void transformRelease_MakeSureMetadataIsTransformedToo() {
+    public void transformRelease_MustTransformMetadata() {
         Release entity = new Release();
-        entity.metadata.add(getMetadata());
+        Metadata meta = getMetadata();
+        entity.metadata.add(meta);
 
         com.andrewd.recordlabel.supermodel.Release model = transformer.getRelease(entity);
 
-        Assert.assertNotNull("Must transform release metadata too", model.metadata);
-        Assert.assertEquals("Must transform release metadata and add it to the list", 1, model.metadata.size());
+        Assert.assertNotNull("Must transform release metadata", model.metadata);
+        Assert.assertEquals("Must transform release metadata", 1, model.metadata.size());
+        EntityModelTransformationVerifiers.verifyMetadata(meta, model.metadata.get(0));
     }
 
     @Test
-    public void transformRelease_MakeSureMediaTypeIsTransformedToo() {
+    public void transformRelease_MustTransformMediaType() {
         Release entity = new Release();
         entity.media = getMediaType();
 
         com.andrewd.recordlabel.supermodel.Release model = transformer.getRelease(entity);
 
-        Assert.assertNotNull("Must transform release media too", model.media);
+        Assert.assertNotNull("Must transform release media", model.media);
+        EntityModelTransformationVerifiers.verifyMediaType(entity.media, model.media);
     }
 
     @Test
@@ -78,23 +75,39 @@ public class EntityToModelTransformerDefaultTests {
         Release entity1 = new Release();
         list.add(entity1);
 
+        // Run
         List<com.andrewd.recordlabel.supermodel.Release> results =
                 transformer.transformList(list, transformer::getRelease);
 
+        // Verify
         Assert.assertEquals(1, results.size());
-
-        com.andrewd.recordlabel.supermodel.Release result1 = results.get(0);
-        verifyRelease(entity1, result1);
+        EntityModelTransformationVerifiers.verifyRelease(entity1, results.get(0));
     }
 
     @Test
-    public void transformRelease_MakeSureTracksAreTransformedToo() {
+    public void transformRelease_MustTransformTracks() {
         Release entity = new Release();
-        entity.tracks.add(getTrack());
+        Track track = getTrack();
+        entity.tracks.add(track);
 
         com.andrewd.recordlabel.supermodel.Release model = transformer.getRelease(entity);
 
-        Assert.assertNotNull("Must transform release tracks too", model.tracks);
+        Assert.assertNotNull("Must transform release tracks", model.tracks);
+        Assert.assertEquals("Must transform release tracks", 1, model.tracks.size());
+        EntityModelTransformationVerifiers.verifyTrack(track, model.tracks.get(0));
+    }
+
+    @Test
+    public void transformRelease_MustTransformReferences() {
+        Release entity = new Release();
+        Reference ref = getReference();
+        entity.references.add(ref);
+
+        com.andrewd.recordlabel.supermodel.Release model = transformer.getRelease(entity);
+
+        Assert.assertNotNull("Must transform release references", model.references);
+        Assert.assertEquals("Must transform release references", 1, model.references.size());
+        EntityModelTransformationVerifiers.verifyReference(ref, model.references.get(0));
     }
 
     @Test
@@ -103,30 +116,34 @@ public class EntityToModelTransformerDefaultTests {
 
         com.andrewd.recordlabel.supermodel.Artist model = transformer.getArtist(entity);
 
-        Assert.assertEquals(entity.id, model.id);
-        Assert.assertEquals(entity.name, model.name);
-        Assert.assertEquals(entity.text, model.text);
+        EntityModelTransformationVerifiers.verifyArtist(entity, model);
     }
 
     @Test
-    public void transformArtist_MakeSureMetadataIsTransformedToo() {
+    public void transformArtist_MustTransformMetadata() {
         Artist entity = new Artist();
-        entity.metadata.add(getMetadata());
+        Metadata meta = getMetadata();
+        entity.metadata.add(meta);
 
         com.andrewd.recordlabel.supermodel.Artist model = transformer.getArtist(entity);
 
-        Assert.assertNotNull("Must transform artist metadata too", model.metadata);
-        Assert.assertEquals("Must transform artist metadata and add it to the list", 1, model.metadata.size());
+        Assert.assertNotNull("Must transform artist metadata", model.metadata);
+        Assert.assertEquals("Must transform artist metadata", 1, model.metadata.size());
+        EntityModelTransformationVerifiers.verifyMetadata(meta, model.metadata.get(0));
     }
 
     @Test
-    public void transformArtist_MakeSureReferencesAreTransformedToo() {
+    public void transformArtist_MustTransformReferences() {
         Artist entity = new Artist();
-        entity.references.add(getReference());
+        Reference ref = getReference();
+        entity.references.add(ref);
 
         com.andrewd.recordlabel.supermodel.Artist model = transformer.getArtist(entity);
 
-        Assert.assertNotNull("Must transform artist references too", model.references);
+        // Verify
+        Assert.assertNotNull("Must transform artist references", model.references);
+        Assert.assertEquals("Must transform artist references", 1, model.references.size());
+        EntityModelTransformationVerifiers.verifyReference(ref, model.references.get(0));
     }
 
     @Test
@@ -135,9 +152,9 @@ public class EntityToModelTransformerDefaultTests {
 
         com.andrewd.recordlabel.supermodel.ArtistBarebones model = transformer.getArtistBarebones(entity);
 
-        Assert.assertEquals(entity.id, model.id);
-        Assert.assertEquals(entity.name, model.name);
-        Assert.assertEquals(entity.text, model.text);
+        Assert.assertEquals("Must copy artist id", entity.id, model.id);
+        Assert.assertEquals("Must copy artist name", entity.name, model.name);
+        Assert.assertEquals("Must copy artist text", entity.text, model.text);
     }
 
     @Test
@@ -146,9 +163,7 @@ public class EntityToModelTransformerDefaultTests {
 
         com.andrewd.recordlabel.supermodel.Metadata model = transformer.getMetadata(entity);
 
-        Assert.assertEquals(entity.id, model.id);
-        Assert.assertEquals(entity.text, model.text);
-        Assert.assertEquals(entity.type, model.type);
+        EntityModelTransformationVerifiers.verifyMetadata(entity, model);
     }
 
     @Test
@@ -157,10 +172,7 @@ public class EntityToModelTransformerDefaultTests {
 
         com.andrewd.recordlabel.supermodel.Reference model = transformer.getReference(entity);
 
-        Assert.assertEquals(entity.id, model.id);
-        Assert.assertEquals(entity.target, model.target);
-        Assert.assertEquals(entity.type, model.type);
-        Assert.assertEquals(entity.order, model.order);
+        EntityModelTransformationVerifiers.verifyReference(entity, model);
     }
 
     @Test
@@ -169,9 +181,7 @@ public class EntityToModelTransformerDefaultTests {
 
         com.andrewd.recordlabel.supermodel.Track model = transformer.getTrack(entity);
 
-        Assert.assertEquals(entity.id, model.id);
-        Assert.assertEquals(entity.reference, model.reference);
-        Assert.assertEquals(entity.title, model.title);
+        EntityModelTransformationVerifiers.verifyTrack(entity, model);
     }
 
     @Test
@@ -180,8 +190,7 @@ public class EntityToModelTransformerDefaultTests {
 
         com.andrewd.recordlabel.supermodel.MediaType model = transformer.getMediaType(entity);
 
-        Assert.assertEquals(entity.id, model.id);
-        Assert.assertEquals(entity.text, model.text);
+        EntityModelTransformationVerifiers.verifyMediaType(entity, model);
     }
 
     @Test
@@ -197,12 +206,7 @@ public class EntityToModelTransformerDefaultTests {
 
         com.andrewd.recordlabel.supermodel.ReleaseSlim model = transformer.getReleaseSlim(entity);
 
-        Assert.assertEquals(entity.id, model.id);
-        Assert.assertEquals(entity.date, model.date);
-        Assert.assertEquals(entity.catalogueNumber, model.catalogueNumber);
-        Assert.assertEquals(entity.length, model.length);
-        Assert.assertEquals(entity.printStatus, model.printStatus);
-        Assert.assertEquals(entity.title, model.title);
+        EntityModelTransformationVerifiers.verifyReleaseSlim(entity, model);
     }
 
     @Test
@@ -224,7 +228,7 @@ public class EntityToModelTransformerDefaultTests {
 
         com.andrewd.recordlabel.supermodel.ReleaseSlim model = transformer.getReleaseSlim(entity);
 
-        Assert.assertEquals("Must copy over artist id", media.id, model.mediaId);
+        Assert.assertEquals("Must copy over media id", media.id, model.mediaId);
     }
 
     @Test
@@ -252,20 +256,18 @@ public class EntityToModelTransformerDefaultTests {
     }
 
     @Test
-    public void transformToReleaseSlim_MustAlsoTransformReferences() {
+    public void transformToReleaseSlim_MustTransformReferences() {
         Release entity = new Release();
         Reference ref = getReference();
         entity.references.add(ref);
 
+        // Run
         com.andrewd.recordlabel.supermodel.ReleaseSlim model = transformer.getReleaseSlim(entity);
 
-        Assert.assertEquals("Must also transform references", 1, model.references.size());
-        Assert.assertEquals("Must also transform references", ref.id, model.references.get(0).id);
-        Assert.assertEquals("Must also transform references", ref.order, model.references.get(0).order);
-        Assert.assertEquals("Must also transform references", ref.target, model.references.get(0).target);
-        Assert.assertEquals("Must also transform references", ref.type, model.references.get(0).type);
+        // Verify
+        Assert.assertEquals("Must transform references", 1, model.references.size());
+        EntityModelTransformationVerifiers.verifyReference(ref, model.references.get(0));
     }
-
 
     private Artist getArtistEntity() {
         Artist entity = new Artist();

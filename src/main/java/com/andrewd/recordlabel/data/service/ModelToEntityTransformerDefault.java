@@ -19,6 +19,7 @@ public class ModelToEntityTransformerDefault implements ModelToEntityTransformer
         entity.title = model.title;
 
         entity.tracks = transformList(model.tracks, this::getTrack);
+        entity.references = transformList(model.references, this::getReference);
 
         for(int id : model.metadataIds) {
             Metadata metadata = new Metadata();
@@ -42,8 +43,8 @@ public class ModelToEntityTransformerDefault implements ModelToEntityTransformer
         entity.id = model.id;
         entity.text = model.text;
         entity.name = model.name;
-        entity.references = transformList(model.references, this::getReference);
-        entity.metadata = transformList(model.metadata, this::getMetadata);
+
+        transformContentBase(model, entity);
         return entity;
     }
 
@@ -77,6 +78,12 @@ public class ModelToEntityTransformerDefault implements ModelToEntityTransformer
         entity.id = model.id;
         entity.text = model.text;
         return entity;
+    }
+
+    private <TModel extends com.andrewd.recordlabel.supermodel.ContentBase, TEntity extends ContentBase>
+    void transformContentBase(TModel model, TEntity entity) {
+        entity.metadata = transformList(model.metadata, this::getMetadata);
+        entity.references = transformList(model.references, this::getReference);
     }
 
     public <TModel, TEntity> List<TEntity> transformList(List<TModel> list, Function<TModel, TEntity> transformFunction) {
