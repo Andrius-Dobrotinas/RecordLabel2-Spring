@@ -23,32 +23,32 @@
     <script src="Angular/controllers/releases/list.js"></script>
     <script src="Angular/controllers/releases/view.js"></script>
     <script src="Angular/controllers/releases/edit.js"></script>
-    
+
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Record Label 2</title>
-	<meta charset="utf-8" />
+    <meta charset="utf-8" />
 </head>
 <body ng-app="RecordLabel">
-    <div class="container body-content">
-        <div>
-            <div ng-repeat="error in errors">
-                <div class="alert alert-danger" role="alert">
-                    <span class="glyphicon glyphicon-exclamation-sign"></span>
-                    {{error.statusText}} ({{error.status}})
-                </div>
+<div class="container body-content">
+    <div>
+        <div ng-repeat="error in errors">
+            <div class="alert alert-danger" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign"></span>
+                {{error.statusText}} ({{error.status}})
             </div>
-            <div ng-show="infoMessage" class="alert alert-success">{{infoMessage}}</div>
-            <div ng-view></div>
         </div>
-        <hr />
-        <footer>
-            <p>&copy; 2016 - Record Label 2</p>
-        </footer>
+        <div ng-show="infoMessage" class="alert alert-success">{{infoMessage}}</div>
+        <div ng-view></div>
     </div>
+    <hr />
+    <footer>
+        <p>&copy; 2016 - Record Label 2</p>
+    </footer>
+</div>
 
-    <script src="Angular/node_modules/jquery/dist/jquery.min.js"></script>
-    <script src="Angular/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="Angular/node_modules/jquery/dist/jquery.min.js"></script>
+<script src="Angular/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
 </body>
 </html>
