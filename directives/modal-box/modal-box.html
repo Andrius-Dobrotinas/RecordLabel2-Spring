@@ -1,0 +1,24 @@
+﻿<div id="{{id}}" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <!--Optionally hide X button-->
+                <div ng-if="!xButton()">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <h4 class="modal-title">{{title}}</h4>
+            </div>
+            <div class="modal-body">
+                <!--Content goes in here-->
+                <div ng-transclude="body"></div>
+            </div>
+            <div class="modal-footer">
+                <!--Optional custom extra buttons here-->
+                <span ng-transclude="buttons"></span>
+                <button type="button" class="btn btn-default" data-dismiss="modal" ng-disabled="closeButtonDisabled()">{{closeButtonTitle}}</button>
+            </div>
+        </div>
+    </div>
+</div>
