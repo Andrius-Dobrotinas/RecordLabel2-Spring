@@ -14,6 +14,5 @@ public class Track {
     @NotNull
     public String title;
 
-    @NotNull
     public String reference;
 }
