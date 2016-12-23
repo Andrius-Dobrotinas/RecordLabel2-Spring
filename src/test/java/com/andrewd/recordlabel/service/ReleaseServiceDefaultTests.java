@@ -2,6 +2,7 @@ package com.andrewd.recordlabel.service;
 
 import com.andrewd.recordlabel.common.BatchedResult;
 import com.andrewd.recordlabel.common.service.BatchCountCalculator;
+import com.andrewd.recordlabel.data.SortDirection;
 import com.andrewd.recordlabel.data.model.*;
 import com.andrewd.recordlabel.data.repository.ReleaseRepository;
 import com.andrewd.recordlabel.data.service.EntityToModelTransformer;
@@ -148,8 +149,33 @@ public class ReleaseServiceDefaultTests {
         svc.getReleases(batchNumber, batchSize);
 
         // Verify
-        // TODO: when I actually implement this stuff in the repository, check the arguments
-        Mockito.verify(repository, times(1)).getAllReleases();
+        Mockito.verify(repository, times(1)).getReleases(Matchers.eq(batchNumber), Matchers.eq(batchSize), Matchers.anyString(), Matchers.any(SortDirection.class));
+    }
+
+    @Test
+    public void getReleases_MustOrderByTtitleByDefault() {
+        int batchNumber = 1;
+        int batchSize = 2;
+        String orderByProperty = "title";
+
+        // Run
+        svc.getReleases(batchNumber, batchSize);
+
+        // Verify
+        Mockito.verify(repository, times(1)).getReleases(Matchers.anyInt(), Matchers.anyInt(), Matchers.eq(orderByProperty), Matchers.any(SortDirection.class));
+    }
+
+    @Test
+    public void getReleases_MustOrderDescendingByDefault() {
+        int batchNumber = 1;
+        int batchSize = 2;
+        SortDirection direction = SortDirection.DESCENDING;
+
+        // Run
+        svc.getReleases(batchNumber, batchSize);
+
+        // Verify
+        Mockito.verify(repository, times(1)).getReleases(Matchers.anyInt(), Matchers.anyInt(), Matchers.anyString(), Matchers.eq(direction));
     }
 
     @Test
@@ -158,7 +184,9 @@ public class ReleaseServiceDefaultTests {
         int batchSize = 2;
         List<Release> entities = new ArrayList<>();
 
-        Mockito.when(repository.getAllReleases()).thenReturn(entities);
+        Mockito.when(repository
+                .getReleases(Matchers.anyInt(), Matchers.anyInt(), Matchers.anyString(), Matchers.any(SortDirection.class)))
+                .thenReturn(entities);
 
         // Run
         svc.getReleases(batchNumber, batchSize);
@@ -207,7 +235,9 @@ public class ReleaseServiceDefaultTests {
         superModels.add(superModel1);
         superModels.add(superModel2);
 
-        Mockito.when(repository.getAllReleases()).thenReturn(entities);
+        Mockito.when(repository
+                .getReleases(Matchers.anyInt(), Matchers.anyInt(), Matchers.anyString(), Matchers.any(SortDirection.class)))
+                .thenReturn(entities);
 
         Mockito.doAnswer(x -> superModels)
                 .when(entityTransformer)

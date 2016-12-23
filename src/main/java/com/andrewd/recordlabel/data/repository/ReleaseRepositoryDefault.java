@@ -1,11 +1,12 @@
 package com.andrewd.recordlabel.data.repository;
 
-import com.andrewd.recordlabel.common.*;
+import com.andrewd.recordlabel.data.SortDirection;
 import com.andrewd.recordlabel.data.entitytools.IdComparer;
 import com.andrewd.recordlabel.data.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import javax.persistence.*;
+import javax.persistence.criteria.*;
 import javax.transaction.Transactional;
 import java.util.*;
 
@@ -33,9 +34,8 @@ public class ReleaseRepositoryDefault implements ReleaseRepository {
         return em.find(Release.class, id);
     }
 
-    // TODO: add the whole batching mechanism
-    public List<Release> getAllReleases() {
-        return em.createQuery("select i from Release i", Release.class).getResultList();
+    public List<Release> getReleases(int batchNumber, int batchSize, String orderByProperty, SortDirection direction) {
+        return getBatch(Release.class, batchNumber, batchSize, orderByProperty, direction);
     }
 
     public int getTotalReleaseCount() {
@@ -58,5 +58,30 @@ public class ReleaseRepositoryDefault implements ReleaseRepository {
      */
     public List<Artist> getAllArtists() {
         return em.createQuery("select i from Artist i", Artist.class).getResultList();
+    }
+
+
+    private <T> List<T> getBatch(Class<T> type,  int batchNumber, int batchSize, String orderProperty, SortDirection direction) {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<T> query = builder.createQuery(type);
+        CriteriaQuery<T> orderedQuery = addOrdering(type, builder, query, orderProperty, direction);
+        return getBatch(orderedQuery, batchNumber, batchSize);
+    }
+
+    private <T> CriteriaQuery<T> addOrdering(Class<T> type, CriteriaBuilder builder, CriteriaQuery<T> query, String orderProperty, SortDirection direction) {
+        Root<T> root = query.from(type);
+        Path path = root.get(orderProperty);
+        Order order;
+        if (direction == SortDirection.ASCENDING) {
+            order = builder.asc(path);
+        } else {
+            order = builder.desc(path);
+        }
+
+        return query.orderBy(order);
+    }
+
+    private <T> List<T> getBatch(CriteriaQuery<T> query, int batchNumber, int batchSize) {
+        return em.createQuery(query).setFirstResult((batchNumber - 1) * batchSize).setMaxResults(batchSize).getResultList();
     }
 }

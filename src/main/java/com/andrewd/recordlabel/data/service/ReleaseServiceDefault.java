@@ -2,6 +2,7 @@ package com.andrewd.recordlabel.data.service;
 
 import com.andrewd.recordlabel.common.BatchedResult;
 import com.andrewd.recordlabel.common.service.BatchCountCalculator;
+import com.andrewd.recordlabel.data.SortDirection;
 import com.andrewd.recordlabel.data.repository.ReleaseRepository;
 import com.andrewd.recordlabel.data.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +44,7 @@ public class ReleaseServiceDefault implements ReleaseService {
     }
 
     public BatchedResult<com.andrewd.recordlabel.supermodel.Release> getReleases(int batchNumber, int batchSize) {
-        List<Release> entities = repository.getAllReleases();
+        List<Release> entities = repository.getReleases(batchNumber, batchSize, "title", SortDirection.DESCENDING);
         int totalCount = repository.getTotalReleaseCount();
         List<com.andrewd.recordlabel.supermodel.Release> superModels = entityTransformer.transformList(entities, entityTransformer::getRelease);
 
