@@ -23,7 +23,7 @@
                         </div>
                     </section>
 
-                    <section class="row frame shadow-box default-padding article" id="description">
+                    <section class="row frame shadow-box default-padding article">
                         <article>
                             {{model.text}}
                         </article>
@@ -48,16 +48,16 @@
                         </div>
                     </section>
 
-                    <section ng-show="model.references" class="row frame shadow-box default-padding contains-labels" id="references">
+                    <section ng-show="model.references" class="row frame shadow-box default-padding contains-labels">
                         <div class="text-muted">References</div>
                         <div ng-repeat="ref in model.references">
-                            <a href="{{ref.target}}" target="_blank" class="label2 invert2 border">{{ref.target}}</a>
+                            <a href="{{ref.target}}" target="_blank" class="label label-success border">{{ref.target}}</a>
                         </div>
                     </section>
 
                     <section ng-show="model.metadata" class="row frame shadow-box default-padding label-container">
                         <div ng-repeat="meta in model.metadata | orderBy: 'Type'">
-                            <a class="label2 invert2 border" href="#">{{meta.text}}</a>
+                            <a class="label label-warning border" href="#">{{meta.text}}</a>
                         </div>
                     </section>
                 </div>

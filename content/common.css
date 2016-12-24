@@ -1,0 +1,363 @@
+﻿@media (min-width: 992px) {
+    .modal-lg {
+        width: 900px;
+    }
+}
+
+*:hover {
+    transition: 0.15s;
+    transition-timing-function: ease-out;
+}
+
+/*FRAMES*/
+.list-item-front-panel {
+    display: block;
+    position:absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+.frame {
+    cursor: default;
+}
+
+.list-item-front-panel:active {
+    box-shadow: 0px 0px 2px rgba(0,0,0,0.2)
+}
+
+.frame,
+.list-item-front-panel,
+.list-item {
+    padding: 5px;
+    border-radius: 2px;
+}
+
+.list-item-front-panel,
+.shadow-box,
+.view-page-title {
+    box-shadow: 4px 4px 6px rgba(0,0,0,0.2);
+}
+
+.list-item-front-panel {
+    border: 1px solid #dddddd;
+}
+
+.list-item:hover .edit-btn-block {
+    display: block;
+}
+
+.shadow-box {
+    margin-top: 5px;
+}
+
+.frame {
+    border: 1px solid #ccc;
+}
+
+.border {
+    border-width: 1px;
+    border-style: solid;
+}
+
+.highlight-border {
+    border-width: 3px;
+}
+
+.highlight-border:hover {
+    border-color: #008f8f;
+}
+
+@media (min-width: 768px) {
+    .col-md-6 > .sm-margin-right,
+    .col-md-7 > .sm-margin-right,
+    .col-md-8 > .sm-margin-right {
+        margin-right: 2px;
+    }
+
+    .col-md-6 > .sm-margin-left,
+    .col-md-5 > .sm-margin-left,
+    .col-md-4 > .sm-margin-left {
+        margin-left: 2px;
+    }
+}
+
+/**********************/
+/*LIST ITEMS*/
+.list-cell {
+    padding-right: 5px !important;
+    padding-left: 0px !important;
+    margin-bottom: 10px;
+}
+
+.list-item {
+    position: relative;
+}
+.frame:hover,
+.label-wrap.invert:hover {
+    background-color: rgba(255, 255, 255, 0.9);
+}
+.frame.shadow-box:hover,
+.list-item:hover,
+.view-page-title:hover {
+    box-shadow: 4px 4px 2px rgba(0,0,0,0.2);
+}
+
+.frame, .list-item {
+    background-color: rgba(255,255,255,0.6);
+}
+
+.white-subdued,
+.view-page-title {
+    color: #f7f7f7;
+}
+
+.list-item > article {
+    display: flex;
+    overflow: hidden;
+}
+
+.list-item > article,
+.thumb1 img {
+    height: 150px;
+}
+
+.list-item > article > .body {
+    padding-left: 10px;
+}
+
+.list-item .title {
+    font-size: 24px;
+    font-weight: 500;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    display: block;
+}
+
+.list-item .subtitle {
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.list-item .title:hover,
+.list-item .subtitle:hover {
+    text-decoration: none;
+}
+
+.list-item .title,
+.list-item .subtitle {
+    color: black;
+}
+
+.title,
+.subtitle,
+.list-item .summary {
+    line-height: 1.1;
+}
+
+.list-item .body .on-top {
+    position: relative;
+    z-index: 1;
+}
+
+.list-item .body .on-top.versions-menu-trigger {
+    z-index: 2;
+}
+
+a.default-text-style,
+a.default-text-style:hover,
+a.default-text-style:focus,
+a.default-text-style:visited,
+a.default-text-style:active {
+    color: #303030;
+}
+
+
+.default-padding {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.article {
+    text-align: justify;
+    text-indent: 2em;
+    overflow-wrap: break-word;
+}
+
+/*VIEW PAGES*/
+.view-page-title {  
+    padding: 10px;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    text-align: center;
+    font-weight: 800 !important;
+
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+/**********************/
+.label-container {
+    padding-top: 5px !important;
+}
+
+.label-container .label,
+.label-container .label-wrap,
+.contains-labels .label,
+.contains-labels .label-wrap {
+    margin-top: 5px;
+}
+
+
+a.label-wrap:not(.invert),
+a.label-wrap:not(.invert):hover,
+a.label-wrap:not(.invert):active,
+a.label-wrap[href]:not(.invert):hover,
+a.label-wrap[href]:not(.invert):active {
+    color: #008f8f;
+}
+a.label-wrap:hover,
+a.label-wrap:active,
+.list-item:hover {
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+.dark-blanket {
+    background: rgba(0,0,0,0.55);
+    opacity: 0.9;
+}
+.dark-blanket:hover {
+    opacity: 1;
+}
+
+.button-bar {
+    position: relative;
+    text-align: center;
+    font-weight: bold;
+}
+.button-bar .btn {
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.button-bar.bottom {
+    margin-top: 20px;
+}
+.button-bar.top {
+    margin-bottom: 20px;
+}
+
+.key-value span.val {
+    font-weight: bold;
+}
+
+/*great for row class*/
+.reset-margins {
+    margin-right: 0px !important;
+    margin-left: 0px !important;
+}
+
+.thumb1 img {
+    width: 150px;
+}
+
+/*GENERIC ONE-LINERS*/
+.hide-overflow {
+    overflow: hidden;
+}
+
+.inline-block {
+    display: inline-block;
+}
+
+.simply-hide,
+.edit-btn-block {
+    display: none;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.italic {
+    font-style: italic;
+}
+
+.normal-weight {
+    font-weight: normal;
+}
+
+ul.plain-list {
+    list-style-type: none;
+}
+
+.h-list-item {
+    margin-right: 5px;
+    font-style:italic;
+}
+.h-list-item::before {
+    margin-right: 0.5em;
+    content: '•';
+}
+
+.mouse-pointer {
+    cursor: pointer;
+}
+
+.no-left-pad {
+    padding-left: 0;
+}
+
+.left-margin-5 {
+    padding-left: 0.5em;
+}
+
+/*bootstrap extension*/
+.text-muted:hover {
+    color: #303030;
+    cursor: default;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 100;
+    background-color: black;
+    box-shadow: 0px -3px 1px rgba(0,0,0,0.2);
+    color: chartreuse;
+    text-align: center;
+}
+/*set footer to auto height depending on viewport height with min and max values*/
+/*footer-margin element to prevent footer from hiding content*/
+footer,
+.footer-margin {
+    height: 8vh;
+    min-height: 1.5em;
+    max-height: 4em;
+}
+
+footer > .container {
+    padding-top: 0.5em;
+}
+
+/* VERSIONS MENU
+.versions-menu {
+    display: none;
+    position: absolute;
+}
+.versions-menu a {
+    display: block;
+}
+.versions-menu-trigger:hover > .versions-menu {
+    display: inline-table;
+}*/
+
+.create-new-btn-container {
+    margin-bottom: 20px;
+}
