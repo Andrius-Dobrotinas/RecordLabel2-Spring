@@ -6,7 +6,6 @@
         .run(["$rootScope", "metadataService", "infoMsgSvc", function ($rootScope, metadataService, infoMsgSvc) {
             $rootScope.errors = [];
             $rootScope.infoMessage;
-            $rootScope.isLoading = false;
 
             // Populate global metadata list because we'll need it a lot
             $rootScope.metadataList = metadataService.query();
