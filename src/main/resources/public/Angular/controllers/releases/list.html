@@ -1,18 +1,12 @@
 ﻿<h1>Releases</h1>
 
-<!--@if (Global.IsAdminMode)
-{
-<div class="create-new-btn-container">
-    @Html.ActionLink(RecordLabel.Web.Localization.ManagementApplicationLocalization.Edit_AddNew, "Create", null, new { @class = "btn btn-success" })
-</div>
-}-->
-
-<div ng-show="isAdminMode">
+<div class="create-new-btn-container" ng-show="isAdminMode">
     <a href="#/Releases/New" class="btn btn-default">Create New</a>
 </div>
+<hr />
 
 <div load-screen ls-show="isLoading" ls-class="default-load-screen">
-    <div class="row" id="TheList">
+    <div class="row">
         <div ng-repeat="model in ctrl.entries()" class="col-lg-4 col-sm-6 list-cell">
             <div class="list-item">
                 <article>
@@ -31,11 +25,8 @@
                         </div>
 
                         <header>
-                            <!--@Html.ActionLink(Model.Artist.Name, "ByArtist", new { id = Model.ArtistId }, new { @class = "title on-top" })
-                            @*@Html.ActionLink(Model.Artist?.Name, "View", "Artist", new { id = Model.ArtistId }, new { @class = "label invert no-left-pad subtitle on-top" })*@
-                            @Html.ActionLink(Model.Title, "View", new { id = Model.Id }, new { @class = "label-wrap invert no-left-pad subtitle on-top" })-->
-                            <a href="#/Releases/{{model.id}}">{{model.title}}</a>
-                            <a href="#/Artists/{{model.artist.id}}">{{model.artist.name}}</a>
+                            <a href="#/Releases/{{model.id}}" class="title on-top">{{model.title}}</a>
+                            <a href="#/Artists/{{model.artist.id}}" class="label-wrap invert no-left-pad subtitle on-top">{{model.artist.name}}</a>
                         </header>
                         <div>
                             <span class="text-muted on-top versions-menu-trigger">
@@ -46,10 +37,10 @@
                                     if (Model.OtherVersions.Count > 0)
                                     {
                                     <span class="versions-menu frame">
-                                        @Html.ActionLink($"{Model.Media.Name} ({Model.CatalogueNumber})", "View", new { id = Model.Id }, new { @class = "label2" })
+                                        @Html.ActionLink($"{Model.Media.Name} ({Model.CatalogueNumber})", "View", new { id = Model.Id }, new { @class = "" })
                                         @foreach (Release item in Model.OtherVersions)
                                         {
-                                        @Html.ActionLink($"{item.Media.Name} ({item.CatalogueNumber})", "View", new { id = item.Id }, new { @class = "label2" })
+                                        @Html.ActionLink($"{item.Media.Name} ({item.CatalogueNumber})", "View", new { id = item.Id }, new { @class = "" })
                                         }
                                     </span>
                                     }
@@ -76,4 +67,4 @@
 </div>
 
 <div ng-show="ctrl.moreItemsAvailable()" 
-     loader-button lbtn-text="Load More" lbtn-click="ctrl.loadMore()" lbtn-is-busy="ctrl.isLoading()"/>
+     loader-button lbtn-text="Load More" lbtn-click="ctrl.loadMore()" lbtn-is-busy="ctrl.isLoading()" class="row button-bar bottom dark-blanket"/>

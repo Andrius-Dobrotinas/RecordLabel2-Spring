@@ -1,4 +1,11 @@
 ﻿body {
+    background-image: url("images/record.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-blend-mode: exclusion;
+}
+
+body {
     padding-top: 50px;
     padding-bottom: 20px;
 }
@@ -35,5 +42,5 @@ input.ng-invalid.ng-dirty {
 
 /*TEMPORARY (for load-screen in ReleaseView.html)*/
 .default-load-screen {
-    background-color: white;
+    background-color: rgba(255, 255, 255, 0.9);
 }

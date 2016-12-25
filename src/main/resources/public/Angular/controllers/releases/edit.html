@@ -6,7 +6,7 @@
         </div>
     </div>
 
-    <form name="releaseForm" novalidate>
+    <form name="releaseForm" novalidate class="row frame shadow-box default-padding">
         <div class="form-group row">
             <label for="title" class="control-label col-sm-2">Title</label>
             <div class="col-sm-10">
@@ -98,10 +98,6 @@
             </div>
         </div>
 
-        <div class="row">
-            <button class="btn btn-success" ng-click="update(releaseForm)">Save</button>
-        </div>
-
         <!--Modals-->
 
         <div modal-box modal-id="references" modal-title="Edit References" modal-close-btn-title="Done" 
@@ -169,5 +165,8 @@
             </modal-box-body>
         </div>
 
+        <div class="button-bar bottom dark-blanket">
+            <button class="btn btn-success" ng-click="update(releaseForm)">Save</button>
+        </div>
     </form>
 </div>
