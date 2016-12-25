@@ -12,15 +12,18 @@
             })
             .when("/Releases/New", {
                 templateUrl: "Angular/controllers/releases/edit.html",
-                controller: "ReleaseEditCtrl"
+                controller: "ReleaseEditCtrl",
+                controllerAs: "ctrl"
             })
             .when("/Releases/Edit/:id", {
                 templateUrl: "Angular/controllers/releases/edit.html",
-                controller: "ReleaseEditCtrl"
+                controller: "ReleaseEditCtrl",
+                controllerAs: "ctrl"
             })
             .when("/Releases/:id", {
                 templateUrl: "Angular/controllers/releases/view.html",
-                controller: "ReleaseViewCtrl"
+                controller: "ReleaseViewCtrl",
+                controllerAs: "ctrl"
             })
             .otherwise({
                 redirectTo: "/Releases"

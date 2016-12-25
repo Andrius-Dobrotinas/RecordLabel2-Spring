@@ -15,6 +15,11 @@
 
             $scope.model;
 
+            ctrl.isLoading = function() {
+                return !($scope.model.$resolved && $scope.constants.$resolved
+                        && $scope.artists.$resolved && $scope.mediaTypes.$resolved)
+            };
+
             // Depending on the action (new or edit), get an existing model or a template
             if (!ctrl.isNew) {
                 $scope.model = resourceErrorHandler(releasesService.getForEdit($routeParams));
