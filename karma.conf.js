@@ -21,6 +21,7 @@ module.exports = function(config) {
 	  'node_modules/angular-mocks/angular-mocks.js',
 	  'node_modules/sinon/pkg/sinon.js',
 	  'node_modules/jquery/dist/jquery.js',
+      'services/testmocks/*.js',
       'application.js',
 	  'controllers/releases/*.js',
 	  'directives/**/.js',

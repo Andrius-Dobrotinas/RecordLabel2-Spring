@@ -11,7 +11,7 @@
             <label for="title" class="control-label col-sm-2">Title</label>
             <div class="col-sm-10">
                 <input type="text" name="title" id="title" class="form-control" ng-model="model.title" required />
-                <div ng-show="isEmptyForRequired(releaseForm.title)" class="text-danger">Release Title is required</div>
+                <div ng-show="ctrl.isEmptyForRequired(releaseForm.title)" class="text-danger">Release Title is required</div>
             </div>
         </div>
         <div class="form-group row">
@@ -19,8 +19,8 @@
             <div class="col-sm-10">
                 <input type="number" name="date" id="date" class="form-control" ng-model="model.date" required 
                        min="{{constants.minDate}}" max="{{constants.maxDate}}" />
-                <div ng-show="isEmptyForRequired(releaseForm.date)" class="text-danger">Release Date is required</div>
-                <div ng-show="isValidForRequired(releaseForm.date)" class="text-danger">Release Date must be a valid year between {{constants.minDate}} and {{constants.maxDate}}</div>
+                <div ng-show="ctrl.isEmptyForRequired(releaseForm.date)" class="text-danger">Release Date is required</div>
+                <div ng-show="ctrl.isInvalidForRequired(releaseForm.date)" class="text-danger">Release Date must be a valid year between {{constants.minDate}} and {{constants.maxDate}}</div>
             </div>
         </div>
         <div class="form-group row">
@@ -31,14 +31,14 @@
                         required min="1">
                     <option value="">Select one...</option>
                 </select>
-                <div ng-show="isEmptyForRequired(releaseForm.artistId)" class="text-danger">Select an Artist</div>
+                <div ng-show="ctrl.isEmptyForRequired(releaseForm.artistId)" class="text-danger">Select an Artist</div>
             </div>
         </div>
         <div class="form-group row">
             <label for="catNumber" class="control-label col-sm-2">Catalogue Number</label>
             <div class="col-sm-10">
                 <input type="text" name="catNumber" id="catNumber" class="form-control" ng-model="model.catalogueNumber" required />
-                <div ng-show="isEmptyForRequired(releaseForm.catNumber)" class="text-danger">Release Catalogue number is required</div>
+                <div ng-show="ctrl.isEmptyForRequired(releaseForm.catNumber)" class="text-danger">Release Catalogue number is required</div>
             </div>
         </div>
 
@@ -50,7 +50,7 @@
                         required min="1">
                     <option value="">Select one...</option>
                 </select>
-                <div ng-show="isEmptyForRequired(releaseForm.mediaId)" class="text-danger">Select a Media type</div>
+                <div ng-show="ctrl.isEmptyForRequired(releaseForm.mediaId)" class="text-danger">Select a Media type</div>
             </div>
         </div>
         <div class="form-group row">
@@ -58,8 +58,8 @@
             <div class="col-sm-10">
                 <input name="length" id="length" type="number" class="form-control" ng-model="model.length" required min="0"
                        placeholder="Release length in minutes" />
-                <div ng-show="isEmptyForRequired(releaseForm.length)" class="text-danger">Release Length is required</div>
-                <div ng-show="isValidForRequired(releaseForm.length)" class="text-danger">Release Length must be a positive number</div>
+                <div ng-show="ctrl.isEmptyForRequired(releaseForm.length)" class="text-danger">Release Length is required</div>
+                <div ng-show="ctrl.isInvalidForRequired(releaseForm.length)" class="text-danger">Release Length must be a positive number</div>
             </div>
         </div>
         <div class="form-group row">
@@ -113,7 +113,7 @@
                         <label class="control-label col-sm-2">Target</label>
                         <div class="col-sm-10">
                             <input type="text" name="target" class="form-control" ng-model="ref.target" required />
-                            <div ng-show="isEmptyForRequired(refForm.target)" class="text-danger">Reference Target is required</div>
+                            <div ng-show="ctrl.isEmptyForRequired(refForm.target)" class="text-danger">Reference Target is required</div>
                         </div>
                     </div>
                     <div class="form-group row">
@@ -148,14 +148,14 @@
                         <label class="control-label col-sm-2">Title</label>
                         <div class="col-sm-10">
                             <input type="text" name="title" class="form-control" ng-model="track.title" required />
-                            <div ng-show="isEmptyForRequired(trackForm.title)" class="text-danger">Track Title is required</div>
+                            <div ng-show="ctrl.isEmptyForRequired(trackForm.title)" class="text-danger">Track Title is required</div>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="control-label col-sm-2">Reference Target</label>
                         <div class="col-sm-10">
                             <input type="text" name="target" class="form-control" ng-model="track.reference" />
-                            <div ng-show="isEmptyForRequired(trackForm.target)" class="text-danger">Reference Target is required</div>
+                            <div ng-show="ctrl.isEmptyForRequired(trackForm.target)" class="text-danger">Reference Target is required</div>
                         </div>
                     </div>
                 </div>

@@ -3,8 +3,10 @@
 (function () {
 
     angular.module("RecordLabel").controller("ReleaseEditCtrl",
-        ["$scope", "$routeParams", "releasesService", "artistsService", "mediaTypesService", "constantsService", "resourceErrorHandler", "resourcePostSvc",
-        function ReleaseEditCtrl($scope, $routeParams, releasesService, artistsService, mediaTypesService, constantsService, resourceErrorHandler, resourcePostSvc) {
+        ["$scope", "$routeParams", "releasesService", "artistsService", "mediaTypesService", "constantsService", "resourceErrorHandler",
+            "resourcePostSvc", "formValidationService",
+        function ReleaseEditCtrl($scope, $routeParams, releasesService, artistsService, mediaTypesService, constantsService,
+                                 resourceErrorHandler, resourcePostSvc, formValidationService) {
             var ctrl = this;
             ctrl.isNew = $routeParams.id ? false : true;
 
@@ -54,37 +56,32 @@
                         }
                     }
                 }
-            }
+            };
 
             $scope.addReference = function () {
                 $scope.model.references.push(angular.copy($scope.constants.defaultReference));
-            }
+            };
 
             $scope.deleteReference = function (index) {
                 $scope.model.references.splice(index, 1);
-            }
+            };
 
             $scope.addTrack = function () {
                 $scope.model.tracks.push(angular.copy($scope.constants.defaultTrack));
-            }
+            };
 
             $scope.deleteTrack = function (index) {
                 $scope.model.tracks.splice(index, 1);
-            }
-
-            // Checks if a field has invalid value
-            $scope.isValid = function (formField) {
-                return formField.$dirty && formField.$invalid;
-            }
+            };
 
             // Checks if a field has an invalid NON-empty value
-            $scope.isValidForRequired = function (formField) {
-                return formField.$dirty && !formField.$error.required && formField.$invalid;
-            }
+            ctrl.isInvalidForRequired = function (formField) {
+                return formValidationService.isInvalidForRequired(formField);
+            };
 
             // Checks if a field is empty
-            $scope.isEmptyForRequired = function (formField) {
-                return formField.$dirty && formField.$error && formField.$error.required;
+            ctrl.isEmptyForRequired = function (formField) {
+                return formValidationService.isEmptyForRequired(formField);
             }
         }]);
 
