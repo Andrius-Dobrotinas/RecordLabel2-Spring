@@ -22,7 +22,7 @@
 
             // Depending on the action (new or edit), get an existing model or a template
             if (!ctrl.isNew) {
-                $scope.model = resourceErrorHandler(releasesService.getForEdit($routeParams));
+                $scope.model = resourceErrorHandler(releasesService.getForEdit({ id: $routeParams.id }));
             } else {
                 $scope.model = resourceErrorHandler(releasesService.getTemplate());
 
