@@ -3,33 +3,8 @@
 describe("ReleaseEditCtrl Tests", function() {
     var controllerConstructor, scope, rootScope, q;
     var routeParamsWithId, routeParamsEmpty, mockModel;
-
-    var resourceErrorHandlerMock = function(promise) {
-        return promise;
-    };
-
-    var resourcePostSvcMock = function(promise) {
-        return promise;
-    };
-
-    var constantsServiceMock = {
-        get: function() {}
-    };
-
-    var releasesServiceMock = {
-        getForEdit: function() {},
-        getTemplate: function() {}
-    };
-
-    var artistsServiceMock = {
-        getList: function() {}
-    };
-
-    var mediaTypesServiceMock = {
-        query: function() {}
-    };
-
-    var releaseTemplate = { artistId: 1, mediaId: 2 };
+    var resourceErrorHandlerMock, resourcePostSvcMock, constantsServiceMock,
+        releasesServiceMock, artistsServiceMock, mediaTypesServiceMock, releaseTemplate;
 
     beforeEach(module("RecordLabel"));
 
@@ -38,6 +13,33 @@ describe("ReleaseEditCtrl Tests", function() {
         scope = $rootScope.$new();
         rootScope = $rootScope;
         q = $q;
+
+        resourceErrorHandlerMock = function(promise) {
+            return promise;
+        };
+
+        resourcePostSvcMock = function(promise) {
+            return promise;
+        };
+
+        constantsServiceMock = {
+            get: function() {}
+        };
+
+        releasesServiceMock = {
+            getForEdit: function() {},
+            getTemplate: function() {}
+        };
+
+        artistsServiceMock = {
+            getList: function() {}
+        };
+
+        mediaTypesServiceMock = {
+            query: function() {}
+        };
+
+        releaseTemplate = { artistId: 1, mediaId: 2 };
 
         routeParamsWithId = { id: 1 };
         routeParamsEmpty = {};
@@ -396,6 +398,11 @@ describe("ReleaseEditCtrl Tests", function() {
     });
 
     it("isLoading must indicate TRUE when no promises are resolved", function() {
+        var constantsPromise = injectPromiseIntoServiceMock(q, constantsServiceMock, "get");
+        var artistsPromise = injectPromiseIntoServiceMock(q, artistsServiceMock, "getList");
+        var mediaTypesPromise = injectPromiseIntoServiceMock(q, mediaTypesServiceMock, "query");
+        var releasesPromise = injectPromiseIntoServiceMock(q, releasesServiceMock, "getForEdit");
+
         var ctrl = controllerConstructor("ReleaseEditCtrl", {
             "$scope": scope, "$routeParams": routeParamsWithId,
             "releasesService": releasesServiceMock,

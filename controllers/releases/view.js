@@ -8,7 +8,7 @@
                 var ctrl = this;
                 $scope.model;
 
-                var promise = resourceErrorHandler(releasesService.get($routeParams));
+                var promise = resourceErrorHandler(releasesService.get({ id: $routeParams.id }));
                 promise.$promise.then(takeCareOfResponse);
 
                 function takeCareOfResponse (model) {
