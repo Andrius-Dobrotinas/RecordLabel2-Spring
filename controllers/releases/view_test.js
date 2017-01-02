@@ -40,7 +40,7 @@ describe("ReleaseViewCtrl Tests", function() {
 	}));
 
 	it("must call releasesService.get with an object containing id property with value from routeParams", function() {
-		var promiseObj = injectPromiseIntoServiceMock(q, releasesServiceMock, "get");
+		var promiseObj = TestUtilities.injectPromiseIntoServiceMock(q, releasesServiceMock, "get");
 		var releasesServiceSpy = sinon.spy(releasesServiceMock, "get");
 
 		var ctrl = controllerConstructor("ReleaseViewCtrl", {
@@ -58,7 +58,7 @@ describe("ReleaseViewCtrl Tests", function() {
 
 	it("must use resourceErrorHandler", function() {
 		var resourceErrorHandlerSpy = sinon.spy(resourceErrorHandlerMock);
-		var promiseObj = injectPromiseIntoServiceMock(q, releasesServiceMock, "get");
+		var promiseObj = TestUtilities.injectPromiseIntoServiceMock(q, releasesServiceMock, "get");
 
 		var ctrl = controllerConstructor("ReleaseViewCtrl", {
 			"$scope": scope, "$routeParams": routeParams,
@@ -71,7 +71,7 @@ describe("ReleaseViewCtrl Tests", function() {
 	});
 
 	it("must assign model from the backend to scope.model", function() {
-		var promiseObj = injectPromiseIntoServiceMock(q, releasesServiceMock, "get");
+		var promiseObj = TestUtilities.injectPromiseIntoServiceMock(q, releasesServiceMock, "get");
 
 		var ctrl = controllerConstructor("ReleaseViewCtrl", {
 			"$scope": scope, "$routeParams": routeParams,
@@ -87,7 +87,7 @@ describe("ReleaseViewCtrl Tests", function() {
 	});
 
 	it("must use referenceUrlTrustService for model.youtubeReferences when the property is trueish", function() {
-		var promiseObj = injectPromiseIntoServiceMock(q, releasesServiceMock, "get");
+		var promiseObj = TestUtilities.injectPromiseIntoServiceMock(q, releasesServiceMock, "get");
 		var trustUrlsStub = sinon.stub(referenceUrlTrustService, "trustUrls");
 
 		var ctrl = controllerConstructor("ReleaseViewCtrl", {
@@ -104,7 +104,7 @@ describe("ReleaseViewCtrl Tests", function() {
 	});
 
 	it("must not use referenceUrlTrustService for model.youtubeReferences when the property is falsish", function() {
-		var promiseObj = injectPromiseIntoServiceMock(q, releasesServiceMock, "get");
+		var promiseObj = TestUtilities.injectPromiseIntoServiceMock(q, releasesServiceMock, "get");
 		var trustUrlsStub = sinon.stub(referenceUrlTrustService, "trustUrls");
 
 		var ctrl = controllerConstructor("ReleaseViewCtrl", {
@@ -124,7 +124,7 @@ describe("ReleaseViewCtrl Tests", function() {
 
 	describe("IsLoading tests", function() {
 		it("must must report that it's loading", function () {
-			var promiseObj = injectPromiseIntoServiceMock(q, releasesServiceMock, "get");
+			var promiseObj = TestUtilities.injectPromiseIntoServiceMock(q, releasesServiceMock, "get");
 
 			var ctrl = controllerConstructor("ReleaseViewCtrl", {
 				"$scope": scope, "$routeParams": routeParams,
@@ -137,7 +137,7 @@ describe("ReleaseViewCtrl Tests", function() {
 		});
 
 		it("must must report that it's not loading", function () {
-			var promiseObj = injectPromiseIntoServiceMock(q, releasesServiceMock, "get");
+			var promiseObj = TestUtilities.injectPromiseIntoServiceMock(q, releasesServiceMock, "get");
 
 			var ctrl = controllerConstructor("ReleaseViewCtrl", {
 				"$scope": scope, "$routeParams": routeParams,

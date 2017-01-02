@@ -64,7 +64,7 @@ describe("ReleaseEditCtrl Tests", function() {
     it("must use resourceErrorHandler for constantsService.get", function() {
         var resourceErrorHandlerMockSpy = sinon.spy(resourceErrorHandlerMock);
 
-        var promiseObj = injectPromiseIntoServiceMock(q, constantsServiceMock, "get");
+        var promiseObj = TestUtilities.injectPromiseIntoServiceMock(q, constantsServiceMock, "get");
 
         var ctrl = controllerConstructor("ReleaseEditCtrl", {
             "$scope": scope, "$routeParams": routeParamsWithId,
@@ -99,7 +99,7 @@ describe("ReleaseEditCtrl Tests", function() {
     it("must use resourceErrorHandler for mediaTypesService.query", function() {
         var resourceErrorHandlerMockSpy = sinon.spy(resourceErrorHandlerMock);
 
-        var promiseObj = injectPromiseIntoServiceMock(q, mediaTypesServiceMock, "query");
+        var promiseObj = TestUtilities.injectPromiseIntoServiceMock(q, mediaTypesServiceMock, "query");
 
         var ctrl = controllerConstructor("ReleaseEditCtrl", {
             "$scope": scope, "$routeParams": routeParamsWithId,
@@ -134,7 +134,7 @@ describe("ReleaseEditCtrl Tests", function() {
     it("must use resourceErrorHandler for artistsService.getList", function() {
         var resourceErrorHandlerMockSpy = sinon.spy(resourceErrorHandlerMock);
 
-        var promiseObj = injectPromiseIntoServiceMock(q, artistsServiceMock, "getList");
+        var promiseObj = TestUtilities.injectPromiseIntoServiceMock(q, artistsServiceMock, "getList");
 
         var ctrl = controllerConstructor("ReleaseEditCtrl", {
             "$scope": scope, "$routeParams": routeParamsWithId,
@@ -151,7 +151,7 @@ describe("ReleaseEditCtrl Tests", function() {
     });
 
     it("must indicate NOT New when route params contain Id property with value", function() {
-        injectPromiseIntoServiceMock(q, releasesServiceMock, "getTemplate");
+        TestUtilities.injectPromiseIntoServiceMock(q, releasesServiceMock, "getTemplate");
 
         var ctrl = controllerConstructor("ReleaseEditCtrl", {
             "$scope": scope, "$routeParams": routeParamsWithId,
@@ -167,7 +167,7 @@ describe("ReleaseEditCtrl Tests", function() {
     });
 
     it("must indicate New when route params don't contain Id property with value", function() {
-        injectPromiseIntoServiceMock(q, releasesServiceMock, "getTemplate");
+        TestUtilities.injectPromiseIntoServiceMock(q, releasesServiceMock, "getTemplate");
 
         var ctrl = controllerConstructor("ReleaseEditCtrl", {
             "$scope": scope, "$routeParams": routeParamsEmpty,
@@ -183,7 +183,7 @@ describe("ReleaseEditCtrl Tests", function() {
     });
 
     it("when creating New, must call releasesService.getTemplate once", function() {
-        injectPromiseIntoServiceMock(q, releasesServiceMock, "getTemplate");
+        TestUtilities.injectPromiseIntoServiceMock(q, releasesServiceMock, "getTemplate");
         var serviceFunctionSpy = sinon.spy(releasesServiceMock, "getTemplate");
 
         var ctrl = controllerConstructor("ReleaseEditCtrl", {
@@ -202,7 +202,7 @@ describe("ReleaseEditCtrl Tests", function() {
     it("when editing existing, must call releasesService.getForEdit with object containing Id from route params", function() {
         var params = { id: routeParamsWithId.id };
 
-        var promiseObj = injectPromiseIntoServiceMock(q, releasesServiceMock, "getForEdit");
+        var promiseObj = TestUtilities.injectPromiseIntoServiceMock(q, releasesServiceMock, "getForEdit");
         var serviceFunctionSpy = sinon.spy(releasesServiceMock, "getForEdit");
 
         var ctrl = controllerConstructor("ReleaseEditCtrl", {
@@ -246,10 +246,10 @@ describe("ReleaseEditCtrl Tests", function() {
     }));
 
     it("isLoading must indicate FALSE when all promises are resolved in case of EDIT", function() {
-        var constantsPromise = injectPromiseIntoServiceMock(q, constantsServiceMock, "get");
-        var artistsPromise = injectPromiseIntoServiceMock(q, artistsServiceMock, "getList");
-        var mediaTypesPromise = injectPromiseIntoServiceMock(q, mediaTypesServiceMock, "query");
-        var releasesPromise = injectPromiseIntoServiceMock(q, releasesServiceMock, "getForEdit");
+        var constantsPromise = TestUtilities.injectPromiseIntoServiceMock(q, constantsServiceMock, "get");
+        var artistsPromise = TestUtilities.injectPromiseIntoServiceMock(q, artistsServiceMock, "getList");
+        var mediaTypesPromise = TestUtilities.injectPromiseIntoServiceMock(q, mediaTypesServiceMock, "query");
+        var releasesPromise = TestUtilities.injectPromiseIntoServiceMock(q, releasesServiceMock, "getForEdit");
 
         var ctrl = controllerConstructor("ReleaseEditCtrl", {
             "$scope": scope, "$routeParams": routeParamsWithId,
@@ -272,10 +272,10 @@ describe("ReleaseEditCtrl Tests", function() {
     });
 
     it("isLoading must indicate FALSE when all promises are resolved in case of NEW", function() {
-        var constantsPromise = injectPromiseIntoServiceMock(q, constantsServiceMock, "get");
-        var artistsPromise = injectPromiseIntoServiceMock(q, artistsServiceMock, "getList");
-        var mediaTypesPromise = injectPromiseIntoServiceMock(q, mediaTypesServiceMock, "query");
-        var releasesPromise = injectPromiseIntoServiceMock(q, releasesServiceMock, "getTemplate");
+        var constantsPromise = TestUtilities.injectPromiseIntoServiceMock(q, constantsServiceMock, "get");
+        var artistsPromise = TestUtilities.injectPromiseIntoServiceMock(q, artistsServiceMock, "getList");
+        var mediaTypesPromise = TestUtilities.injectPromiseIntoServiceMock(q, mediaTypesServiceMock, "query");
+        var releasesPromise = TestUtilities.injectPromiseIntoServiceMock(q, releasesServiceMock, "getTemplate");
 
         var ctrl = controllerConstructor("ReleaseEditCtrl", {
             "$scope": scope, "$routeParams": routeParamsEmpty,
@@ -298,10 +298,10 @@ describe("ReleaseEditCtrl Tests", function() {
     });
 
     it("isLoading must indicate TRUE when at least one promise is not resolved (releases)", function() {
-        var constantsPromise = injectPromiseIntoServiceMock(q, constantsServiceMock, "get");
-        var artistsPromise = injectPromiseIntoServiceMock(q, artistsServiceMock, "getList");
-        var mediaTypesPromise = injectPromiseIntoServiceMock(q, mediaTypesServiceMock, "query");
-        var releasesPromise = injectPromiseIntoServiceMock(q, releasesServiceMock, "getForEdit");
+        var constantsPromise = TestUtilities.injectPromiseIntoServiceMock(q, constantsServiceMock, "get");
+        var artistsPromise = TestUtilities.injectPromiseIntoServiceMock(q, artistsServiceMock, "getList");
+        var mediaTypesPromise = TestUtilities.injectPromiseIntoServiceMock(q, mediaTypesServiceMock, "query");
+        var releasesPromise = TestUtilities.injectPromiseIntoServiceMock(q, releasesServiceMock, "getForEdit");
 
         var ctrl = controllerConstructor("ReleaseEditCtrl", {
             "$scope": scope, "$routeParams": routeParamsWithId,
@@ -323,10 +323,10 @@ describe("ReleaseEditCtrl Tests", function() {
     });
 
     it("isLoading must indicate TRUE when at least one promise is not resolved (mediaTypes)", function() {
-        var constantsPromise = injectPromiseIntoServiceMock(q, constantsServiceMock, "get");
-        var artistsPromise = injectPromiseIntoServiceMock(q, artistsServiceMock, "getList");
-        var mediaTypesPromise = injectPromiseIntoServiceMock(q, mediaTypesServiceMock, "query");
-        var releasesPromise = injectPromiseIntoServiceMock(q, releasesServiceMock, "getForEdit");
+        var constantsPromise = TestUtilities.injectPromiseIntoServiceMock(q, constantsServiceMock, "get");
+        var artistsPromise = TestUtilities.injectPromiseIntoServiceMock(q, artistsServiceMock, "getList");
+        var mediaTypesPromise = TestUtilities.injectPromiseIntoServiceMock(q, mediaTypesServiceMock, "query");
+        var releasesPromise = TestUtilities.injectPromiseIntoServiceMock(q, releasesServiceMock, "getForEdit");
 
         var ctrl = controllerConstructor("ReleaseEditCtrl", {
             "$scope": scope, "$routeParams": routeParamsWithId,
@@ -348,10 +348,10 @@ describe("ReleaseEditCtrl Tests", function() {
     });
 
     it("isLoading must indicate TRUE when at least one promise is not resolved (artists)", function() {
-        var constantsPromise = injectPromiseIntoServiceMock(q, constantsServiceMock, "get");
-        var artistsPromise = injectPromiseIntoServiceMock(q, artistsServiceMock, "getList");
-        var mediaTypesPromise = injectPromiseIntoServiceMock(q, mediaTypesServiceMock, "query");
-        var releasesPromise = injectPromiseIntoServiceMock(q, releasesServiceMock, "getForEdit");
+        var constantsPromise = TestUtilities.injectPromiseIntoServiceMock(q, constantsServiceMock, "get");
+        var artistsPromise = TestUtilities.injectPromiseIntoServiceMock(q, artistsServiceMock, "getList");
+        var mediaTypesPromise = TestUtilities.injectPromiseIntoServiceMock(q, mediaTypesServiceMock, "query");
+        var releasesPromise = TestUtilities.injectPromiseIntoServiceMock(q, releasesServiceMock, "getForEdit");
 
         var ctrl = controllerConstructor("ReleaseEditCtrl", {
             "$scope": scope, "$routeParams": routeParamsWithId,
@@ -373,10 +373,10 @@ describe("ReleaseEditCtrl Tests", function() {
     });
 
     it("isLoading must indicate TRUE when at least one promise is not resolved (constantsPromise)", function() {
-        var constantsPromise = injectPromiseIntoServiceMock(q, constantsServiceMock, "get");
-        var artistsPromise = injectPromiseIntoServiceMock(q, artistsServiceMock, "getList");
-        var mediaTypesPromise = injectPromiseIntoServiceMock(q, mediaTypesServiceMock, "query");
-        var releasesPromise = injectPromiseIntoServiceMock(q, releasesServiceMock, "getForEdit");
+        var constantsPromise = TestUtilities.injectPromiseIntoServiceMock(q, constantsServiceMock, "get");
+        var artistsPromise = TestUtilities.injectPromiseIntoServiceMock(q, artistsServiceMock, "getList");
+        var mediaTypesPromise = TestUtilities.injectPromiseIntoServiceMock(q, mediaTypesServiceMock, "query");
+        var releasesPromise = TestUtilities.injectPromiseIntoServiceMock(q, releasesServiceMock, "getForEdit");
 
         var ctrl = controllerConstructor("ReleaseEditCtrl", {
             "$scope": scope, "$routeParams": routeParamsWithId,
@@ -398,10 +398,10 @@ describe("ReleaseEditCtrl Tests", function() {
     });
 
     it("isLoading must indicate TRUE when no promises are resolved", function() {
-        var constantsPromise = injectPromiseIntoServiceMock(q, constantsServiceMock, "get");
-        var artistsPromise = injectPromiseIntoServiceMock(q, artistsServiceMock, "getList");
-        var mediaTypesPromise = injectPromiseIntoServiceMock(q, mediaTypesServiceMock, "query");
-        var releasesPromise = injectPromiseIntoServiceMock(q, releasesServiceMock, "getForEdit");
+        var constantsPromise = TestUtilities.injectPromiseIntoServiceMock(q, constantsServiceMock, "get");
+        var artistsPromise = TestUtilities.injectPromiseIntoServiceMock(q, artistsServiceMock, "getList");
+        var mediaTypesPromise = TestUtilities.injectPromiseIntoServiceMock(q, mediaTypesServiceMock, "query");
+        var releasesPromise = TestUtilities.injectPromiseIntoServiceMock(q, releasesServiceMock, "getForEdit");
 
         var ctrl = controllerConstructor("ReleaseEditCtrl", {
             "$scope": scope, "$routeParams": routeParamsWithId,
