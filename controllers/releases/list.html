@@ -7,7 +7,7 @@
 
 <div load-screen ls-show="ctrl.isLoading()" ls-class="default-load-screen">
     <div class="row">
-        <div ng-repeat="model in ctrl.entries()" class="col-lg-4 col-sm-6 list-cell">
+        <div ng-repeat="model in ctrl.getEntries()" class="col-lg-4 col-sm-6 list-cell">
             <div class="list-item">
                 <article>
                     <a href="#/Releases/{{model.id}}">
@@ -66,5 +66,5 @@
     </div>
 </div>
 
-<div ng-show="ctrl.moreItemsAvailable()" 
+<div ng-show="ctrl.areMoreItemsAvailable()"
      loader-button lbtn-text="Load More" lbtn-click="ctrl.loadMore()" lbtn-is-busy="ctrl.isLoading()" class="row button-bar bottom dark-blanket"/>

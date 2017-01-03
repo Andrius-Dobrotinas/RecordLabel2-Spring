@@ -3,23 +3,24 @@
 (function () {
 
     angular.module("RecordLabel").controller("ReleaseListCtrl",
-        ["$scope", "releasesService", "batchedListSvc", "stateSvc",
-        function ReleaseListCtrl($scope, releasesService, batchedListSvc) {
+        ["$scope", "releasesService", "batchedListServiceFactory",
+        function ReleaseListCtrl($scope, releasesService, batchedListServiceFactory) {
             var ctrl = this;
 
-            var svc = batchedListSvc(releasesService, $scope.settings.itemsPerPage);
+            var svc = batchedListServiceFactory(releasesService, $scope.settings.itemsPerPage);
+            svc.loadMore();
 
-            ctrl.entries = function () {
-                return svc.entries;
-            }
+            ctrl.getEntries = function () {
+                return svc.getEntries();
+            };
 
-            ctrl.moreItemsAvailable = function () {
-                return svc.moreItemsAvailable;
-            }
+            ctrl.areMoreItemsAvailable = function () {
+                return svc.areMoreItemsAvailable();
+            };
 
             ctrl.isLoading = function () {
-                return !svc.promise.$resolved;
-            }
+                return svc.isLoading();
+            };
 
             ctrl.loadMore = function () {
                 svc.loadMore();
