@@ -17,7 +17,7 @@ describe("referenceUrlTrustService Tests", function() {
         var references = [
             { reference: "https://youtube.com"},
             { reference: "https://google.com"}
-        ]
+        ];
         referenceUrlTrustService.trustUrls(references);
 
         expect(trustAsResourceUrlSpy.called).toBe(true);
