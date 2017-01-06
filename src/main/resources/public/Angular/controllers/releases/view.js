@@ -3,28 +3,20 @@
 (function () {
 
     angular.module("RecordLabel").controller("ReleaseViewCtrl",
-        ["$scope", "$routeParams", "$sce", "releasesService", "resourceErrorHandler", "stateSvc",
-            function ReleaseViewCtrl($scope, $routeParams, $sce, releasesService, resourceErrorHandler) {
+        ["$scope", "$routeParams", "releasesService", "resourceErrorHandler", "referenceUrlTrustService",
+            function ReleaseViewCtrl($scope, $routeParams, releasesService, resourceErrorHandler, referenceUrlTrustService) {
                 var ctrl = this;
                 $scope.model;
 
-                var takeCareOfResponse = function (data) {
-                    var model = data.release
-                    model.youtubeReferences = data.youtubeReferences;
+                var promise = resourceErrorHandler(releasesService.get({ id: $routeParams.id }));
+                promise.$promise.then(takeCareOfResponse);
 
-                    // TODO: probably convert to a service?
-                    // Fix youtube links for use with iFrame.
+                function takeCareOfResponse (model) {
                     if (model.youtubeReferences) {
-                        model.youtubeReferences.forEach(function (reference) {
-                            reference.target = $sce.trustAsResourceUrl(reference.target)
-                        })
+                        referenceUrlTrustService.trustUrls(model.youtubeReferences);
                     }
-
                     $scope.model = model;
                 }
-
-                var promise = resourceErrorHandler(releasesService.get($routeParams));;
-                promise.$promise.then(takeCareOfResponse);
 
                 ctrl.isLoading = function () {
                     return !promise.$resolved;

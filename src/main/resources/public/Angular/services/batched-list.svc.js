@@ -3,35 +3,47 @@
 (function () {
 
     // This service takes care of loading items in batches and tracking availability of more items
-    angular.module("RecordLabel").factory("batchedListSvc", ["resourceErrorHandler", function (resourceErrorHandler) {
-        return function (resourceService, itemsPerPage) {
-            var service = function () {
-                this.entries = [];
-                this.currentBatch = 0;
-                this.moreItemsAvailable = false;
-                this.promise = undefined;
+    angular.module("RecordLabel").factory("batchedListServiceFactory", ["resourceErrorHandler", function (resourceErrorHandler) {
+        return function (resourceSvc, itemsPerPage) {
+            var BatchedListService = function(resourceService, batchSize) {
+                var entries = [];
+                var currentBatchNumber = 0;
+                var moreItemsAvailable = false;
+                var promise = undefined;
+                var numberOfBatchesLeft = 0;
 
-                var svc = this;
+                this.getEntries = function() {
+                    return entries;
+                };
+                this.getNumberOfBatchesLeft = function() {
+                    return numberOfBatchesLeft;
+                };
+                this.getCurrentBatchNumber = function() {
+                    return currentBatchNumber;
+                };
+                this.isLoading = function() {
+                    return (promise && !promise.$resolved) == true;
+                };
+                this.areMoreItemsAvailable = function() {
+                    return moreItemsAvailable;
+                };
                 this.loadMore = function () {
-                    svc.promise = resourceErrorHandler(resourceService.queryBatch(
-                    {
-                        number: ++svc.currentBatch,
-                        size: itemsPerPage
-                    }));
+                    promise = resourceErrorHandler(resourceService.queryBatch(
+                        {
+                            number: ++currentBatchNumber,
+                            size: batchSize
+                        }));
 
-                    svc.promise.$promise.then(function (data) {
-                        svc.entries = svc.entries.concat(data.entries);
-                        svc.batchesLeft = data.batchCount - svc.currentBatch;
-                        svc.moreItemsAvailable = svc.batchesLeft > 0;
+                    promise.$promise.then(function (data) {
+                        // Add a new batch of entries to the current collection
+                        entries = entries.concat(data.entries);
+                        numberOfBatchesLeft = data.batchCount - currentBatchNumber;
+                        moreItemsAvailable = numberOfBatchesLeft > 0;
                     });
-                }
-            }
-
-            var svc = new service();
-            svc.loadMore();
-
-            return svc;
-        }
+                };
+            };
+            return new BatchedListService(resourceSvc, itemsPerPage);
+        };
     }]);
 
 })();
