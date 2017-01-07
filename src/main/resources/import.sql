@@ -26,3 +26,7 @@ insert into content_references (target, type, owner_id, item_order) values ('htt
 insert into tracks (title, release_id, reference) values ('I Wanna Be Your Dog', 4, 'https://www.youtube.com/watch?v=BJIqnXTqg8I');
 insert into tracks (title, release_id, reference) values ('No Fun', 4, 'https://www.youtube.com/watch?v=EDNzQ3CXspU');
 insert into tracks (title, release_id) values ('1969', 4);
+
+insert into contentbase_metadata (targets_id, metadata_id) values (4, 2), (4, 3);
+
+insert into accounts (username, password) values ("asd", "pwd");
