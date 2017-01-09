@@ -10,10 +10,9 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/api/authentication/authenticate",
-                "/api/**/post", "/api/**/post/**", "/api/**/delete/**")
+        http.authorizeRequests()
+                .antMatchers("/api/**/post", "/api/**/post/**", "/api/**/delete/**")
                 .fullyAuthenticated().and()
-                .httpBasic().and()
                 .csrf().disable();
     }
 }
