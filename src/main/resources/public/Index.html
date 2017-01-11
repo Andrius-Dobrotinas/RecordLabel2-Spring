@@ -47,7 +47,7 @@
             <div ng-show="ctrl.isAuthInitiated()">
                 <input type="text" ng-model="model.username" placeholder="Enter your user name"/>
                 <input type="password" ng-model="model.password" placeholder="Enter your password"/>
-                <span class="btn btn-default" ng-click="ctrl.authenticate()">Log in</span>
+                <span class="btn btn-default" ng-disabled="!ctrl.isLoginButtonEnabled()" ng-click="ctrl.authenticate()">Log in</span>
                 <span ng-show="ctrl.getAuthError()" class="label label-danger">{{ctrl.getAuthError()}}</span>
             </div>
         </div>
