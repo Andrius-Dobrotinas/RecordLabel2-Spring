@@ -1,4 +1,4 @@
-package com.andrewd.recordlabel.authentication;
+package com.andrewd.recordlabel.authentication.data;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;

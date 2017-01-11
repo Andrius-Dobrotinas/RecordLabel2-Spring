@@ -1,12 +1,13 @@
-package com.andrewd.recordlabel.authentication;
+package com.andrewd.recordlabel.authentication.service;
 
+import com.andrewd.recordlabel.authentication.data.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.Service;
 
 @Service
-class UserDetailsServiceDefault implements UserDetailsService {
+public class UserDetailsServiceDefault implements UserDetailsService {
 
     @Autowired
     AccountsRepository accountsRepository;
