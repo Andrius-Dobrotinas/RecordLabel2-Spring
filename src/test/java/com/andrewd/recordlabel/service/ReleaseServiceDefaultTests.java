@@ -407,4 +407,15 @@ public class ReleaseServiceDefaultTests {
         // Verify
         Mockito.verify(repository, times(1)).save(Matchers.eq(entity));
     }
+
+    @Test
+    public void objectExists_MustHitTheService() {
+        int id = 1;
+
+        // Run
+        svc.objectExists(id);
+
+        // Verify
+        Mockito.verify(repository, times(1)).objectExists(Matchers.eq(id));
+    }
 }

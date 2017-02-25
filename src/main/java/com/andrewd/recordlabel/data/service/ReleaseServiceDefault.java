@@ -68,4 +68,19 @@ public class ReleaseServiceDefault implements ReleaseService {
         List<Artist> entities = repository.getAllArtists();
         return entityTransformer.transformList(entities, entityTransformer::getArtistBarebones);
     }
+
+    public boolean objectExists(int id) {
+        return repository.objectExists(id);
+    }
+
+    @Override
+    public <T> T getObject(Class<T> type, int id) {
+        return repository.getObject(type, id);
+    }
+
+    @Override
+    public void save(Image[] images) {
+        if (images == null) throw new IllegalArgumentException("images");
+        repository.save(images);
+    }
 }

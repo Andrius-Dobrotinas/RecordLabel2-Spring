@@ -11,7 +11,7 @@ import javax.persistence.EntityManager;
 import static org.mockito.Mockito.times;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ReleaseRepositoryDefaultTests {
+public class ReleaseRepositoryDefaultSaveTests {
 
     @InjectMocks
     ReleaseRepositoryDefault repository;
@@ -23,7 +23,7 @@ public class ReleaseRepositoryDefaultTests {
     IdComparer idComparer;
 
     @Test
-    public void save_MustCompareIds() {
+    public void mustCompareIds() {
         Reference entity = new Reference();
 
         repository.save(entity);
@@ -32,7 +32,7 @@ public class ReleaseRepositoryDefaultTests {
     }
 
     @Test
-    public void save_MustPersistIfIdIsDefault() {
+    public void mustPersistIfIdIsDefault() {
         Reference entity = new Reference();
         Mockito.when(idComparer.isIdDefault(Matchers.eq(entity))).thenReturn(true);
 
@@ -44,7 +44,7 @@ public class ReleaseRepositoryDefaultTests {
     }
 
     @Test
-    public void save_MustMergeIfIdIsNotDefault() {
+    public void mustMergeIfIdIsNotDefault() {
         Reference entity = new Reference();
         Mockito.when(idComparer.isIdDefault(Matchers.eq(entity))).thenReturn(false);
 
@@ -56,7 +56,7 @@ public class ReleaseRepositoryDefaultTests {
     }
 
     @Test
-    public void save_MustReturnEntityIfIdIsDefault() {
+    public void mustReturnEntityIfIdIsDefault() {
         Reference entity = new Reference();
         entity.target = "target";
         Mockito.when(idComparer.isIdDefault(Matchers.eq(entity))).thenReturn(true);
@@ -69,7 +69,7 @@ public class ReleaseRepositoryDefaultTests {
     }
 
     @Test
-    public void save_MustReturnEntityIfIdIsNotDefault() {
+    public void mustReturnEntityIfIdIsNotDefault() {
         Reference entity = new Reference();
         entity.target = "target";
 
@@ -84,12 +84,40 @@ public class ReleaseRepositoryDefaultTests {
     }
 
     @Test
-    public void save_MustFlushAfterSaving () {
+    public void mustFlushAfterSaving() {
         Reference entity = new Reference();
 
         Mockito.when(idComparer.isIdDefault(Matchers.eq(entity))).thenReturn(false);
 
         repository.save(entity);
+
+        Mockito.verify(em, times(1)).flush();
+    }
+
+
+    @Test
+    public void savingAnArrayOfEntities_mustPersistEachEntityWhoseIdIsDefault() {
+        Reference entity = new Reference();
+        Reference entity2 = new Reference();
+        Reference[] entities = new Reference[] { entity, entity2 };
+
+        Mockito.when(idComparer.isIdDefault(Matchers.any(Reference.class))).thenReturn(true);
+
+        // Run
+        repository.save(entities);
+
+        // Verify
+        Mockito.verify(em, times(1)).persist(Matchers.eq(entity));
+        Mockito.verify(em, times(1)).persist(Matchers.eq(entity2));
+    }
+
+    @Test
+    public void savingAnArrayOfEntities_mustFlushOnceAfterSavingAll() {
+        Reference entity = new Reference();
+        Reference entity2 = new Reference();
+        Reference[] entities = new Reference[] { entity, entity2 };
+
+        repository.save(entities);
 
         Mockito.verify(em, times(1)).flush();
     }

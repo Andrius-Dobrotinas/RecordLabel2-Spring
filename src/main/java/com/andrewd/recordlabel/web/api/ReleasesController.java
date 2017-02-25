@@ -30,7 +30,8 @@ public class ReleasesController {
 
     /** This method is a work-around for my Angular JS front-end... because it adds id to the path*/
     @RequestMapping(value = "post/{id}", method = RequestMethod.POST)
-    public ResponseEntity post(@PathVariable int id, @RequestBody com.andrewd.recordlabel.supermodel.ReleaseSlim model) {
+    public ResponseEntity post(@PathVariable int id,
+                               @RequestBody com.andrewd.recordlabel.supermodel.ReleaseSlim model) {
         return save(model);
     }
     private ResponseEntity save(com.andrewd.recordlabel.supermodel.ReleaseSlim model) {
@@ -59,13 +60,14 @@ public class ReleasesController {
         ReleaseSlim superModel = releaseSvc.getReleaseSlim(id);
 
         if (superModel == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); //TODO: change status code
         }
         return ResponseEntity.ok(superModel);
     }
 
     @RequestMapping(value = "getBatch", method = RequestMethod.GET)
-    public BatchedResult<Release> getBatch(@RequestParam(value = "number") int number, @RequestParam(value = "size") int size) {
+    public BatchedResult<Release> getBatch(@RequestParam(value = "number") int number,
+                                           @RequestParam(value = "size") int size) {
         if (number < 1) number = DEFAULT_BATCH_NUMBER;
         if (size < 1) size = Settings.getItemsPerPage();
 

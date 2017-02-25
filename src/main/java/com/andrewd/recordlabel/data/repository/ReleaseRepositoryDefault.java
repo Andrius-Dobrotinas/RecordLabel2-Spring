@@ -21,17 +21,35 @@ public class ReleaseRepositoryDefault implements ReleaseRepository {
 
     @Transactional
     public <T> T save(T entity) {
+        saveNoFlush(entity);
+        em.flush();
+        return entity;
+    }
+
+    public <T> T saveNoFlush(T entity) {
         if (idComparer.isIdDefault(entity)) {
             em.persist(entity);
         } else {
             entity = em.merge(entity);
         }
-        em.flush();
         return entity;
+    }
+
+    @Transactional
+    public <T> T[] save(T[] entities) {
+        for (T entity : entities) {
+            saveNoFlush(entity);
+        }
+        em.flush();
+        return entities;
     }
 
     public Release getRelease(int id) {
         return em.find(Release.class, id);
+    }
+
+    public <T> T getObject(Class<T> type, int id) {
+        return em.find(type, id);
     }
 
     public List<Release> getReleases(int batchNumber, int batchSize, String orderByProperty, SortDirection direction) {
@@ -51,6 +69,12 @@ public class ReleaseRepositoryDefault implements ReleaseRepository {
     public List<Metadata> getMetadataList() {
         return em.createQuery("select i from Metadata i", Metadata.class)
                 .getResultList();
+    }
+
+    public boolean objectExists(int id) {
+        return em.createQuery("select count(o) from ContentBase o where o.id=:id", Integer.class)
+                .setParameter("id", id)
+                .getSingleResult()  == 1;
     }
 
     /* TODO: might want to make Artist properties lazily-loaded and then

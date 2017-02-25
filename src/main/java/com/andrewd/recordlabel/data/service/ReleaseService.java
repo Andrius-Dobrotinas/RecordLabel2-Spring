@@ -1,6 +1,7 @@
 package com.andrewd.recordlabel.data.service;
 
 import com.andrewd.recordlabel.common.BatchedResult;
+import com.andrewd.recordlabel.data.model.Image;
 import com.andrewd.recordlabel.supermodel.*;
 
 import java.util.List;
@@ -13,4 +14,8 @@ public interface ReleaseService {
     List<MediaType> getMediaTypeList();
     List<Metadata> getMetadataList();
     List<ArtistBarebones> getArtistBarebonesList();
+
+    boolean objectExists(int id);
+    <T> T getObject(Class<T> type, int id);
+    void save(Image[] images);
 }
