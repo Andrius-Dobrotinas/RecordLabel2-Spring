@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.*;
+import org.springframework.security.core.context.*;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.ServletException;
@@ -39,7 +40,6 @@ public class AuthController {
         }
         catch (ServletException e) {
             HttpStatus status;
-            String message;
             if (e.getCause() instanceof AuthenticationException) {
                 status = HttpStatus.UNAUTHORIZED;
             } else {
@@ -49,6 +49,13 @@ public class AuthController {
         }
 
         return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(value = "isauthenticated", method = RequestMethod.POST)
+    public boolean isAuthenticated() {
+        SecurityContext ctx = SecurityContextHolder.getContext();
+        Authentication auth = ctx.getAuthentication();
+        return (auth != null && auth.isAuthenticated() && !(auth instanceof AnonymousAuthenticationToken));
     }
 
     @RequestMapping(value = "endsession", method = RequestMethod.POST)
