@@ -4,8 +4,8 @@ import com.andrewd.recordlabel.Settings;
 import com.andrewd.recordlabel.common.BatchedResult;
 import com.andrewd.recordlabel.data.service.ReleaseService;
 import com.andrewd.recordlabel.supermodel.*;
-import com.andrewd.recordlabel.web.model.ReleaseViewModel;
-import com.andrewd.recordlabel.web.service.ReleaseViewModelTransformer;
+import com.andrewd.recordlabel.web.model.*;
+import com.andrewd.recordlabel.web.service.*;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.*;
@@ -25,7 +25,10 @@ public class ReleaseControllerTests {
     ReleaseService svc;
 
     @Mock
-    ReleaseViewModelTransformer viewModelTransformer;
+    ReleaseViewModelBuilder viewModelBuilder;
+
+    @Mock
+    ReleaseBatchToListItemVMBatchTransformer listViewModelTransformer;
 
     @Test
     public void getTemplate_MustReturnTemplateWithCurrentYear() {
@@ -57,7 +60,7 @@ public class ReleaseControllerTests {
         // Run
         controller.get(id);
 
-        Mockito.verify(viewModelTransformer, Mockito.times(1)).transform(Matchers.eq(release));
+        Mockito.verify(viewModelBuilder, Mockito.times(1)).build(Matchers.eq(release));
     }
 
     @Test
@@ -68,7 +71,7 @@ public class ReleaseControllerTests {
         ReleaseViewModel viewModel = new ReleaseViewModel();
 
         Mockito.when(svc.getRelease(Matchers.eq(id))).thenReturn(release);
-        Mockito.when(viewModelTransformer.transform(Matchers.eq(release)))
+        Mockito.when(viewModelBuilder.build(Matchers.eq(release)))
                 .thenReturn(viewModel);
 
         // Run
@@ -91,7 +94,7 @@ public class ReleaseControllerTests {
 
         // Verify
         // Not supposed to call this when no model found in the repository
-        Mockito.verifyZeroInteractions(viewModelTransformer);
+        Mockito.verifyZeroInteractions(viewModelBuilder);
 
         Assert.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
@@ -180,7 +183,7 @@ public class ReleaseControllerTests {
     }
 
     @Test
-    public void getBatch_MustReturnBatchedResult() {
+    public void getBatch_MustTransformResultsToListItemViewModelType() {
         int batchNumber = 1;
         int batchSize = 2;
 
@@ -191,10 +194,30 @@ public class ReleaseControllerTests {
         Mockito.when(svc.getReleases(Matchers.eq(batchNumber), Matchers.eq(batchSize))).thenReturn(model);
 
         // Run
-        BatchedResult<Release> result = controller.getBatch(batchNumber, batchSize);
+        BatchedResult<ReleaseListItemViewModel> result = controller.getBatch(batchNumber, batchSize);
 
         // Verify
-        Assert.assertEquals(model, result);
+        Mockito.verify(listViewModelTransformer, Mockito.times(1)).transform(Matchers.eq(model));
+    }
+
+    @Test
+    public void getBatch_MustReturnTransformedBatchedResultOfListViewItems() {
+        int batchNumber = 1;
+        int batchSize = 2;
+
+        BatchedResult<Release> model = new BatchedResult<>(new ArrayList<Release>(), batchSize);
+
+        BatchedResult<ReleaseListItemViewModel> batchedResult = new BatchedResult<>(
+                new ArrayList<ReleaseListItemViewModel>(), batchSize);
+
+        Mockito.when(svc.getReleases(Matchers.eq(batchNumber), Matchers.eq(batchSize))).thenReturn(model);
+        Mockito.when(listViewModelTransformer.transform(Matchers.eq(model))).thenReturn(batchedResult);
+
+        // Run
+        BatchedResult<ReleaseListItemViewModel> result = controller.getBatch(batchNumber, batchSize);
+
+        // Verify
+        Assert.assertEquals(batchedResult, result);
     }
 
     @Test

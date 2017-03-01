@@ -17,4 +17,8 @@ public class ContentBase {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "owner_id")
     public List<Reference> references = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false)
+    @JoinColumn(name = "owner_id")
+    public List<Image> images = new ArrayList<>();
 }

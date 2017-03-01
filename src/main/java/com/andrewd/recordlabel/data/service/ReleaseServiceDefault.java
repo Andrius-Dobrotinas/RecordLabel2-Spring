@@ -24,6 +24,18 @@ public class ReleaseServiceDefault implements ReleaseService {
 
     public void save(com.andrewd.recordlabel.supermodel.ReleaseSlim model) {
         Release entity = modelTransformer.getRelease(model);
+
+        // Prevent changes to the collection of images from being saved with Release type
+        if (entity.id != 0) {
+            Release original = repository.getRelease(entity.id);
+            if (original == null)
+                throw new EntityDoesNotExistException(entity.id);
+            entity.images = original.images;
+        }
+        else {
+            entity.images = null;
+        }
+
         repository.save(entity);
     }
 

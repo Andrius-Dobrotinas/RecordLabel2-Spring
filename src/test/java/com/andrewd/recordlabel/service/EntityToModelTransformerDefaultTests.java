@@ -98,6 +98,19 @@ public class EntityToModelTransformerDefaultTests {
     }
 
     @Test
+    public void transformRelease_MustSimplyCopyImages() {
+        Release entity = new Release();
+        Image img1 = new Image();
+        img1.path = "path";
+        entity.images.add(img1);
+
+        com.andrewd.recordlabel.supermodel.Release model = transformer.getRelease(entity);
+
+        Assert.assertNotNull("Must copy release images", model.images);
+        Assert.assertSame("Must copy release images", entity.images, model.images);
+    }
+
+    @Test
     public void transformRelease_MustTransformReferences() {
         Release entity = new Release();
         Reference ref = getReference();

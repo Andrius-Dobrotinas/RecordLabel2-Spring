@@ -27,6 +27,7 @@ public class EntityToModelTransformerDefault implements EntityToModelTransformer
             model.media = getMediaType(entity.media);
         }
         model.tracks = transformList(entity.tracks, this::getTrack);
+        model.images = entity.images;
 
         transformContentBase(entity, model);
         return model;

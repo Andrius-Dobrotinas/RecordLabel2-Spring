@@ -11,7 +11,7 @@ import javax.persistence.EntityManager;
 import static org.mockito.Mockito.times;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ReleaseRepositoryDefaultSaveTests {
+public class ReleaseRepositoryDefault_SaveTests {
 
     @InjectMocks
     ReleaseRepositoryDefault repository;

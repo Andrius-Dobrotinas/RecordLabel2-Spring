@@ -10,7 +10,7 @@ import javax.persistence.*;
 import static org.mockito.Mockito.times;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ReleaseRepositoryDefaultObjectExistTests {
+public class ReleaseRepositoryDefault_ObjectExistTests {
 
     @InjectMocks
     ReleaseRepositoryDefault repository;

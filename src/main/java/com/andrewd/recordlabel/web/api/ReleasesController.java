@@ -4,8 +4,8 @@ import com.andrewd.recordlabel.Settings;
 import com.andrewd.recordlabel.common.*;
 import com.andrewd.recordlabel.data.service.ReleaseService;
 import com.andrewd.recordlabel.supermodel.*;
-import com.andrewd.recordlabel.web.model.ReleaseViewModel;
-import com.andrewd.recordlabel.web.service.ReleaseViewModelTransformer;
+import com.andrewd.recordlabel.web.model.*;
+import com.andrewd.recordlabel.web.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +19,10 @@ public class ReleasesController {
     private ReleaseService releaseSvc;
 
     @Autowired
-    private ReleaseViewModelTransformer viewModelTransformer;
+    private ReleaseViewModelBuilder viewModelBuilder;
+
+    @Autowired
+    private ReleaseBatchToListItemVMBatchTransformer listViewModelTransformer;
 
     public final static int DEFAULT_BATCH_NUMBER = 1;
 
@@ -51,7 +54,7 @@ public class ReleasesController {
         if (release == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         };
-        ReleaseViewModel viewModel = viewModelTransformer.transform(release);
+        ReleaseViewModel viewModel = viewModelBuilder.build(release);
         return ResponseEntity.ok(viewModel);
     }
 
@@ -66,12 +69,14 @@ public class ReleasesController {
     }
 
     @RequestMapping(value = "getBatch", method = RequestMethod.GET)
-    public BatchedResult<Release> getBatch(@RequestParam(value = "number") int number,
-                                           @RequestParam(value = "size") int size) {
+    public BatchedResult<ReleaseListItemViewModel> getBatch(@RequestParam(value = "number") int number,
+                                                            @RequestParam(value = "size") int size) {
         if (number < 1) number = DEFAULT_BATCH_NUMBER;
         if (size < 1) size = Settings.getItemsPerPage();
 
-        return releaseSvc.getReleases(number, size);
+        BatchedResult<Release> releases = releaseSvc.getReleases(number, size);
+
+        return listViewModelTransformer.transform(releases);
     }
 
     @RequestMapping(value = "getTemplate", method = RequestMethod.GET)

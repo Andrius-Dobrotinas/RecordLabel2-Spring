@@ -5,9 +5,7 @@ import com.andrewd.recordlabel.common.service.BatchCountCalculator;
 import com.andrewd.recordlabel.data.SortDirection;
 import com.andrewd.recordlabel.data.model.*;
 import com.andrewd.recordlabel.data.repository.ReleaseRepository;
-import com.andrewd.recordlabel.data.service.EntityToModelTransformer;
-import com.andrewd.recordlabel.data.service.ModelToEntityTransformer;
-import com.andrewd.recordlabel.data.service.ReleaseServiceDefault;
+import com.andrewd.recordlabel.data.service.*;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.*;
@@ -378,34 +376,6 @@ public class ReleaseServiceDefaultTests {
         // Verify
         Assert.assertNotNull("Result cannot ever be null", result);
         Assert.assertEquals("Result must match what is returned by the service", fake, result);
-    }
-
-    @Test
-    public void saveReleaseSlim_MustTransformModelToEntity() {
-        com.andrewd.recordlabel.supermodel.ReleaseSlim superModel = new com.andrewd.recordlabel.supermodel.ReleaseSlim();
-        superModel.id = 1;
-
-        // Run
-        svc.save(superModel);
-
-        // Verify
-        Mockito.verify(modelTransformer, times(1)).getRelease(Matchers.eq(superModel));
-    }
-
-    @Test
-    public void saveReleaseSlim_MustHitTheService() {
-        com.andrewd.recordlabel.supermodel.ReleaseSlim superModel = new com.andrewd.recordlabel.supermodel.ReleaseSlim();
-        superModel.id = 1;
-
-        Release entity = new Release();
-
-        Mockito.doAnswer(x -> entity).when(modelTransformer).getRelease(Matchers.eq(superModel));
-
-        // Run
-        svc.save(superModel);
-
-        // Verify
-        Mockito.verify(repository, times(1)).save(Matchers.eq(entity));
     }
 
     @Test

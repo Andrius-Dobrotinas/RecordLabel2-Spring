@@ -14,6 +14,8 @@ public class Image {
     @NotNull
     public String path;
 
+    public boolean isThumbnail;
+
     @ManyToOne(fetch = FetchType.EAGER)
     public ContentBase owner;
 }

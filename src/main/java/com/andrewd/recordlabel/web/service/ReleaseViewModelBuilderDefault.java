@@ -9,9 +9,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
-public class ReleaseViewModelTransformerDefault implements ReleaseViewModelTransformer {
+public class ReleaseViewModelBuilderDefault implements ReleaseViewModelBuilder {
 
-    public ReleaseViewModel transform(Release model) {
+    @Override
+    public ReleaseViewModel build(Release model) {
         ReleaseViewModel result = new ReleaseViewModel();
         result.release = model;
 

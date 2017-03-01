@@ -4,16 +4,19 @@ import com.andrewd.recordlabel.common.*;
 import com.andrewd.recordlabel.supermodel.*;
 import com.andrewd.recordlabel.web.model.ReleaseViewModel;
 import org.junit.*;
+import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ReleaseViewModelTransformerDefaultTests {
 
-    ReleaseViewModelTransformerDefault transformer;
+    ReleaseViewModelBuilderDefault builder;
 
     @Before
     public void Init() {
-        transformer = new ReleaseViewModelTransformerDefault();
+        builder = new ReleaseViewModelBuilderDefault();
     }
 
     @Test
@@ -49,10 +52,8 @@ public class ReleaseViewModelTransformerDefaultTests {
         model.metadata = metadata;
         model.references = references;
 
-        ReleaseViewModelTransformerDefault transformer = new ReleaseViewModelTransformerDefault();
-
         // Run
-        ReleaseViewModel result = transformer.transform(model);
+        ReleaseViewModel result = builder.build(model);
 
         // Verify
         Assert.assertNotNull("Resulting model is supposed to contain a Release", result.release);
@@ -95,7 +96,7 @@ public class ReleaseViewModelTransformerDefaultTests {
         model.references.add(ref2);
 
         // Run
-        ReleaseViewModel result = transformer.transform(model);
+        ReleaseViewModel result = builder.build(model);
 
         // Verify
         Assert.assertNotNull("Must contain youtube references", result.youtubeReferences);
@@ -129,10 +130,8 @@ public class ReleaseViewModelTransformerDefaultTests {
         model.references.add(refYt2);
         model.references.add(ref2);
 
-        ReleaseViewModelTransformerDefault transformer = new ReleaseViewModelTransformerDefault();
-
         // Run
-        ReleaseViewModel result = transformer.transform(model);
+        ReleaseViewModel result = builder.build(model);
 
         Assert.assertNotNull("Non-youtube reference list must not be empty", result.release.references);
         Assert.assertEquals("Must contain no more items than there are non-youtube references", 2, result.release.references.size());
@@ -143,7 +142,7 @@ public class ReleaseViewModelTransformerDefaultTests {
     @Test
     public void YoutubeListMustBeInitializedByDefault() {
         Release model = new Release();
-        ReleaseViewModel result = transformer.transform(model);
+        ReleaseViewModel result = builder.build(model);
 
         Assert.assertNotNull("Youtube ref list must not be null even if there are no youtube refs", result.youtubeReferences);
     }
@@ -154,7 +153,7 @@ public class ReleaseViewModelTransformerDefaultTests {
         Reference ref1 = new Reference();
         ref1.type = ReferenceType.Youtube;
         model.references.add(ref1);
-        ReleaseViewModel result = transformer.transform(model);
+        ReleaseViewModel result = builder.build(model);
 
         Assert.assertNotNull("Non-youtube ref list must not be null even if there are no non-youtube refs", result.release.references);
     }
