@@ -19,6 +19,9 @@ public class ReleaseRepositoryDefault implements ReleaseRepository {
     @Autowired
     private IdComparer idComparer;
 
+    @Autowired
+    private BatchedQueryBuilder batchedQueryBuilder;
+
     @Transactional
     public <T> T save(T entity) {
         saveNoFlush(entity);
@@ -52,8 +55,11 @@ public class ReleaseRepositoryDefault implements ReleaseRepository {
         return em.find(type, id);
     }
 
-    public List<Release> getReleases(int batchNumber, int batchSize, String orderByProperty, SortDirection direction) {
-        return getBatch(Release.class, batchNumber, batchSize, orderByProperty, direction);
+    public List<Release> getReleases(int batchNumber, int batchSize, String orderByProperty,
+                                     SortDirection direction) {
+       return batchedQueryBuilder
+               .getOrderedQuery(em, Release.class, batchNumber, batchSize, orderByProperty, direction)
+               .getResultList();
     }
 
     public int getTotalReleaseCount() {
@@ -82,30 +88,5 @@ public class ReleaseRepositoryDefault implements ReleaseRepository {
      */
     public List<Artist> getAllArtists() {
         return em.createQuery("select i from Artist i", Artist.class).getResultList();
-    }
-
-
-    private <T> List<T> getBatch(Class<T> type,  int batchNumber, int batchSize, String orderProperty, SortDirection direction) {
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<T> query = builder.createQuery(type);
-        CriteriaQuery<T> orderedQuery = addOrdering(type, builder, query, orderProperty, direction);
-        return getBatch(orderedQuery, batchNumber, batchSize);
-    }
-
-    private <T> CriteriaQuery<T> addOrdering(Class<T> type, CriteriaBuilder builder, CriteriaQuery<T> query, String orderProperty, SortDirection direction) {
-        Root<T> root = query.from(type);
-        Path path = root.get(orderProperty);
-        Order order;
-        if (direction == SortDirection.ASCENDING) {
-            order = builder.asc(path);
-        } else {
-            order = builder.desc(path);
-        }
-
-        return query.orderBy(order);
-    }
-
-    private <T> List<T> getBatch(CriteriaQuery<T> query, int batchNumber, int batchSize) {
-        return em.createQuery(query).setFirstResult((batchNumber - 1) * batchSize).setMaxResults(batchSize).getResultList();
     }
 }
