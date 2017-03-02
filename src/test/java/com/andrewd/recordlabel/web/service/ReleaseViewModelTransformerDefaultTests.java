@@ -1,6 +1,7 @@
 package com.andrewd.recordlabel.web.service;
 
 import com.andrewd.recordlabel.common.*;
+import com.andrewd.recordlabel.data.model.Image;
 import com.andrewd.recordlabel.supermodel.*;
 import com.andrewd.recordlabel.web.model.ReleaseViewModel;
 import org.junit.*;
@@ -14,21 +15,26 @@ public class ReleaseViewModelTransformerDefaultTests {
 
     ReleaseViewModelBuilderDefault builder;
 
+    Release sourceModel;
+
     @Before
     public void Init() {
         builder = new ReleaseViewModelBuilderDefault();
+        sourceModel = new Release();
     }
 
     @Test
-    public void ResultMustContainSameModelValuesExceptReferences() {
+    public void mustCopyAllFieldValuesFromTheSourceToTheOutputExceptForReferences() {
         Artist artist = new Artist();
         MediaType media = new MediaType();
-        List<Track> tracks = new ArrayList();
+        List<Track> tracks = new ArrayList<>();
         tracks.add(new Track());
         List<Metadata> metadata = new ArrayList<>();
         metadata.add(new Metadata());
         List<Reference> references = new ArrayList<>();
         references.add(new Reference());
+        List<Image> images = new ArrayList<>();
+        images.add(new Image());
 
         int id = 1;
         String title = "Fun House";
@@ -38,123 +44,127 @@ public class ReleaseViewModelTransformerDefaultTests {
         short length = 5;
         PrintStatus status = PrintStatus.OutOfPrint;
 
-        Release model = new Release();
-        model.id = id;
-        model.title = title;
-        model.length = length;
-        model.catalogueNumber = catNo;
-        model.printStatus = status;
-        model.text = text;
-        model.date = date;
-        model.artist = artist;
-        model.media = media;
-        model.tracks = tracks;
-        model.metadata = metadata;
-        model.references = references;
+        sourceModel.id = id;
+        sourceModel.title = title;
+        sourceModel.length = length;
+        sourceModel.catalogueNumber = catNo;
+        sourceModel.printStatus = status;
+        sourceModel.text = text;
+        sourceModel.date = date;
+        sourceModel.artist = artist;
+        sourceModel.media = media;
+        sourceModel.tracks = tracks;
+        sourceModel.metadata = metadata;
+        sourceModel.references = references;
+        sourceModel.images = images;
 
         // Run
-        ReleaseViewModel result = builder.build(model);
+        ReleaseViewModel result = builder.build(sourceModel);
 
         // Verify
-        Assert.assertNotNull("Resulting model is supposed to contain a Release", result.release);
-        Assert.assertEquals("Resulting model's release is supposed to contain all data that's in the input model", id, result.release.id);
-        Assert.assertEquals("Resulting model's release is supposed to contain all data that's in the input model", catNo, result.release.catalogueNumber);
-        Assert.assertEquals("Resulting model's release is supposed to contain all data that's in the input model", date, result.release.date);
-        Assert.assertEquals("Resulting model's release is supposed to contain all data that's in the input model", length, result.release.length);
-        Assert.assertEquals("Resulting model's release is supposed to contain all data that's in the input model", media, result.release.media);
-        Assert.assertEquals("Resulting model's release is supposed to contain all data that's in the input model", status, result.release.printStatus);
-        Assert.assertEquals("Resulting model's release is supposed to contain all data that's in the input model", text, result.release.text);
-        Assert.assertEquals("Resulting model's release is supposed to contain all data that's in the input model", title, result.release.title);
-        Assert.assertEquals("Resulting model's release is supposed to contain all data that's in the input model", artist, result.release.artist);
-        Assert.assertEquals("Resulting model's release is supposed to contain all data that's in the input model", tracks, result.release.tracks);
-        Assert.assertEquals("Resulting model's release is supposed to contain all data that's in the input model", metadata, result.release.metadata);
+        Assert.assertNotNull(result);
+        Assert.assertEquals("Result must contain id from the source model", id, result.id);
+        Assert.assertEquals("Result must contain catalogueNumber from the source model", catNo, result.catalogueNumber);
+        Assert.assertEquals("Result must contain date from the source model", date, result.date);
+        Assert.assertEquals("Result must contain length from the source model", length, result.length);
+        Assert.assertEquals("Result must contain media from the source model", media, result.media);
+        Assert.assertEquals("Result must contain printStatus from the source model", status, result.printStatus);
+        Assert.assertEquals("Result must contain text from the source model", text, result.text);
+        Assert.assertEquals("Result must contain title from the source model", title, result.title);
+        Assert.assertEquals("Result must contain artist from the source model", artist, result.artist);
+        Assert.assertEquals("Result must contain tracks from the source model", tracks, result.tracks);
+        Assert.assertEquals("Result must contain metadata from the source model", metadata, result.metadata);
+        // TODO: Assert.assertEquals("Result must contain images from the source model", images, result.images);
     }
 
     @Test
-    public void ResultingModelMustContainYTReferencesFromInputModel() {
-        Release model = new Release();
-
-        Reference ref1 = new Reference();
-        ref1.type = ReferenceType.Website;
-        ref1.id = 1;
-
-        Reference refYt1 = new Reference();
-        refYt1.type = ReferenceType.Youtube;
-        refYt1.id = 2;
-
-        Reference refYt2 = new Reference();
-        refYt2.type = ReferenceType.Youtube;
-        refYt2.id = 3;
-
-        Reference ref2 = new Reference();
-        ref2.type = ReferenceType.File;
-        ref2.id = 4;
-
-        model.references.add(ref1);
-        model.references.add(refYt1);
-        model.references.add(refYt2);
-        model.references.add(ref2);
+    public void mustWorkIfSourceReferencesFieldIsEmpty() {
+        sourceModel.references = null;
 
         // Run
-        ReleaseViewModel result = builder.build(model);
+        ReleaseViewModel result = builder.build(sourceModel);
+    }
+
+    @Test
+    public void mustCopyYoutubeReferencesFromSourceModelToOutputModelsYoutubeReferencesField() {
+        Reference ref1 = getReference(1, ReferenceType.Website);
+        Reference ref2 = getReference(2, ReferenceType.File);
+        Reference refYt1 = getReference(3, ReferenceType.Youtube);
+        Reference refYt2 = getReference(4, ReferenceType.Youtube);
+
+        sourceModel.references.add(ref1);
+        sourceModel.references.add(refYt1);
+        sourceModel.references.add(refYt2);
+        sourceModel.references.add(ref2);
+
+        // Run
+        ReleaseViewModel result = builder.build(sourceModel);
 
         // Verify
-        Assert.assertNotNull("Must contain youtube references", result.youtubeReferences);
-        Assert.assertEquals("Must contain no more items than there are youtube references", 2, result.youtubeReferences.size());
-        Assert.assertTrue("Must contain a youtube reference", result.youtubeReferences.contains(refYt1));
-        Assert.assertTrue("Must contain a youtube reference", result.youtubeReferences.contains(refYt2));
+        Assert.assertNotNull("Result's youtubeReferences field must contain a list of youtube references",
+                result.youtubeReferences);
+        Assert.assertEquals("Result's youtubeReferences field must contain the same number of youtube references as " +
+                        "there are in the source model", 2, result.youtubeReferences.size());
+        Assert.assertTrue("Result's youtubeReferences field must contain a youtube reference",
+                result.youtubeReferences.contains(refYt1));
+        Assert.assertTrue("Result's youtubeReferences field must contain a youtube reference",
+                result.youtubeReferences.contains(refYt2));
     }
 
     @Test
-    public void ResultingReleaseModelsReferencesMustNotContainYTReferences() {
-        Release model = new Release();
+    public void mustCopyNonYoutubeReferencesFromSourceModelToOutputModelsReferencesField() {
+        Reference ref1 = getReference(1, ReferenceType.Website);
+        Reference ref2 = getReference(2, ReferenceType.File);
+        Reference refYt1 = getReference(3, ReferenceType.Youtube);
+        Reference refYt2 = getReference(4, ReferenceType.Youtube);
 
-        Reference ref1 = new Reference();
-        ref1.type = ReferenceType.Website;
-        ref1.id = 1;
-
-        Reference refYt1 = new Reference();
-        refYt1.type = ReferenceType.Youtube;
-        refYt1.id = 2;
-
-        Reference refYt2 = new Reference();
-        refYt2.type = ReferenceType.Youtube;
-        refYt2.id = 3;
-
-        Reference ref2 = new Reference();
-        ref2.type = ReferenceType.File;
-        ref2.id = 4;
-
-        model.references.add(ref1);
-        model.references.add(refYt1);
-        model.references.add(refYt2);
-        model.references.add(ref2);
+        sourceModel.references.add(ref1);
+        sourceModel.references.add(refYt1);
+        sourceModel.references.add(refYt2);
+        sourceModel.references.add(ref2);
 
         // Run
-        ReleaseViewModel result = builder.build(model);
+        ReleaseViewModel result = builder.build(sourceModel);
 
-        Assert.assertNotNull("Non-youtube reference list must not be empty", result.release.references);
-        Assert.assertEquals("Must contain no more items than there are non-youtube references", 2, result.release.references.size());
-        Assert.assertTrue("Must contain a non-youtube reference", result.release.references.contains(ref1));
-        Assert.assertTrue("Must contain a non-youtube reference", result.release.references.contains(ref2));
+        Assert.assertNotNull("Result's references field must contain a list of non-youtube references",
+                result.references);
+        Assert.assertEquals("Result's references field must contain the same number of non-youtube references as " +
+                "there are in the source model", 2, result.references.size());
+        Assert.assertTrue("Result's references field must contain a non-youtube reference",
+                result.references.contains(ref1));
+        Assert.assertTrue("Result's references field must contain a non-youtube reference",
+                result.references.contains(ref2));
     }
 
     @Test
-    public void YoutubeListMustBeInitializedByDefault() {
-        Release model = new Release();
-        ReleaseViewModel result = builder.build(model);
+    public void mustCreateAnEmptyYoutubeReferencesListIfSourceDoesNotContainAnyYoutubeReferences() {
+        Reference ref1 = getReference(1, ReferenceType.Website);
+        sourceModel.references.add(ref1);
 
-        Assert.assertNotNull("Youtube ref list must not be null even if there are no youtube refs", result.youtubeReferences);
+        // Run
+        ReleaseViewModel result = builder.build(sourceModel);
+
+        Assert.assertNotNull("Youtube references list must not be null even if there are no " +
+                        "youtube references in the source", result.youtubeReferences);
     }
 
     @Test
-    public void NonYTReferenceListMustBeInitializedEvenIfEmpty() {
-        Release model = new Release();
+    public void mustCreateAnEmptyReferencesListIfSourceDoesNotContainAnyNonYoutubeReferences() {
+        Reference refYt1 = getReference(1, ReferenceType.Youtube);
+        sourceModel.references.add(refYt1);
+
+        // Run
+        ReleaseViewModel result = builder.build(sourceModel);
+
+        Assert.assertNotNull("References list must not be null even if there are no non-youtube " +
+                "references in the source at all", result.references);
+    }
+
+    private static Reference getReference(int id, ReferenceType type) {
         Reference ref1 = new Reference();
-        ref1.type = ReferenceType.Youtube;
-        model.references.add(ref1);
-        ReleaseViewModel result = builder.build(model);
+        ref1.type = type;
+        ref1.id = id;
 
-        Assert.assertNotNull("Non-youtube ref list must not be null even if there are no non-youtube refs", result.release.references);
+        return ref1;
     }
 }

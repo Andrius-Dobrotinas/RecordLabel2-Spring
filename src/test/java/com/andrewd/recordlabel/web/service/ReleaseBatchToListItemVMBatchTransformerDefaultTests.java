@@ -86,9 +86,9 @@ public class ReleaseBatchToListItemVMBatchTransformerDefaultTests {
         assertEquals("Result must contain exactly the same number of entries",
                 2, result.entries.size());
         assertTrue("Result must contain every transformed entry",
-                result.entries.stream().anyMatch(x -> x == viewModel1));
+                result.entries.contains(viewModel1));
         assertTrue("Result must contain every transformed entry",
-                result.entries.stream().anyMatch(x -> x == viewModel2));
+                result.entries.contains(viewModel2));
     }
 
     private static Release getRelease(String title) {
