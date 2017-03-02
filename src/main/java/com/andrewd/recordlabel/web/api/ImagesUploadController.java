@@ -1,11 +1,11 @@
 package com.andrewd.recordlabel.web.api;
 
+import com.andrewd.recordlabel.WebConfig;
 import com.andrewd.recordlabel.data.model.ContentBase;
 import com.andrewd.recordlabel.data.service.ReleaseService;
 import com.andrewd.recordlabel.web.io.FileSaveException;
 import com.andrewd.recordlabel.web.service.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,8 +21,11 @@ public class ImagesUploadController {
     @Autowired
     ReleaseService releaseSvc;
 
-    @Autowired
-    Environment env;
+    @Value("${" + WebConfig.IMAGES_VIRTUAL_PATH_SETTINGS_KEY + "}")
+    public String imagesVirtualPath;
+
+    @Value("${" + WebConfig.IMAGES_PHYSICAL_PATH_SETTINGS_KEY + "}")
+    public String imagesPhysicalPath;
 
     @RequestMapping(value = "upload/{id}", method = RequestMethod.POST)
     public ResponseEntity upload(@PathVariable int id, @RequestParam("file") MultipartFile[] files) throws FileSaveException {
@@ -41,17 +44,14 @@ public class ImagesUploadController {
                     .body(new ErrorResponse(message));
         }
 
-        // Retrieve images path
-        String imagesPathPrefix = env.getProperty("recordlabel.img.virtualpath");
-        String path = env.getProperty("recordlabel.img.path");
-        File directory = new File(path);
+        File directory = new File(imagesPhysicalPath);
 
         String[] fileNames;
         fileNames = fileUploader.uploadFiles(owner, files, directory);
 
         // Add images path prefix to each file name
         for (int i = 0; i < fileNames.length; i++) {
-            fileNames[i] = imagesPathPrefix + fileNames[i];
+            fileNames[i] = imagesVirtualPath + fileNames[i];
         }
 
         return ResponseEntity.ok().body(fileNames);

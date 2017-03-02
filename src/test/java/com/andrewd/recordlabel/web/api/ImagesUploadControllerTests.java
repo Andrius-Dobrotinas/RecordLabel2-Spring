@@ -8,7 +8,6 @@ import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.*;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.core.env.Environment;
 import org.springframework.http.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
@@ -27,26 +26,20 @@ public class ImagesUploadControllerTests {
     @Mock
     ReleaseService releaseSvc;
 
-    @Mock
-    Environment env;
-
-    int objectId;
     MultipartFile file1;
     MultipartFile[] files;
-    String file1Name;
     String[] fileNames;
     ContentBase owner;
 
-    final String imgVirtualPathName = "/img/";
+    final int objectId = 1;
+    final String file1Name = "seven.eleven";
+    final String imgVirtualPath = "/img/";
+    final String imgPhysicalPath = "";
 
     @Before
     public void before() throws IOException, FileSaveException {
-        objectId = 1;
         file1 = Mockito.mock(MultipartFile.class);
-
         files = new MultipartFile[] { file1 };
-
-        file1Name = "seven.eleven";
         fileNames = new String[] { file1Name };
 
         owner = new Release();
@@ -57,10 +50,8 @@ public class ImagesUploadControllerTests {
                 .uploadFiles(Matchers.any(ContentBase.class), Matchers.any(MultipartFile[].class), Matchers.any(File.class)))
                 .thenReturn(fileNames);
 
-        Mockito.when(env.getProperty(Matchers.eq("recordlabel.img.virtualpath")))
-                .thenReturn(imgVirtualPathName);
-        Mockito.when(env.getProperty(Matchers.eq("recordlabel.img.path")))
-                .thenReturn("");
+        controller.imagesVirtualPath = imgVirtualPath;
+        controller.imagesPhysicalPath = imgPhysicalPath;
     }
 
     @Test
@@ -108,7 +99,7 @@ public class ImagesUploadControllerTests {
 
     @Test
     public void uploadImage_responseBodyMustContainAnArrayOfFileNamesPrefixedWithDirectoryMapName() throws Exception {
-        String[] expectedFileNames = new String[] { imgVirtualPathName + file1Name };
+        String[] expectedFileNames = new String[] { imgVirtualPath + file1Name };
 
         ResponseEntity response = controller.upload(objectId, files);
 
