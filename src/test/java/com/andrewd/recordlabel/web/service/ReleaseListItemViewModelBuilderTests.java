@@ -10,10 +10,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.mockito.Mockito.times;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ReleaseListItemViewModelBuilderDefaultTests {
+public class ReleaseListItemViewModelBuilderTests {
 
     @InjectMocks
-    ReleaseListItemViewModelBuilderDefault builder;
+    ReleaseListItemViewModelBuilder builder;
 
     @Mock
     UrlBuilderFunction urlBuilder;
@@ -31,7 +31,7 @@ public class ReleaseListItemViewModelBuilderDefaultTests {
 
     @Test
     public void mustReturnAnInstanceOfModel() {
-        ReleaseListItemViewModel model = builder.build(release);
+        ReleaseListItemViewModel model = builder.apply(release);
 
         Assert.assertNotNull(model);
     }
@@ -40,7 +40,7 @@ public class ReleaseListItemViewModelBuilderDefaultTests {
     public void mustCopySimpleFields() {
         Release release = getRelease();
 
-        ReleaseListItemViewModel model = builder.build(release);
+        ReleaseListItemViewModel model = builder.apply(release);
 
         Assert.assertEquals("Must copy id", model.id, release.id);
         Assert.assertEquals("Must copy title", model.title, release.title);
@@ -52,7 +52,7 @@ public class ReleaseListItemViewModelBuilderDefaultTests {
 
     @Test
     public void whenSourceThumbnailIsNull_mustLeaveThumbnailUrlNull() {
-        ReleaseListItemViewModel model = builder.build(release);
+        ReleaseListItemViewModel model = builder.apply(release);
 
         Assert.assertNull(model.thumbnailUrl);
     }
@@ -63,7 +63,7 @@ public class ReleaseListItemViewModelBuilderDefaultTests {
         thumbnail.fileName = img0Path;
         release.thumbnail = thumbnail;
 
-        ReleaseListItemViewModel model = builder.build(release);
+        ReleaseListItemViewModel model = builder.apply(release);
 
         Mockito.verify(urlBuilder, times(1)).build(Matchers.eq(imgVirtualPath), Matchers.eq(img0Path));
     }
@@ -73,7 +73,7 @@ public class ReleaseListItemViewModelBuilderDefaultTests {
         Release release = getRelease();
         release.artist = getArtist();
 
-        ReleaseListItemViewModel model = builder.build(release);
+        ReleaseListItemViewModel model = builder.apply(release);
 
         Assert.assertSame("Must copy artist", model.artist, release.artist);
     }
@@ -83,7 +83,7 @@ public class ReleaseListItemViewModelBuilderDefaultTests {
         Release release = getRelease();
         release.artist = getArtist();
 
-        ReleaseListItemViewModel model = builder.build(release);
+        ReleaseListItemViewModel model = builder.apply(release);
 
         Assert.assertSame("Must copy media", model.media, release.media);
     }

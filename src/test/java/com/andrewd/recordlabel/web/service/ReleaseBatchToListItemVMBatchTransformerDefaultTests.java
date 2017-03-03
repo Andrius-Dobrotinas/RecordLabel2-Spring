@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
 import org.mockito.*;
 import org.mockito.runners.MockitoJUnitRunner;
 import java.util.*;
+import java.util.function.Function;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.times;
@@ -16,10 +17,10 @@ import static org.mockito.Mockito.times;
 public class ReleaseBatchToListItemVMBatchTransformerDefaultTests {
 
     @InjectMocks
-    ReleaseBatchToListItemVMBatchTransformerDefault transformer;
+    ReleaseBatchToListItemVMBatchTransformer transformer;
 
     @Mock
-    ReleaseListItemViewModelBuilder listViewModelBuilder;
+    Function<Release, ReleaseListItemViewModel> listViewModelBuilder;
 
     String title;
     int batchCount;
@@ -41,14 +42,14 @@ public class ReleaseBatchToListItemVMBatchTransformerDefaultTests {
 
     @Test
     public void mustReturnBatchedListResult() {
-        BatchedResult<ReleaseListItemViewModel> result = transformer.transform(originalBatchedResult);
+        BatchedResult<ReleaseListItemViewModel> result = transformer.apply(originalBatchedResult);
 
         assertNotNull(result);
     }
 
     @Test
     public void mustCopyBatchCount() {
-        BatchedResult<ReleaseListItemViewModel> result = transformer.transform(originalBatchedResult);
+        BatchedResult<ReleaseListItemViewModel> result = transformer.apply(originalBatchedResult);
 
         assertEquals(batchCount, result.batchCount);
     }
@@ -58,11 +59,11 @@ public class ReleaseBatchToListItemVMBatchTransformerDefaultTests {
         Release release2 = getRelease("Raw Power");
         entries.add(release2);
 
-        transformer.transform(originalBatchedResult);
+        transformer.apply(originalBatchedResult);
 
-        Mockito.verify(listViewModelBuilder, times(2)).build(Matchers.any());
-        Mockito.verify(listViewModelBuilder, times(1)).build(Matchers.eq(release1));
-        Mockito.verify(listViewModelBuilder, times(1)).build(Matchers.eq(release2));
+        Mockito.verify(listViewModelBuilder, times(2)).apply(Matchers.any());
+        Mockito.verify(listViewModelBuilder, times(1)).apply(Matchers.eq(release1));
+        Mockito.verify(listViewModelBuilder, times(1)).apply(Matchers.eq(release2));
     }
 
     @Test
@@ -73,13 +74,13 @@ public class ReleaseBatchToListItemVMBatchTransformerDefaultTests {
         ReleaseListItemViewModel viewModel1 = new ReleaseListItemViewModel(release1, "");
         ReleaseListItemViewModel viewModel2 = new ReleaseListItemViewModel(release2, "");
 
-        Mockito.when(listViewModelBuilder.build(Matchers.eq(release1))).
+        Mockito.when(listViewModelBuilder.apply(Matchers.eq(release1))).
                 thenReturn(viewModel1);
-        Mockito.when(listViewModelBuilder.build(Matchers.eq(release2))).
+        Mockito.when(listViewModelBuilder.apply(Matchers.eq(release2))).
                 thenReturn(viewModel2);
 
         // Run
-        BatchedResult<ReleaseListItemViewModel> result = transformer.transform(originalBatchedResult);
+        BatchedResult<ReleaseListItemViewModel> result = transformer.apply(originalBatchedResult);
 
         // Verify
         assertNotNull("Result must contain entries", result.entries);

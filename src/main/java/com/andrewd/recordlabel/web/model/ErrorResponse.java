@@ -1,4 +1,4 @@
-package com.andrewd.recordlabel.web.api;
+package com.andrewd.recordlabel.web.model;
 
 public class ErrorResponse {
 

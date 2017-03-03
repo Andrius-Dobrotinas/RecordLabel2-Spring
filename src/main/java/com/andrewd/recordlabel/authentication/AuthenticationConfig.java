@@ -15,11 +15,10 @@ to have at least some idea about how things work here
 class AuthenticationConfig extends GlobalAuthenticationConfigurerAdapter {
 
     @Autowired
-    UserDetailsService userDetailsService;
+    private UserDetailsService userDetailsService;
 
     @Override
     public void init(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService);
     }
-
 }

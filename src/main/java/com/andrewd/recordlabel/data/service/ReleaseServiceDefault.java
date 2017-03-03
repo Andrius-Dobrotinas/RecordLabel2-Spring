@@ -22,6 +22,7 @@ public class ReleaseServiceDefault implements ReleaseService {
     @Autowired
     private ModelToEntityTransformer modelTransformer;
 
+    @Override
     public void save(com.andrewd.recordlabel.supermodel.ReleaseSlim model) {
         Release entity = modelTransformer.getRelease(model);
 
@@ -41,6 +42,7 @@ public class ReleaseServiceDefault implements ReleaseService {
         repository.save(entity);
     }
 
+    @Override
     public com.andrewd.recordlabel.supermodel.Release getRelease(int id) {
         Release entity = repository.getRelease(id);
         if (entity != null) {
@@ -49,6 +51,7 @@ public class ReleaseServiceDefault implements ReleaseService {
         return null;
     }
 
+    @Override
     public com.andrewd.recordlabel.supermodel.ReleaseSlim getReleaseSlim(int id) {
         Release entity = repository.getRelease(id);
         if (entity != null) {
@@ -57,6 +60,7 @@ public class ReleaseServiceDefault implements ReleaseService {
         return null;
     }
 
+    @Override
     public BatchedResult<com.andrewd.recordlabel.supermodel.Release> getReleases(int batchNumber, int batchSize) {
         List<Release> entities = repository.getReleases(batchNumber, batchSize, "title", SortDirection.DESCENDING);
         int totalCount = repository.getTotalReleaseCount();
@@ -68,21 +72,25 @@ public class ReleaseServiceDefault implements ReleaseService {
         return result;
     }
 
+    @Override
     public List<com.andrewd.recordlabel.supermodel.MediaType> getMediaTypeList() {
         List<MediaType> entities = repository.getMediaTypeList();
         return entityTransformer.transformList(entities, entityTransformer::getMediaType);
     }
 
+    @Override
     public List<com.andrewd.recordlabel.supermodel.Metadata> getMetadataList() {
         List<Metadata> entities = repository.getMetadataList();
         return entityTransformer.transformList(entities, entityTransformer::getMetadata);
     }
 
+    @Override
     public List<com.andrewd.recordlabel.supermodel.ArtistBarebones> getArtistBarebonesList() {
         List<Artist> entities = repository.getAllArtists();
         return entityTransformer.transformList(entities, entityTransformer::getArtistBarebones);
     }
 
+    @Override
     public boolean objectExists(int id) {
         return repository.objectExists(id);
     }

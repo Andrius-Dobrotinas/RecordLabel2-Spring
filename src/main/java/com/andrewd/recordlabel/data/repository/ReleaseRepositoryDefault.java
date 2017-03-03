@@ -22,6 +22,7 @@ public class ReleaseRepositoryDefault implements ReleaseRepository {
     @Autowired
     private BatchedQueryBuilder batchedQueryBuilder;
 
+    @Override
     @Transactional
     public <T> T save(T entity) {
         saveNoFlush(entity);
@@ -29,7 +30,7 @@ public class ReleaseRepositoryDefault implements ReleaseRepository {
         return entity;
     }
 
-    public <T> T saveNoFlush(T entity) {
+    private <T> T saveNoFlush(T entity) {
         if (idComparer.isIdDefault(entity)) {
             em.persist(entity);
         } else {
@@ -38,6 +39,7 @@ public class ReleaseRepositoryDefault implements ReleaseRepository {
         return entity;
     }
 
+    @Override
     @Transactional
     public <T> T[] save(T[] entities) {
         for (T entity : entities) {
@@ -47,14 +49,17 @@ public class ReleaseRepositoryDefault implements ReleaseRepository {
         return entities;
     }
 
+    @Override
     public Release getRelease(int id) {
         return em.find(Release.class, id);
     }
 
+    @Override
     public <T> T getObject(Class<T> type, int id) {
         return em.find(type, id);
     }
 
+    @Override
     public List<Release> getReleases(int batchNumber, int batchSize, String orderByProperty,
                                      SortDirection direction) {
        return batchedQueryBuilder
@@ -62,21 +67,25 @@ public class ReleaseRepositoryDefault implements ReleaseRepository {
                .getResultList();
     }
 
+    @Override
     public int getTotalReleaseCount() {
         return (int)((Long)em.createQuery("select count(i) from Release i")
                 .getSingleResult()).longValue();
     }
 
+    @Override
     public List<MediaType> getMediaTypeList() {
         return em.createQuery("select i from MediaType i", MediaType.class)
                 .getResultList();
     }
 
+    @Override
     public List<Metadata> getMetadataList() {
         return em.createQuery("select i from Metadata i", Metadata.class)
                 .getResultList();
     }
 
+    @Override
     public boolean objectExists(int id) {
         return em.createQuery("select count(o) from ContentBase o where o.id=:id", Integer.class)
                 .setParameter("id", id)
@@ -86,6 +95,7 @@ public class ReleaseRepositoryDefault implements ReleaseRepository {
     /* TODO: might want to make Artist properties lazily-loaded and then
     make a separate query that returns a barebones model from this same query
      */
+    @Override
     public List<Artist> getAllArtists() {
         return em.createQuery("select i from Artist i", Artist.class).getResultList();
     }

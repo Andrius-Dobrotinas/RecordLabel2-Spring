@@ -1,4 +1,4 @@
-package com.andrewd.recordlabel.authentication;
+package com.andrewd.recordlabel;
 
 import org.springframework.context.annotation.*;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

@@ -16,7 +16,7 @@ import static org.mockito.Mockito.times;
 public class MultipartFileUploadServiceDefaultTests {
 
     @InjectMocks
-    MultipartFileUploadServiceDefault svc;
+    MultipartFileUploaderDefault svc;
 
     @Mock
     MultipartFileSaver multipartFileSaver;

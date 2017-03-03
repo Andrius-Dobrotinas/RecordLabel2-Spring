@@ -3,6 +3,7 @@ package com.andrewd.recordlabel.web.api;
 import com.andrewd.recordlabel.data.model.*;
 import com.andrewd.recordlabel.data.service.ReleaseService;
 import com.andrewd.recordlabel.web.io.FileSaveException;
+import com.andrewd.recordlabel.web.model.ErrorResponse;
 import com.andrewd.recordlabel.web.service.*;
 import org.junit.*;
 import org.junit.runner.RunWith;
@@ -21,7 +22,7 @@ public class ImagesUploadControllerTests {
     ImagesUploadController controller;
 
     @Mock
-    MultipartFileUploadService fileUploader;
+    MultipartFileUploader fileUploader;
 
     @Mock
     ReleaseService releaseSvc;

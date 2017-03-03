@@ -1,4 +1,4 @@
-package com.andrewd.recordlabel.data;
+package com.andrewd.recordlabel;
 
 import java.util.Properties;
 

@@ -4,5 +4,5 @@ import com.andrewd.recordlabel.data.model.ContentBase;
 
 public interface FileSaveToRepositoryService {
 
-    void save(ContentBase owner, String[] relativePaths);
+    void save(ContentBase owner, String[] fileNames);
 }

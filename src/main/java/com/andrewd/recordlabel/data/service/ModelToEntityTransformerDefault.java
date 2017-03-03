@@ -9,6 +9,7 @@ import java.util.function.Function;
 @Component
 public class ModelToEntityTransformerDefault implements ModelToEntityTransformer {
 
+    @Override
     public Release getRelease(com.andrewd.recordlabel.supermodel.ReleaseSlim model) {
         Release entity = new Release();
         entity.id = model.id;
@@ -38,6 +39,7 @@ public class ModelToEntityTransformerDefault implements ModelToEntityTransformer
         return entity;
     }
 
+    @Override
     public Artist getArtist(com.andrewd.recordlabel.supermodel.Artist model) {
         Artist entity = new Artist();
         entity.id = model.id;
@@ -48,6 +50,7 @@ public class ModelToEntityTransformerDefault implements ModelToEntityTransformer
         return entity;
     }
 
+    @Override
     public Track getTrack(com.andrewd.recordlabel.supermodel.Track model) {
         Track entity = new Track();
         entity.id = model.id;
@@ -56,6 +59,7 @@ public class ModelToEntityTransformerDefault implements ModelToEntityTransformer
         return entity;
     }
 
+    @Override
     public Reference getReference(com.andrewd.recordlabel.supermodel.Reference model) {
         Reference entity = new Reference();
         entity.id = model.id;
@@ -65,6 +69,7 @@ public class ModelToEntityTransformerDefault implements ModelToEntityTransformer
         return entity;
     }
 
+    @Override
     public Metadata getMetadata(com.andrewd.recordlabel.supermodel.Metadata model) {
         Metadata entity = new Metadata();
         entity.id = model.id;
@@ -73,6 +78,7 @@ public class ModelToEntityTransformerDefault implements ModelToEntityTransformer
         return entity;
     }
 
+    @Override
     public MediaType getMediaType(com.andrewd.recordlabel.supermodel.MediaType model) {
         MediaType entity = new MediaType();
         entity.id = model.id;
@@ -86,6 +92,7 @@ public class ModelToEntityTransformerDefault implements ModelToEntityTransformer
         entity.references = transformList(model.references, this::getReference);
     }
 
+    @Override
     public <TModel, TEntity> List<TEntity> transformList(List<TModel> list, Function<TModel, TEntity> transformFunction) {
         List<TEntity> result = new ArrayList<>();
         for(TModel model : list) {

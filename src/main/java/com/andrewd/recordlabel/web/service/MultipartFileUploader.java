@@ -6,6 +6,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 
-public interface MultipartFileUploadService {
+public interface MultipartFileUploader {
     String[] uploadFiles(ContentBase owner, MultipartFile[] files, File directory) throws FileSaveException;
 }

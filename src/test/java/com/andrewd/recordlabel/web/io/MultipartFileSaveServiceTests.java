@@ -12,7 +12,7 @@ import java.io.*;
 @RunWith(MockitoJUnitRunner.class)
 public class MultipartFileSaveServiceTests {
 
-    MultipartFileSaveService component;
+    MultipartFileSaverDefault component;
     MultipartFile file;
     String fileName;
     File targetDirectory;
@@ -21,7 +21,7 @@ public class MultipartFileSaveServiceTests {
 
     @Before
     public void before() throws IOException {
-        component = new MultipartFileSaveService();
+        component = new MultipartFileSaverDefault();
 
         targetDirectory = Files.newTemporaryFolder();
 

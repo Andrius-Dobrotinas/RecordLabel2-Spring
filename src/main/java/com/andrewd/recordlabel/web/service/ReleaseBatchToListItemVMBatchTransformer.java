@@ -3,7 +3,28 @@ package com.andrewd.recordlabel.web.service;
 import com.andrewd.recordlabel.common.BatchedResult;
 import com.andrewd.recordlabel.supermodel.Release;
 import com.andrewd.recordlabel.web.model.ReleaseListItemViewModel;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-public interface ReleaseBatchToListItemVMBatchTransformer {
-    BatchedResult<ReleaseListItemViewModel> transform(BatchedResult<Release> source);
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+@Component
+public class ReleaseBatchToListItemVMBatchTransformer implements
+        Function<BatchedResult<Release>, BatchedResult<ReleaseListItemViewModel>> {
+
+    @Autowired
+    private Function<Release, ReleaseListItemViewModel> listViewModelBuilder;
+
+    @Override
+    public BatchedResult<ReleaseListItemViewModel> apply(BatchedResult<Release> source) {
+        BatchedResult<ReleaseListItemViewModel> viewModels = new BatchedResult<>();
+
+        viewModels.batchCount = source.batchCount;
+        viewModels.entries = source.entries.stream()
+                .map(listViewModelBuilder::apply)
+                .collect(Collectors.toList());
+
+        return viewModels;
+    }
 }

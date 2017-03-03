@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public class ImageSaveToRepositoryService implements FileSaveToRepositoryService {
 
     @Autowired
-    ReleaseService svc;
+    private ReleaseService svc;
 
     @Override
     public void save(ContentBase owner, String[] fileNames) {

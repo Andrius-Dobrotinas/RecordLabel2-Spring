@@ -7,14 +7,13 @@ import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.*;
 import org.mockito.runners.MockitoJUnitRunner;
-
 import java.util.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ReleaseViewModelTransformerDefaultTests {
+public class ReleaseViewModelTransformerBuilderTests {
 
     @InjectMocks
-    ReleaseViewModelBuilderDefault builder;
+    ReleaseViewModelBuilder builder;
 
     @Mock
     UrlBuilderFunction urlBuilder;
@@ -59,7 +58,7 @@ public class ReleaseViewModelTransformerDefaultTests {
         sourceModel.references = references;
 
         // Run
-        ReleaseViewModel result = builder.build(sourceModel);
+        ReleaseViewModel result = builder.apply(sourceModel);
 
         // Verify
         Assert.assertNotNull(result);
@@ -83,7 +82,7 @@ public class ReleaseViewModelTransformerDefaultTests {
         sourceModel.references = null;
 
         // Run
-        ReleaseViewModel result = builder.build(sourceModel);
+        ReleaseViewModel result = builder.apply(sourceModel);
     }
 
     @Test
@@ -99,7 +98,7 @@ public class ReleaseViewModelTransformerDefaultTests {
         sourceModel.references.add(ref2);
 
         // Run
-        ReleaseViewModel result = builder.build(sourceModel);
+        ReleaseViewModel result = builder.apply(sourceModel);
 
         // Verify
         Assert.assertNotNull("Result's youtubeReferences field must contain a list of youtube references",
@@ -125,7 +124,7 @@ public class ReleaseViewModelTransformerDefaultTests {
         sourceModel.references.add(ref2);
 
         // Run
-        ReleaseViewModel result = builder.build(sourceModel);
+        ReleaseViewModel result = builder.apply(sourceModel);
 
         Assert.assertNotNull("Result's references field must contain a list of non-youtube references",
                 result.references);
@@ -143,7 +142,7 @@ public class ReleaseViewModelTransformerDefaultTests {
         sourceModel.references.add(ref1);
 
         // Run
-        ReleaseViewModel result = builder.build(sourceModel);
+        ReleaseViewModel result = builder.apply(sourceModel);
 
         Assert.assertNotNull("Youtube references list must not be null even if there are no " +
                         "youtube references in the source", result.youtubeReferences);
@@ -155,7 +154,7 @@ public class ReleaseViewModelTransformerDefaultTests {
         sourceModel.references.add(refYt1);
 
         // Run
-        ReleaseViewModel result = builder.build(sourceModel);
+        ReleaseViewModel result = builder.apply(sourceModel);
 
         Assert.assertNotNull("References list must not be null even if there are no non-youtube " +
                 "references in the source at all", result.references);
@@ -167,7 +166,7 @@ public class ReleaseViewModelTransformerDefaultTests {
         sourceModel.images.add(image1);
 
         // Run
-        ReleaseViewModel result = builder.build(sourceModel);
+        ReleaseViewModel result = builder.apply(sourceModel);
 
         Assert.assertEquals("Must copy images list instance", sourceModel.images, result.images);
     }
@@ -195,7 +194,7 @@ public class ReleaseViewModelTransformerDefaultTests {
         sourceModel.images.add(image2);
 
         // Run
-        builder.build(sourceModel);
+        builder.apply(sourceModel);
 
         // Verify
         Assert.assertEquals(expectedName1, image1.fileName);
@@ -216,7 +215,7 @@ public class ReleaseViewModelTransformerDefaultTests {
         sourceModel.images.add(image2);
 
         // Run
-        builder.build(sourceModel);
+        builder.apply(sourceModel);
 
         // Verify
         Mockito.verify(urlBuilder, Mockito.times(1))

@@ -12,7 +12,7 @@ import java.util.*;
 public class MetadataController {
 
     @Autowired
-    ReleaseService svc;
+    private ReleaseService svc;
 
     @RequestMapping(value = "get", method = RequestMethod.GET)
     public List<Metadata> get() {

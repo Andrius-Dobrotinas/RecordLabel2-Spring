@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public class Metadata {
     public int id;
-    //@JsonValue
     public MetadataType type;
     public String text;
 }

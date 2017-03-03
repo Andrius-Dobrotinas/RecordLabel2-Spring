@@ -4,6 +4,7 @@ import com.andrewd.recordlabel.WebConfig;
 import com.andrewd.recordlabel.data.model.ContentBase;
 import com.andrewd.recordlabel.data.service.ReleaseService;
 import com.andrewd.recordlabel.web.io.FileSaveException;
+import com.andrewd.recordlabel.web.model.ErrorResponse;
 import com.andrewd.recordlabel.web.service.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.http.ResponseEntity;
@@ -16,20 +17,21 @@ import java.util.Arrays;
 @RequestMapping("api/images/")
 public class ImagesUploadController {
 
-    @Autowired
-    MultipartFileUploadService fileUploader;
-
-    @Autowired
-    ReleaseService releaseSvc;
-
-    @Autowired
-    public UrlBuilderFunction urlBuilder;
-
     @Value("${" + WebConfig.IMAGES_VIRTUAL_PATH_SETTINGS_KEY + "}")
     public String imagesVirtualPath;
 
     @Value("${" + WebConfig.IMAGES_PHYSICAL_PATH_SETTINGS_KEY + "}")
     public String imagesPhysicalPath;
+
+    @Autowired
+    private MultipartFileUploader fileUploader;
+
+    @Autowired
+    private ReleaseService releaseSvc;
+
+    @Autowired
+    private UrlBuilderFunction urlBuilder;
+
 
     @RequestMapping(value = "upload/{id}", method = RequestMethod.POST)
     public ResponseEntity upload(@PathVariable int id, @RequestParam("file") MultipartFile[] files)

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class UserDetailsServiceDefault implements UserDetailsService {
 
     @Autowired
-    AccountsRepository accountsRepository;
+    private AccountsRepository accountsRepository;
 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         if (username == null || username.length() == 0) {
@@ -22,7 +22,8 @@ public class UserDetailsServiceDefault implements UserDetailsService {
             return new User(account.username, account.password, true, true, true, true,
                     AuthorityUtils.createAuthorityList("ROLE_ADMIN"));
         } else {
-            throw new UsernameNotFoundException("Account with user name '" + username + "' not found");
+            throw new UsernameNotFoundException(
+                    String.format("Account with user name '%s' not found", username));
         }
     }
 

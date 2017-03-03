@@ -1,6 +1,5 @@
 package com.andrewd.recordlabel.web.api;
 
-import com.andrewd.recordlabel.Settings;
 import com.andrewd.recordlabel.common.BatchedResult;
 import com.andrewd.recordlabel.data.service.ReleaseService;
 import com.andrewd.recordlabel.supermodel.*;
@@ -16,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ReleaseControllerTests {
+public class ReleasesControllerTests {
 
     @InjectMocks
     ReleasesController controller;
@@ -29,6 +28,13 @@ public class ReleaseControllerTests {
 
     @Mock
     ReleaseBatchToListItemVMBatchTransformer listViewModelTransformer;
+
+    final int defaultBatchSize = 2;
+
+    @Before
+    public void init() {
+        controller.itemsPerPage = defaultBatchSize;
+    }
 
     @Test
     public void getTemplate_MustReturnTemplateWithCurrentYear() {
@@ -60,7 +66,7 @@ public class ReleaseControllerTests {
         // Run
         controller.get(id);
 
-        Mockito.verify(viewModelBuilder, Mockito.times(1)).build(Matchers.eq(release));
+        Mockito.verify(viewModelBuilder, Mockito.times(1)).apply(Matchers.eq(release));
     }
 
     @Test
@@ -71,7 +77,7 @@ public class ReleaseControllerTests {
         ReleaseViewModel viewModel = new ReleaseViewModel();
 
         Mockito.when(svc.getRelease(Matchers.eq(id))).thenReturn(release);
-        Mockito.when(viewModelBuilder.build(Matchers.eq(release)))
+        Mockito.when(viewModelBuilder.apply(Matchers.eq(release)))
                 .thenReturn(viewModel);
 
         // Run
@@ -166,8 +172,6 @@ public class ReleaseControllerTests {
 
     @Test
     public void getBatch_MustUseDefaultBatchSizeIfInvalidNumberSupplied_Zero() {
-        int defaultBatchSize = Settings.getItemsPerPage();
-
         controller.getBatch(1, 0);
 
         Mockito.verify(svc, Mockito.times(1)).getReleases(Matchers.anyInt(), Matchers.eq(defaultBatchSize));
@@ -175,8 +179,6 @@ public class ReleaseControllerTests {
 
     @Test
     public void getBatch_MustUseDefaultBatchSizeIfInvalidNumberSupplied_Negative() {
-        int defaultBatchSize = Settings.getItemsPerPage();
-
         controller.getBatch(1, -1);
 
         Mockito.verify(svc, Mockito.times(1)).getReleases(Matchers.anyInt(), Matchers.eq(defaultBatchSize));
@@ -197,7 +199,7 @@ public class ReleaseControllerTests {
         BatchedResult<ReleaseListItemViewModel> result = controller.getBatch(batchNumber, batchSize);
 
         // Verify
-        Mockito.verify(listViewModelTransformer, Mockito.times(1)).transform(Matchers.eq(model));
+        Mockito.verify(listViewModelTransformer, Mockito.times(1)).apply(Matchers.eq(model));
     }
 
     @Test
@@ -211,7 +213,7 @@ public class ReleaseControllerTests {
                 new ArrayList<ReleaseListItemViewModel>(), batchSize);
 
         Mockito.when(svc.getReleases(Matchers.eq(batchNumber), Matchers.eq(batchSize))).thenReturn(model);
-        Mockito.when(listViewModelTransformer.transform(Matchers.eq(model))).thenReturn(batchedResult);
+        Mockito.when(listViewModelTransformer.apply(Matchers.eq(model))).thenReturn(batchedResult);
 
         // Run
         BatchedResult<ReleaseListItemViewModel> result = controller.getBatch(batchNumber, batchSize);

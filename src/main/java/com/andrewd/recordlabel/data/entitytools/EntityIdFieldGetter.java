@@ -12,8 +12,11 @@ import java.util.stream.*;
 @Component
 public class EntityIdFieldGetter implements EntityIdPropertyGetter {
 
-    /* Returns entity's id property field. An entity is a class annotated with Entity annotation.
-    An Id is a field annotated with Id annotation */
+    /**
+     * Returns entity's id property field. An Id is a field annotated with Id annotation
+     * @param entity an instance of a type annotated with Entity annotation.
+     */
+    @Override
     public <T> Field get(T entity) throws EntityIdPropertyGetterException, NoIdPropertyException {
         if (entity == null)
             throw new IllegalArgumentException("Entity cannot be null");
@@ -33,7 +36,8 @@ public class EntityIdFieldGetter implements EntityIdPropertyGetter {
         if (annotated.size() == 0)
             throw new NoIdPropertyException(type);
         if (annotated.size() > 1)
-            throw new NotSupportedException("Entity contains more than one Id field which is currently not supported");
+            throw new NotSupportedException(
+                    "Entity contains more than one Id field which is currently not supported");
 
         return annotated.get(0);
     }

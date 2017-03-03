@@ -1,30 +1,35 @@
 package com.andrewd.recordlabel.web.api;
 
-import com.andrewd.recordlabel.Settings;
+import com.andrewd.recordlabel.WebConfig;
 import com.andrewd.recordlabel.common.*;
 import com.andrewd.recordlabel.data.service.ReleaseService;
 import com.andrewd.recordlabel.supermodel.*;
 import com.andrewd.recordlabel.web.model.*;
-import com.andrewd.recordlabel.web.service.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import java.util.Calendar;
+import java.util.function.Function;
 
 @RestController
 @RequestMapping("api/releases/")
 public class ReleasesController {
 
+    public final static int DEFAULT_BATCH_NUMBER = 1;
+
+    @Value("${" + WebConfig.ITEMS_PER_PAGE_SETTINGS_KEY + "}")
+    public int itemsPerPage;
+
     @Autowired
     private ReleaseService releaseSvc;
 
     @Autowired
-    private ReleaseViewModelBuilder viewModelBuilder;
+    private Function<Release, ReleaseViewModel> viewModelBuilder;
 
     @Autowired
-    private ReleaseBatchToListItemVMBatchTransformer listViewModelTransformer;
+    private Function<BatchedResult<Release>, BatchedResult<ReleaseListItemViewModel>>
+            listViewModelTransformer;
 
-    public final static int DEFAULT_BATCH_NUMBER = 1;
 
     @RequestMapping(value = "post", method = RequestMethod.POST)
     public ResponseEntity post(@RequestBody com.andrewd.recordlabel.supermodel.ReleaseSlim model) {
@@ -37,6 +42,7 @@ public class ReleasesController {
                                @RequestBody com.andrewd.recordlabel.supermodel.ReleaseSlim model) {
         return save(model);
     }
+
     private ResponseEntity save(com.andrewd.recordlabel.supermodel.ReleaseSlim model) {
         // TODO: add model validations
         try {
@@ -54,7 +60,7 @@ public class ReleasesController {
         if (release == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         };
-        ReleaseViewModel viewModel = viewModelBuilder.build(release);
+        ReleaseViewModel viewModel = viewModelBuilder.apply(release);
         return ResponseEntity.ok(viewModel);
     }
 
@@ -72,11 +78,11 @@ public class ReleasesController {
     public BatchedResult<ReleaseListItemViewModel> getBatch(@RequestParam(value = "number") int number,
                                                             @RequestParam(value = "size") int size) {
         if (number < 1) number = DEFAULT_BATCH_NUMBER;
-        if (size < 1) size = Settings.getItemsPerPage();
+        if (size < 1) size = itemsPerPage;
 
         BatchedResult<Release> releases = releaseSvc.getReleases(number, size);
 
-        return listViewModelTransformer.transform(releases);
+        return listViewModelTransformer.apply(releases);
     }
 
     @RequestMapping(value = "getTemplate", method = RequestMethod.GET)

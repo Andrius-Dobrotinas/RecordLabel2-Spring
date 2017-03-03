@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 @Component
 public class EntityToModelTransformerDefault implements EntityToModelTransformer {
 
+    @Override
     public com.andrewd.recordlabel.supermodel.Release getRelease(Release entity) {
         com.andrewd.recordlabel.supermodel.Release model = new com.andrewd.recordlabel.supermodel.Release();
         model.date = entity.date;
@@ -37,6 +38,7 @@ public class EntityToModelTransformerDefault implements EntityToModelTransformer
         return model;
     }
 
+    @Override
     public com.andrewd.recordlabel.supermodel.ReleaseSlim getReleaseSlim(Release entity) {
         com.andrewd.recordlabel.supermodel.ReleaseSlim model = new com.andrewd.recordlabel.supermodel.ReleaseSlim();
         model.date = entity.date;
@@ -58,6 +60,7 @@ public class EntityToModelTransformerDefault implements EntityToModelTransformer
         return model;
     }
 
+    @Override
     public com.andrewd.recordlabel.supermodel.Artist getArtist(Artist entity) {
         com.andrewd.recordlabel.supermodel.Artist model = new com.andrewd.recordlabel.supermodel.Artist();
         model.id = entity.id;
@@ -68,6 +71,7 @@ public class EntityToModelTransformerDefault implements EntityToModelTransformer
         return model;
     }
 
+    @Override
     public com.andrewd.recordlabel.supermodel.ArtistBarebones getArtistBarebones(Artist entity) {
         com.andrewd.recordlabel.supermodel.ArtistBarebones model = new com.andrewd.recordlabel.supermodel.ArtistBarebones();
         model.id = entity.id;
@@ -76,6 +80,7 @@ public class EntityToModelTransformerDefault implements EntityToModelTransformer
         return model;
     }
 
+    @Override
     public com.andrewd.recordlabel.supermodel.Metadata getMetadata(Metadata entity) {
         com.andrewd.recordlabel.supermodel.Metadata model = new com.andrewd.recordlabel.supermodel.Metadata();
         model.id = entity.id;
@@ -84,6 +89,7 @@ public class EntityToModelTransformerDefault implements EntityToModelTransformer
         return model;
     }
 
+    @Override
     public com.andrewd.recordlabel.supermodel.Reference getReference(Reference entity) {
         com.andrewd.recordlabel.supermodel.Reference model = new com.andrewd.recordlabel.supermodel.Reference();
         model.id = entity.id;
@@ -93,6 +99,7 @@ public class EntityToModelTransformerDefault implements EntityToModelTransformer
         return model;
     }
 
+    @Override
     public com.andrewd.recordlabel.supermodel.Track getTrack(Track entity) {
         com.andrewd.recordlabel.supermodel.Track model = new com.andrewd.recordlabel.supermodel.Track();
         model.id = entity.id;
@@ -101,6 +108,7 @@ public class EntityToModelTransformerDefault implements EntityToModelTransformer
         return model;
     }
 
+    @Override
     public com.andrewd.recordlabel.supermodel.MediaType getMediaType(MediaType entity) {
         com.andrewd.recordlabel.supermodel.MediaType model = new com.andrewd.recordlabel.supermodel.MediaType();
         model.id = entity.id;
@@ -108,6 +116,7 @@ public class EntityToModelTransformerDefault implements EntityToModelTransformer
         return model;
     }
 
+    @Override
     public com.andrewd.recordlabel.supermodel.Image getImage(Image entity) {
         com.andrewd.recordlabel.supermodel.Image model = new com.andrewd.recordlabel.supermodel.Image();
         model.id = entity.id;
@@ -115,6 +124,7 @@ public class EntityToModelTransformerDefault implements EntityToModelTransformer
         return model;
     }
 
+    @Override
     public com.andrewd.recordlabel.supermodel.Thumbnail getThumbnail(Thumbnail entity) {
         com.andrewd.recordlabel.supermodel.Thumbnail model = new com.andrewd.recordlabel.supermodel.Thumbnail();
         model.id = entity.id;
@@ -134,6 +144,7 @@ public class EntityToModelTransformerDefault implements EntityToModelTransformer
         model.references = transformList(entity.references, this::getReference);
     }
 
+    @Override
     public <T, Tm> List<Tm> transformList(List<T> list, Function<T, Tm> function) {
         ArrayList<Tm> superModels = new ArrayList<Tm>();
         for (T item : list) {

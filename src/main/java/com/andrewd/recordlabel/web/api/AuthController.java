@@ -18,13 +18,13 @@ import javax.servlet.http.*;
 public class AuthController {
 
     @Autowired
-    UserDetailsService userDetailsService;
+    private UserDetailsService userDetailsService;
 
     @Autowired
-    AuthenticationManager authManager;
+    private AuthenticationManager authManager;
 
     @Autowired
-    CookieGenerator cookieGenerator;
+    private CookieGenerator cookieGenerator;
 
     @RequestMapping(value = "authenticate", method = RequestMethod.POST)
     public ResponseEntity authenticate(@RequestBody Credentials credentials, HttpServletRequest request) {

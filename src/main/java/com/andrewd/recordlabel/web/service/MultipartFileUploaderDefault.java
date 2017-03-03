@@ -10,16 +10,18 @@ import java.io.*;
 import java.util.*;
 
 @Service
-public class MultipartFileUploadServiceDefault implements MultipartFileUploadService {
+public class MultipartFileUploaderDefault implements MultipartFileUploader {
 
     @Autowired
-    MultipartFileSaver multipartFileSaver;
+    private MultipartFileSaver multipartFileSaver;
 
     @Autowired
-    FileSaveToRepositoryService fileSaveToRepositoryService;
+    private FileSaveToRepositoryService fileSaveToRepositoryService;
 
     @Override
-    public String[] uploadFiles(ContentBase owner, MultipartFile[] files, File directory) throws FileSaveException {
+    public String[] uploadFiles(ContentBase owner, MultipartFile[] files, File directory)
+            throws FileSaveException {
+
         if (owner == null)
             throw new IllegalArgumentException("owner is null");
         if (files == null)

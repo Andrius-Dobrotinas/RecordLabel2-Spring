@@ -5,7 +5,6 @@ import com.andrewd.recordlabel.common.PrintStatus;
 import java.util.*;
 
 public class ReleaseSlim extends ContentBaseSlim {
-    //@JsonProperty
     public int artistId;
     public int mediaId;
     public String title;

@@ -12,9 +12,9 @@ import java.util.*;
 public class ArtistsController {
 
     @Autowired
-    ReleaseService svc;
+    private ReleaseService svc;
 
-    /* TODO: this method and action name should probably be renamed
+    /* TODO: this method and action should probably be renamed
     because this thing here returns a simple list of artists,
     with no extra info about references, metadata and so on...
      */

@@ -12,7 +12,7 @@ import java.util.*;
 public class MediaTypesController {
 
     @Autowired
-    ReleaseService svc;
+    private ReleaseService svc;
 
     @RequestMapping(value = "get", method = RequestMethod.GET)
     public List<MediaType> get() {

@@ -6,6 +6,7 @@ package com.andrewd.recordlabel.data.entitytools;
 public class NoIdPropertyException extends ClassException {
 
     public NoIdPropertyException(Class targetClass) {
-        super(String.format("Class %s has no Id properties defined", targetClass.getName()), targetClass);
+        super(String.format("Class %s has no Id properties defined",
+                targetClass.getName()), targetClass);
     }
 }
