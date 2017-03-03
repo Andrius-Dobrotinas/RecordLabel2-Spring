@@ -51,14 +51,13 @@ public class ReleaseServiceDefault_saveReleaseSlimTests {
     }
 
     @Test
-    public void mustGetOriginalEntityFromTheDb_whenModelIsNotNew() {
+    public void whenModelIsNotNew_mustGetOriginalEntityFromTheDb() {
         int id = 1;
         superModel.id = id;
         entity.id = id;
 
         originalEntity.images.add(new Image());
 
-        Mockito.when(modelTransformer.getRelease(Matchers.eq(superModel))).thenReturn(entity);
         Mockito.when(repository.getRelease(Matchers.anyInt())).thenReturn(entity);
 
         // Run
@@ -69,14 +68,13 @@ public class ReleaseServiceDefault_saveReleaseSlimTests {
     }
 
     @Test
-    public void mustNOTGetOriginalEntityFromTheDb_whenModelIsNew() {
+    public void whenModelIsNew_mustNOTGetOriginalEntityFromTheDb() {
         int id = 0;
         superModel.id = id;
         entity.id = id;
 
         originalEntity.images.add(new Image());
 
-        Mockito.when(modelTransformer.getRelease(Matchers.eq(superModel))).thenReturn(entity);
         Mockito.when(repository.getRelease(Matchers.anyInt())).thenReturn(entity);
 
         // Run
@@ -87,7 +85,7 @@ public class ReleaseServiceDefault_saveReleaseSlimTests {
     }
 
     @Test
-    public void mustAssignTheEntityImagesCollectionFromOriginalModel_whenModelIsNotNew() {
+    public void whenModelIsNotNew_mustAssignTheEntityImagesCollectionFromOriginalModel() {
         int id = 1;
         superModel.id = id;
         entity.id = id;
@@ -95,7 +93,6 @@ public class ReleaseServiceDefault_saveReleaseSlimTests {
         originalEntity.images.add(new Image());
         List<Image> images = originalEntity.images;
 
-        Mockito.when(modelTransformer.getRelease(Matchers.eq(superModel))).thenReturn(entity);
         Mockito.when(repository.getRelease(Matchers.anyInt())).thenReturn(originalEntity);
 
         // Capture images field value of the Release argument passed to repository.save
@@ -113,30 +110,51 @@ public class ReleaseServiceDefault_saveReleaseSlimTests {
         Assert.assertEquals(images, actualImages.get(0));
     }
 
+    @Test
+    public void whenModelIsNotNew_mustAssignTheEntityThumbnailFromOriginalModel() {
+        int id = 1;
+        superModel.id = id;
+        entity.id = id;
+
+        Thumbnail thumbnail = new Thumbnail();
+        originalEntity.thumbnail = thumbnail;
+
+        Mockito.when(repository.getRelease(Matchers.anyInt())).thenReturn(originalEntity);
+
+        // Capture thumbnail field value of the Release argument passed to repository.save
+        List<Thumbnail> actualThumbnail = new ArrayList<>();
+        Mockito.doAnswer(x -> {
+            Release arg = (Release)x.getArguments()[0];
+            actualThumbnail.add(arg.thumbnail);
+            return x;
+        }).when(repository).save(Matchers.eq(entity));
+
+        // Run
+        svc.save(superModel);
+
+        // Verify
+        Assert.assertEquals(thumbnail, actualThumbnail.get(0));
+    }
+
     @Test(expected = EntityDoesNotExistException.class)
-    public void mustThrowException_whenModelIsNotNew_ButOriginalEntityDoesNotExist() {
+    public void whenModelIsNotNew_butOriginalEntityDoesNotExist_mustThrowException() {
         int id = 1;
         superModel.id = id;
         entity.id = id;
 
         originalEntity.images.add(new Image());
 
-        Mockito.when(modelTransformer.getRelease(Matchers.eq(superModel))).thenReturn(entity);
-
         // Run
         svc.save(superModel);
     }
 
     @Test
-    public void mustSetImagesCollectionValueToNull_whenModelIsNew() {
+    public void whenModelIsNew_mustSetImagesCollectionValueToNull() {
         int id = 0;
         superModel.id = id;
         entity.id = id;
 
-        originalEntity.images.add(new Image());
-
-        Mockito.when(modelTransformer.getRelease(Matchers.eq(superModel))).thenReturn(entity);
-        Mockito.when(repository.getRelease(Matchers.anyInt())).thenReturn(originalEntity);
+        entity.images.add(new Image());
 
         // Capture images field value of the Release argument passed to repository.save
         List<List<Image>> actualImages = new ArrayList<>();
@@ -151,6 +169,30 @@ public class ReleaseServiceDefault_saveReleaseSlimTests {
 
         // Verify
         Assert.assertNull(actualImages.get(0));
+    }
+
+    @Test
+    public void whenModelIsNew_mustSetThumbnailValueToNull() {
+        int id = 0;
+        superModel.id = id;
+        entity.id = id;
+
+        Thumbnail thumbnail = new Thumbnail();
+        entity.thumbnail = thumbnail;
+
+        // Capture thumbnail field value of the Release argument passed to repository.save
+        List<Thumbnail> actualThumbnail = new ArrayList<>();
+        Mockito.doAnswer(x -> {
+            Release arg = (Release)x.getArguments()[0];
+            actualThumbnail.add(arg.thumbnail);
+            return x;
+        }).when(repository).save(Matchers.eq(entity));
+
+        // Run
+        svc.save(superModel);
+
+        // Verify
+        Assert.assertNull(actualThumbnail.get(0));
     }
 
     @Test

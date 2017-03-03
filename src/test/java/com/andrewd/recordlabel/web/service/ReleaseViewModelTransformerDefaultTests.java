@@ -5,6 +5,7 @@ import com.andrewd.recordlabel.supermodel.*;
 import com.andrewd.recordlabel.web.model.ReleaseViewModel;
 import org.junit.*;
 import org.junit.runner.RunWith;
+import org.mockito.*;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.*;
@@ -12,13 +13,16 @@ import java.util.*;
 @RunWith(MockitoJUnitRunner.class)
 public class ReleaseViewModelTransformerDefaultTests {
 
+    @InjectMocks
     ReleaseViewModelBuilderDefault builder;
+
+    @Mock
+    UrlBuilderFunction urlBuilder;
 
     Release sourceModel;
 
     @Before
     public void Init() {
-        builder = new ReleaseViewModelBuilderDefault();
         sourceModel = new Release();
     }
 
@@ -158,70 +162,72 @@ public class ReleaseViewModelTransformerDefaultTests {
     }
 
     @Test
-    public void mustCopyEveryNonThumbnailImageToImagesList() {
-        Image image1 = getImage("", false);
-        Image image2 = getImage("", false);
+    public void mustCopyImagesListInstance() {
+        Image image1 = getImage("");
         sourceModel.images.add(image1);
-        sourceModel.images.add(image2);
 
         // Run
         ReleaseViewModel result = builder.build(sourceModel);
 
-        Assert.assertNotNull("Must create images list", result.images);
-        Assert.assertEquals("Must copy all non-thumbnail images to the list",
-                2, result.images.size());
-        Assert.assertTrue("Images list must contain every non-thumbnail image",
-                result.images.contains(image1));
-        Assert.assertTrue("Images list must contain every non-thumbnail image",
-                result.images.contains(image2));
+        Assert.assertEquals("Must copy images list instance", sourceModel.images, result.images);
     }
-
-    @Test
-    public void mustNotCopyThumbnailImagesToImagesList() {
-        Image image1 = getImage("", true);
-        Image image2 = getImage("", false);
-        sourceModel.images.add(image1);
-        sourceModel.images.add(image2);
-
-        // Run
-        ReleaseViewModel result = builder.build(sourceModel);
-
-        Assert.assertEquals("Must copy all non-thumbnail images to the list",
-                1, result.images.size());
-        Assert.assertTrue("Images list must contain non thumbnail images only",
-                result.images.contains(image2));
-    }
-
 
     /* This might not seem exactly right, but these instances of Image objects will
      not be used anymore anyway
       */
     @Test
-    public void mustAppdendVirtualImagesPathToEachImagesFileName() {
+    public void mustBuildUrl_forEachImage() {
         String name1 = "cover1.jpg";
         String name2 = "cover2.png";
         String virtualPath = "/path/";
-        String expectedName1 = virtualPath + name1;
-        String expectedName2 = virtualPath + name2;
+        String expectedName1 = "expected name1";
+        String expectedName2 = "expected name2";
 
-        Image image1 = getImage(name1, false);
-        Image image2 = getImage(name2, false);
+        builder.imagesVirtualPath = virtualPath;
+        Mockito.when(urlBuilder.build(Matchers.anyString(), Matchers.eq(name1)))
+                .thenReturn(expectedName1);
+        Mockito.when(urlBuilder.build(Matchers.anyString(), Matchers.eq(name2)))
+                .thenReturn(expectedName2);
+
+        Image image1 = getImage(name1);
+        Image image2 = getImage(name2);
         sourceModel.images.add(image1);
         sourceModel.images.add(image2);
 
-        builder.imagesVirtualPath = virtualPath;
-
         // Run
-        ReleaseViewModel result = builder.build(sourceModel);
+        builder.build(sourceModel);
 
+        // Verify
         Assert.assertEquals(expectedName1, image1.fileName);
         Assert.assertEquals(expectedName2, image2.fileName);
     }
 
-    private static Image getImage(String fileName, boolean isThumbnail) {
+    @Test
+    public void mustAssignUrlToEachImagesFileNameField() {
+        String name1 = "cover1.jpg";
+        String name2 = "cover2.png";
+        String virtualPath = "/path/";
+
+        builder.imagesVirtualPath = virtualPath;
+
+        Image image1 = getImage(name1);
+        Image image2 = getImage(name2);
+        sourceModel.images.add(image1);
+        sourceModel.images.add(image2);
+
+        // Run
+        builder.build(sourceModel);
+
+        // Verify
+        Mockito.verify(urlBuilder, Mockito.times(1))
+                .build(Matchers.eq(virtualPath), Matchers.eq(name1));
+        Mockito.verify(urlBuilder, Mockito.times(1))
+                .build(Matchers.eq(virtualPath), Matchers.eq(name1));
+    }
+
+    private static Image getImage(String fileName) {
         Image image1 = new Image();
         image1.fileName = fileName;
-        image1.isThumbnail = isThumbnail;
         return image1;
     }
 

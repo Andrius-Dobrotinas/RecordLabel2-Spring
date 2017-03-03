@@ -21,4 +21,7 @@ public class ContentBase {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false)
     @JoinColumn(name = "owner_id")
     public List<Image> images = new ArrayList<>();
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = false)
+    public Thumbnail thumbnail;
 }

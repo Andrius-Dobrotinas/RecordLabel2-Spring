@@ -100,8 +100,7 @@ public class EntityToModelTransformerDefaultTests {
     @Test
     public void transformRelease_MustTransformImages() {
         Release entity = new Release();
-        Image image = new Image();
-        image.fileName = "file name.img";
+        Image image = getImage();
         entity.images.add(image);
 
         com.andrewd.recordlabel.supermodel.Release model = transformer.getRelease(entity);
@@ -109,6 +108,18 @@ public class EntityToModelTransformerDefaultTests {
         Assert.assertNotNull("Must transform release images", model.images);
         Assert.assertEquals("Must transform release images", 1, model.images.size());
         EntityModelTransformationVerifiers.verifyImage(image, model.images.get(0));
+    }
+
+    @Test
+    public void transformRelease_MustTransformThumbnail() {
+        Release entity = new Release();
+        Thumbnail thumbnail = getThumbnail();
+        entity.thumbnail = thumbnail;
+
+        com.andrewd.recordlabel.supermodel.Release model = transformer.getRelease(entity);
+
+        Assert.assertNotNull("Must transform release thumbnail", model.thumbnail);
+        EntityModelTransformationVerifiers.verifyThumbnail(thumbnail, model.thumbnail);
     }
 
     @Test
@@ -214,6 +225,15 @@ public class EntityToModelTransformerDefaultTests {
         com.andrewd.recordlabel.supermodel.Image model = transformer.getImage(entity);
 
         EntityModelTransformationVerifiers.verifyImage(entity, model);
+    }
+
+    @Test
+    public void transformThumbnail() {
+        Thumbnail entity = getThumbnail();
+
+        com.andrewd.recordlabel.supermodel.Thumbnail model = transformer.getThumbnail(entity);
+
+        EntityModelTransformationVerifiers.verifyThumbnail(entity, model);
     }
 
     @Test
@@ -336,7 +356,13 @@ public class EntityToModelTransformerDefaultTests {
         Image entity = new Image();
         entity.id = 1;
         entity.fileName = "asd.img";
-        entity.isThumbnail = true;
+        return entity;
+    }
+
+    private Thumbnail getThumbnail() {
+        Thumbnail entity = new Thumbnail();
+        entity.id = 1;
+        entity.fileName = "thumb.img";
         return entity;
     }
 }

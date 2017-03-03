@@ -12,17 +12,15 @@ public class ReleaseListItemViewModelBuilderDefault implements ReleaseListItemVi
     @Value("${" + WebConfig.IMAGES_VIRTUAL_PATH_SETTINGS_KEY + "}")
     public String imagesVirtualPath;
 
+    @Autowired
+    public UrlBuilderFunction urlBuilder;
+
     @Override
     public ReleaseListItemViewModel build(Release source) {
-
-        Image image =  source.images.stream()
-                .filter(i -> i.isThumbnail == true)
-                .findFirst().orElse(null);
-
-        String thumbnail = null;
-        if (image != null) {
-            thumbnail = imagesVirtualPath + image.fileName;
+        String thumbnailUrl = null;
+        if (source.thumbnail != null) {
+            thumbnailUrl = urlBuilder.build(imagesVirtualPath, source.thumbnail.fileName);
         }
-        return new ReleaseListItemViewModel(source, thumbnail);
+        return new ReleaseListItemViewModel(source, thumbnailUrl);
     }
 }

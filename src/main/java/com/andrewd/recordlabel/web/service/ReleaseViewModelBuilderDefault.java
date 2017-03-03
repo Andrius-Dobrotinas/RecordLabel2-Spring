@@ -4,7 +4,7 @@ import com.andrewd.recordlabel.WebConfig;
 import com.andrewd.recordlabel.common.ReferenceType;
 import com.andrewd.recordlabel.supermodel.*;
 import com.andrewd.recordlabel.web.model.ReleaseViewModel;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -15,6 +15,9 @@ public class ReleaseViewModelBuilderDefault implements ReleaseViewModelBuilder {
 
     @Value("${" + WebConfig.IMAGES_VIRTUAL_PATH_SETTINGS_KEY + "}")
     public String imagesVirtualPath;
+
+    @Autowired
+    public UrlBuilderFunction urlBuilder;
 
     @Override
     public ReleaseViewModel build(Release source) {
@@ -31,16 +34,11 @@ public class ReleaseViewModelBuilderDefault implements ReleaseViewModelBuilder {
                     .collect(Collectors.toList());
         }
 
-        List<Image> nonThumbnails = null;
         if (source.images != null && source.images.size() > 0) {
-            nonThumbnails = source.images.stream()
-                    .filter(x -> x.isThumbnail == false)
-                    .collect(Collectors.toList());
-            if (nonThumbnails.size() > 0) {
-                for(Image image : nonThumbnails) {
-                    image.fileName = imagesVirtualPath + image.fileName;
-                }
-            }
+            source.images.stream()
+                    .forEach(
+                            image -> image.fileName =
+                                    urlBuilder.build(imagesVirtualPath, image.fileName));
         }
 
         ReleaseViewModel result = new ReleaseViewModel();
@@ -57,7 +55,7 @@ public class ReleaseViewModelBuilderDefault implements ReleaseViewModelBuilder {
         result.metadata = source.metadata;
         result.references = references;
         result.youtubeReferences = youtubeReferences;
-        result.images = nonThumbnails;
+        result.images = source.images;
 
         return result;
     }

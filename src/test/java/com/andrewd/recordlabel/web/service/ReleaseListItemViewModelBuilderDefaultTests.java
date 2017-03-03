@@ -1,28 +1,36 @@
-package com.andrewd.recordlabel.service;
+package com.andrewd.recordlabel.web.service;
 
 import com.andrewd.recordlabel.common.PrintStatus;
 import com.andrewd.recordlabel.supermodel.*;
 import com.andrewd.recordlabel.web.model.ReleaseListItemViewModel;
-import com.andrewd.recordlabel.web.service.ReleaseListItemViewModelBuilderDefault;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.*;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.core.env.Environment;
+import static org.mockito.Mockito.times;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ReleaseListItemViewModelBuilderDefault_OtherProperties_Tests {
+public class ReleaseListItemViewModelBuilderDefaultTests {
 
     @InjectMocks
     ReleaseListItemViewModelBuilderDefault builder;
 
     @Mock
-    Environment env;
+    UrlBuilderFunction urlBuilder;
+
+    Release release;
+
+    final String img0Path = "path 0";
+    final String imgVirtualPath = "/img/";
+
+    @Before
+    public void before() {
+        builder.imagesVirtualPath = imgVirtualPath;
+        release = new Release();
+    }
 
     @Test
     public void mustReturnAnInstanceOfModel() {
-        Release release = new Release();
-
         ReleaseListItemViewModel model = builder.build(release);
 
         Assert.assertNotNull(model);
@@ -39,6 +47,25 @@ public class ReleaseListItemViewModelBuilderDefault_OtherProperties_Tests {
         Assert.assertEquals("Must copy date", model.date, release.date);
         Assert.assertEquals("Must copy catalogueNumber", model.catalogueNumber, release.catalogueNumber);
         Assert.assertEquals("Must copy printStatus", model.printStatus, release.printStatus);
+        Assert.assertEquals("Must copy media", model.media, release.media);
+    }
+
+    @Test
+    public void whenSourceThumbnailIsNull_mustLeaveThumbnailUrlNull() {
+        ReleaseListItemViewModel model = builder.build(release);
+
+        Assert.assertNull(model.thumbnailUrl);
+    }
+
+    @Test
+    public void mustBuildUrl() {
+        Thumbnail thumbnail = new Thumbnail();
+        thumbnail.fileName = img0Path;
+        release.thumbnail = thumbnail;
+
+        ReleaseListItemViewModel model = builder.build(release);
+
+        Mockito.verify(urlBuilder, times(1)).build(Matchers.eq(imgVirtualPath), Matchers.eq(img0Path));
     }
 
     @Test

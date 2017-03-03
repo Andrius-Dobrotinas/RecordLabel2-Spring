@@ -26,6 +26,9 @@ public class ImagesUploadControllerTests {
     @Mock
     ReleaseService releaseSvc;
 
+    @Mock
+    public UrlBuilderFunction urlBuilder;
+
     MultipartFile file1;
     MultipartFile[] files;
     String[] fileNames;
@@ -47,7 +50,8 @@ public class ImagesUploadControllerTests {
         Mockito.when(releaseSvc.getObject(Matchers.any(), Matchers.anyInt())).thenReturn(owner);
 
         Mockito.when(fileUploader
-                .uploadFiles(Matchers.any(ContentBase.class), Matchers.any(MultipartFile[].class), Matchers.any(File.class)))
+                .uploadFiles(Matchers.any(ContentBase.class),
+                        Matchers.any(MultipartFile[].class), Matchers.any(File.class)))
                 .thenReturn(fileNames);
 
         controller.imagesVirtualPath = imgVirtualPath;
@@ -58,7 +62,8 @@ public class ImagesUploadControllerTests {
     public void uploadFiles_mustRetrieveOwnerObjectFromTheDbById() throws FileSaveException {
         controller.upload(objectId, files);
 
-        Mockito.verify(releaseSvc, times(1)).getObject(Matchers.eq(ContentBase.class), Matchers.eq(objectId));
+        Mockito.verify(releaseSvc, times(1))
+                .getObject(Matchers.eq(ContentBase.class), Matchers.eq(objectId));
     }
 
     @Test
@@ -98,8 +103,22 @@ public class ImagesUploadControllerTests {
     }
 
     @Test
-    public void uploadImage_responseBodyMustContainAnArrayOfFileNamesPrefixedWithDirectoryMapName() throws Exception {
-        String[] expectedFileNames = new String[] { imgVirtualPath + file1Name };
+    public void uploadImage_mustBuildUrlsForEachUploadedImage() throws Exception {
+        controller.upload(objectId, files);
+
+        Mockito.verify(urlBuilder, Mockito.times(1))
+                .build(Matchers.eq(imgVirtualPath), Matchers.eq(file1Name));
+    }
+
+    @Test
+    public void uploadImage_responseBodyMustContainAnArrayOfUrlsGeneratedForUploadedFiles()
+            throws Exception {
+
+        String expectedName1 = "expected name";
+        Mockito.when(urlBuilder.build(Matchers.anyString(), Matchers.eq(file1Name)))
+                .thenReturn(expectedName1);
+
+        String[] expectedFileNames = new String[] { expectedName1 };
 
         ResponseEntity response = controller.upload(objectId, files);
 

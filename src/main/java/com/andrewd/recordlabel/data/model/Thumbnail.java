@@ -4,8 +4,8 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "images")
-public class Image {
+@Table(name = "thumbnails")
+public class Thumbnail {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,6 +14,6 @@ public class Image {
     @NotNull
     public String fileName;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     public ContentBase owner;
 }

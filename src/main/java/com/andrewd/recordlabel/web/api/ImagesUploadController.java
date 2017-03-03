@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
+import java.util.Arrays;
 
 @RestController
 @RequestMapping("api/images/")
@@ -21,6 +22,9 @@ public class ImagesUploadController {
     @Autowired
     ReleaseService releaseSvc;
 
+    @Autowired
+    public UrlBuilderFunction urlBuilder;
+
     @Value("${" + WebConfig.IMAGES_VIRTUAL_PATH_SETTINGS_KEY + "}")
     public String imagesVirtualPath;
 
@@ -28,7 +32,8 @@ public class ImagesUploadController {
     public String imagesPhysicalPath;
 
     @RequestMapping(value = "upload/{id}", method = RequestMethod.POST)
-    public ResponseEntity upload(@PathVariable int id, @RequestParam("file") MultipartFile[] files) throws FileSaveException {
+    public ResponseEntity upload(@PathVariable int id, @RequestParam("file") MultipartFile[] files)
+            throws FileSaveException {
         if (id == 0)
             return ResponseEntity.badRequest()
                 .body(new ErrorResponse("Invalid owner id"));
@@ -44,16 +49,15 @@ public class ImagesUploadController {
                     .body(new ErrorResponse(message));
         }
 
-        File directory = new File(imagesPhysicalPath);
+        // Upload files
+        File targetDirectory = new File(imagesPhysicalPath);
+        String[] fileNames = fileUploader.uploadFiles(owner, files, targetDirectory);
 
-        String[] fileNames;
-        fileNames = fileUploader.uploadFiles(owner, files, directory);
+        // Generate urls for each file
+        String[] fileUrls = Arrays.stream(fileNames)
+                .map(name -> urlBuilder.build(imagesVirtualPath, name))
+                .toArray(size -> new String[size]);
 
-        // Add images path prefix to each file name
-        for (int i = 0; i < fileNames.length; i++) {
-            fileNames[i] = imagesVirtualPath + fileNames[i];
-        }
-
-        return ResponseEntity.ok().body(fileNames);
+        return ResponseEntity.ok().body(fileUrls);
     }
 }

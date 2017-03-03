@@ -58,7 +58,11 @@ public class EntityModelTransformationVerifiers {
 
     public static void verifyImage(Image entity, com.andrewd.recordlabel.supermodel.Image superModel) {
         Assert.assertEquals("Image ids must match", entity.id, superModel.id);
-        Assert.assertEquals("Image paths must match", entity.fileName, superModel.fileName);
-        Assert.assertEquals("Image isThumbnail must match", entity.isThumbnail, superModel.isThumbnail);
+        Assert.assertEquals("Image filenames must match", entity.fileName, superModel.fileName);
+    }
+
+    public static void verifyThumbnail(Thumbnail entity, com.andrewd.recordlabel.supermodel.Thumbnail superModel) {
+        Assert.assertEquals("Thumbnail ids must match", entity.id, superModel.id);
+        Assert.assertEquals("Thumbnail filenames must match", entity.fileName, superModel.fileName);
     }
 }
