@@ -27,7 +27,7 @@ public class EntityToModelTransformerDefault implements EntityToModelTransformer
             model.media = getMediaType(entity.media);
         }
         model.tracks = transformList(entity.tracks, this::getTrack);
-        model.images = entity.images;
+        model.images = transformList(entity.images, this::getImage);
 
         transformContentBase(entity, model);
         return model;
@@ -101,6 +101,14 @@ public class EntityToModelTransformerDefault implements EntityToModelTransformer
         com.andrewd.recordlabel.supermodel.MediaType model = new com.andrewd.recordlabel.supermodel.MediaType();
         model.id = entity.id;
         model.text = entity.text;
+        return model;
+    }
+
+    public com.andrewd.recordlabel.supermodel.Image getImage(Image entity) {
+        com.andrewd.recordlabel.supermodel.Image model = new com.andrewd.recordlabel.supermodel.Image();
+        model.id = entity.id;
+        model.fileName = entity.fileName;
+        model.isThumbnail = entity.isThumbnail;
         return model;
     }
 

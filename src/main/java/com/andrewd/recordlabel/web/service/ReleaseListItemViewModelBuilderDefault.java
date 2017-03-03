@@ -1,8 +1,7 @@
 package com.andrewd.recordlabel.web.service;
 
 import com.andrewd.recordlabel.WebConfig;
-import com.andrewd.recordlabel.data.model.Image;
-import com.andrewd.recordlabel.supermodel.Release;
+import com.andrewd.recordlabel.supermodel.*;
 import com.andrewd.recordlabel.web.model.ReleaseListItemViewModel;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.stereotype.Component;
@@ -22,7 +21,7 @@ public class ReleaseListItemViewModelBuilderDefault implements ReleaseListItemVi
 
         String thumbnail = null;
         if (image != null) {
-            thumbnail = imagesVirtualPath + image.path;
+            thumbnail = imagesVirtualPath + image.fileName;
         }
         return new ReleaseListItemViewModel(source, thumbnail);
     }

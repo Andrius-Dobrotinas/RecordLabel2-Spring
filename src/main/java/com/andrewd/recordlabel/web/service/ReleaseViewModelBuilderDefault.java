@@ -1,8 +1,10 @@
 package com.andrewd.recordlabel.web.service;
 
+import com.andrewd.recordlabel.WebConfig;
 import com.andrewd.recordlabel.common.ReferenceType;
 import com.andrewd.recordlabel.supermodel.*;
 import com.andrewd.recordlabel.web.model.ReleaseViewModel;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -10,6 +12,9 @@ import java.util.stream.Collectors;
 
 @Component
 public class ReleaseViewModelBuilderDefault implements ReleaseViewModelBuilder {
+
+    @Value("${" + WebConfig.IMAGES_VIRTUAL_PATH_SETTINGS_KEY + "}")
+    public String imagesVirtualPath;
 
     @Override
     public ReleaseViewModel build(Release source) {
@@ -26,6 +31,18 @@ public class ReleaseViewModelBuilderDefault implements ReleaseViewModelBuilder {
                     .collect(Collectors.toList());
         }
 
+        List<Image> nonThumbnails = null;
+        if (source.images != null && source.images.size() > 0) {
+            nonThumbnails = source.images.stream()
+                    .filter(x -> x.isThumbnail == false)
+                    .collect(Collectors.toList());
+            if (nonThumbnails.size() > 0) {
+                for(Image image : nonThumbnails) {
+                    image.fileName = imagesVirtualPath + image.fileName;
+                }
+            }
+        }
+
         ReleaseViewModel result = new ReleaseViewModel();
         result.id = source.id;
         result.artist = source.artist;
@@ -38,9 +55,9 @@ public class ReleaseViewModelBuilderDefault implements ReleaseViewModelBuilder {
         result.printStatus = source.printStatus;
         result.tracks = source.tracks;
         result.metadata = source.metadata;
-        //result.images = source.images; // TODO: need a view model for Image type
         result.references = references;
         result.youtubeReferences = youtubeReferences;
+        result.images = nonThumbnails;
 
         return result;
     }

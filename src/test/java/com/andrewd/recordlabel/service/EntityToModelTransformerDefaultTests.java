@@ -98,16 +98,17 @@ public class EntityToModelTransformerDefaultTests {
     }
 
     @Test
-    public void transformRelease_MustSimplyCopyImages() {
+    public void transformRelease_MustTransformImages() {
         Release entity = new Release();
-        Image img1 = new Image();
-        img1.path = "path";
-        entity.images.add(img1);
+        Image image = new Image();
+        image.fileName = "file name.img";
+        entity.images.add(image);
 
         com.andrewd.recordlabel.supermodel.Release model = transformer.getRelease(entity);
 
-        Assert.assertNotNull("Must copy release images", model.images);
-        Assert.assertSame("Must copy release images", entity.images, model.images);
+        Assert.assertNotNull("Must transform release images", model.images);
+        Assert.assertEquals("Must transform release images", 1, model.images.size());
+        EntityModelTransformationVerifiers.verifyImage(image, model.images.get(0));
     }
 
     @Test
@@ -204,6 +205,15 @@ public class EntityToModelTransformerDefaultTests {
         com.andrewd.recordlabel.supermodel.MediaType model = transformer.getMediaType(entity);
 
         EntityModelTransformationVerifiers.verifyMediaType(entity, model);
+    }
+
+    @Test
+    public void transformImage() {
+        Image entity = getImage();
+
+        com.andrewd.recordlabel.supermodel.Image model = transformer.getImage(entity);
+
+        EntityModelTransformationVerifiers.verifyImage(entity, model);
     }
 
     @Test
@@ -319,6 +329,14 @@ public class EntityToModelTransformerDefaultTests {
         MediaType entity = new MediaType();
         entity.id = 1;
         entity.text = "LP";
+        return entity;
+    }
+
+    private Image getImage() {
+        Image entity = new Image();
+        entity.id = 1;
+        entity.fileName = "asd.img";
+        entity.isThumbnail = true;
         return entity;
     }
 }

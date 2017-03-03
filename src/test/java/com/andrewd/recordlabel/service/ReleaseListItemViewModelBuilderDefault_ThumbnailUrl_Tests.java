@@ -1,7 +1,6 @@
 package com.andrewd.recordlabel.service;
 
-import com.andrewd.recordlabel.data.model.Image;
-import com.andrewd.recordlabel.supermodel.Release;
+import com.andrewd.recordlabel.supermodel.*;
 import com.andrewd.recordlabel.web.model.ReleaseListItemViewModel;
 import com.andrewd.recordlabel.web.service.ReleaseListItemViewModelBuilderDefault;
 import org.junit.*;
@@ -101,10 +100,10 @@ public class ReleaseListItemViewModelBuilderDefault_ThumbnailUrl_Tests {
         Assert.assertEquals(expectedThumbnailUrl, model.thumbnailUrl);
     }
 
-    private static Image getImage(String path, boolean isThumb) {
-        Image img1 = new Image();
-        img1.path = path;
-        img1.isThumbnail = isThumb;
-        return img1;
+    private static Image getImage(String fileName, boolean isThumb) {
+        Image imgage = new Image();
+        imgage.fileName = fileName;
+        imgage.isThumbnail = isThumb;
+        return imgage;
     }
 }

@@ -55,4 +55,10 @@ public class EntityModelTransformationVerifiers {
         Assert.assertEquals("Media type ids must match", entity.id, superModel.id);
         Assert.assertEquals("Media type texts must match", entity.text, superModel.text);
     }
+
+    public static void verifyImage(Image entity, com.andrewd.recordlabel.supermodel.Image superModel) {
+        Assert.assertEquals("Image ids must match", entity.id, superModel.id);
+        Assert.assertEquals("Image paths must match", entity.fileName, superModel.fileName);
+        Assert.assertEquals("Image isThumbnail must match", entity.isThumbnail, superModel.isThumbnail);
+    }
 }

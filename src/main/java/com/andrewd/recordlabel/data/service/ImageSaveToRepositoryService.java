@@ -11,18 +11,18 @@ public class ImageSaveToRepositoryService implements FileSaveToRepositoryService
     ReleaseService svc;
 
     @Override
-    public void save(ContentBase owner, String[] relativePaths) {
+    public void save(ContentBase owner, String[] fileNames) {
         if (owner == null)
-            throw new IllegalArgumentException("owner");
-        if (relativePaths == null)
-            throw new IllegalArgumentException("relativePaths");
+            throw new IllegalArgumentException("owner is null");
+        if (fileNames == null)
+            throw new IllegalArgumentException("fileNames is null");
 
-        Image[] images = new Image[relativePaths.length];
+        Image[] images = new Image[fileNames.length];
 
-        for(int i = 0; i < relativePaths.length; i++) {
+        for(int i = 0; i < fileNames.length; i++) {
             Image img = new Image();
             img.owner = owner;
-            img.path = relativePaths[i];
+            img.fileName = fileNames[i];
             images[i] = img;
         }
 

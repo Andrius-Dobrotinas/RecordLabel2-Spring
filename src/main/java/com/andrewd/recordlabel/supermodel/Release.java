@@ -2,7 +2,6 @@ package com.andrewd.recordlabel.supermodel;
 
 import java.util.*;
 import com.andrewd.recordlabel.common.*;
-import com.andrewd.recordlabel.data.model.Image;
 
 public class Release extends ContentBase {
     //@JsonProperty

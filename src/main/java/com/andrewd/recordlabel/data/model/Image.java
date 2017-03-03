@@ -12,10 +12,10 @@ public class Image {
     public int id;
 
     @NotNull
-    public String path;
+    public String fileName;
 
     public boolean isThumbnail;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     public ContentBase owner;
 }
