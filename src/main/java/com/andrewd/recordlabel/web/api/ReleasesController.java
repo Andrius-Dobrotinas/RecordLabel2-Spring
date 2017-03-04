@@ -4,6 +4,7 @@ import com.andrewd.recordlabel.WebConfig;
 import com.andrewd.recordlabel.common.*;
 import com.andrewd.recordlabel.data.services.ReleaseService;
 import com.andrewd.recordlabel.supermodels.*;
+import com.andrewd.recordlabel.common.ObjectNotFoundException;
 import com.andrewd.recordlabel.web.models.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.http.*;
@@ -32,53 +33,51 @@ public class ReleasesController {
 
 
     @RequestMapping(value = "post", method = RequestMethod.POST)
-    public ResponseEntity post(@RequestBody com.andrewd.recordlabel.supermodels.ReleaseSlim model) {
-        return save(model);
+    public void post(@RequestBody com.andrewd.recordlabel.supermodels.ReleaseSlim model) {
+        save(model);
     }
 
     /** This method is a work-around for my Angular JS front-end... because it adds id to the path*/
     @RequestMapping(value = "post/{id}", method = RequestMethod.POST)
-    public ResponseEntity post(@PathVariable int id,
-                               @RequestBody com.andrewd.recordlabel.supermodels.ReleaseSlim model) {
-        return save(model);
+    public void post(@PathVariable int id,
+                     @RequestBody com.andrewd.recordlabel.supermodels.ReleaseSlim model) {
+        // TODO: probably use the supplied id instead of the one in the model?
+        save(model);
     }
 
-    private ResponseEntity save(com.andrewd.recordlabel.supermodels.ReleaseSlim model) {
+    private void save(com.andrewd.recordlabel.supermodels.ReleaseSlim model) {
         // TODO: add model validations
-        try {
-            releaseSvc.save(model);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e);
-        }
-        return ResponseEntity.ok().build();
+        releaseSvc.save(model);
     }
 
     @RequestMapping(value = "get/{id}", method = RequestMethod.GET)
-    public ResponseEntity<ReleaseViewModel> get(@PathVariable int id) {
+    public ReleaseViewModel get(@PathVariable int id) throws ObjectNotFoundException {
         Release release = releaseSvc.getRelease(id);
 
-        if (release == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        };
+        if (release == null)
+            throw new ObjectNotFoundException(id);
+
         ReleaseViewModel viewModel = viewModelBuilder.apply(release);
-        return ResponseEntity.ok(viewModel);
+        return viewModel;
     }
 
     @RequestMapping(value = "getForEdit/{id}", method = RequestMethod.GET)
-    public ResponseEntity<ReleaseSlim> getForEdit(@PathVariable int id) {
+    public ReleaseSlim getForEdit(@PathVariable int id) throws ObjectNotFoundException {
         ReleaseSlim superModel = releaseSvc.getReleaseSlim(id);
 
-        if (superModel == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); //TODO: change status code
-        }
-        return ResponseEntity.ok(superModel);
+        if (superModel == null)
+            throw new ObjectNotFoundException(id);
+
+        return superModel;
     }
 
     @RequestMapping(value = "getBatch", method = RequestMethod.GET)
     public BatchedResult<ReleaseListItemViewModel> getBatch(@RequestParam(value = "number") int number,
                                                             @RequestParam(value = "size") int size) {
-        if (number < 1) number = DEFAULT_BATCH_NUMBER;
-        if (size < 1) size = itemsPerPage;
+        if (number < 1)
+            number = DEFAULT_BATCH_NUMBER;
+        if (size < 1)
+            size = itemsPerPage;
 
         BatchedResult<Release> releases = releaseSvc.getReleases(number, size);
 
