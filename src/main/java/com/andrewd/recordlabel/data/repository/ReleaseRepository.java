@@ -1,7 +1,7 @@
 package com.andrewd.recordlabel.data.repository;
 
 import com.andrewd.recordlabel.data.SortDirection;
-import com.andrewd.recordlabel.data.model.*;
+import com.andrewd.recordlabel.data.entities.*;
 
 import java.util.List;
 

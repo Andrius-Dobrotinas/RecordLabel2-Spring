@@ -1,7 +1,7 @@
 package com.andrewd.recordlabel.web.api;
 
-import com.andrewd.recordlabel.web.cookie.CookieGenerator;
-import com.andrewd.recordlabel.web.model.Credentials;
+import com.andrewd.recordlabel.web.components.cookies.CookieGenerator;
+import com.andrewd.recordlabel.web.models.Credentials;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,7 +1,7 @@
 package com.andrewd.recordlabel.web.api;
 
-import com.andrewd.recordlabel.data.service.ReleaseService;
-import com.andrewd.recordlabel.supermodel.*;
+import com.andrewd.recordlabel.data.services.ReleaseService;
+import com.andrewd.recordlabel.supermodels.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

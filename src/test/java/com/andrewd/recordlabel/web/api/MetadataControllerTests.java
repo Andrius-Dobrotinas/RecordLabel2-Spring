@@ -1,7 +1,7 @@
 package com.andrewd.recordlabel.web.api;
 
-import com.andrewd.recordlabel.data.service.ReleaseService;
-import com.andrewd.recordlabel.supermodel.Metadata;
+import com.andrewd.recordlabel.data.services.ReleaseService;
+import com.andrewd.recordlabel.supermodels.Metadata;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.*;

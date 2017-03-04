@@ -1,12 +1,11 @@
 package com.andrewd.recordlabel.data.repository;
 
 import com.andrewd.recordlabel.data.SortDirection;
-import com.andrewd.recordlabel.data.entitytools.IdComparer;
-import com.andrewd.recordlabel.data.model.*;
+import com.andrewd.recordlabel.data.entity.IdComparer;
+import com.andrewd.recordlabel.data.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import javax.persistence.*;
-import javax.persistence.criteria.*;
 import javax.transaction.Transactional;
 import java.util.*;
 

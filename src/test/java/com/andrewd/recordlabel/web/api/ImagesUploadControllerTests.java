@@ -1,10 +1,11 @@
 package com.andrewd.recordlabel.web.api;
 
-import com.andrewd.recordlabel.data.model.*;
-import com.andrewd.recordlabel.data.service.ReleaseService;
+import com.andrewd.recordlabel.data.entities.*;
+import com.andrewd.recordlabel.data.services.ReleaseService;
+import com.andrewd.recordlabel.web.components.UrlBuilderFunction;
 import com.andrewd.recordlabel.web.io.FileSaveException;
-import com.andrewd.recordlabel.web.model.ErrorResponse;
-import com.andrewd.recordlabel.web.service.*;
+import com.andrewd.recordlabel.web.models.ErrorResponse;
+import com.andrewd.recordlabel.web.components.*;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.*;

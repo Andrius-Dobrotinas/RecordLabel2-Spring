@@ -1,11 +1,12 @@
 package com.andrewd.recordlabel.web.api;
 
 import com.andrewd.recordlabel.WebConfig;
-import com.andrewd.recordlabel.data.model.ContentBase;
-import com.andrewd.recordlabel.data.service.ReleaseService;
+import com.andrewd.recordlabel.data.entities.ContentBase;
+import com.andrewd.recordlabel.data.services.ReleaseService;
+import com.andrewd.recordlabel.web.components.UrlBuilderFunction;
 import com.andrewd.recordlabel.web.io.FileSaveException;
-import com.andrewd.recordlabel.web.model.ErrorResponse;
-import com.andrewd.recordlabel.web.service.*;
+import com.andrewd.recordlabel.web.models.ErrorResponse;
+import com.andrewd.recordlabel.web.components.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

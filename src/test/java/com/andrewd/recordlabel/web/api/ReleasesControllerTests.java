@@ -1,10 +1,10 @@
 package com.andrewd.recordlabel.web.api;
 
 import com.andrewd.recordlabel.common.BatchedResult;
-import com.andrewd.recordlabel.data.service.ReleaseService;
-import com.andrewd.recordlabel.supermodel.*;
-import com.andrewd.recordlabel.web.model.*;
-import com.andrewd.recordlabel.web.service.*;
+import com.andrewd.recordlabel.data.services.ReleaseService;
+import com.andrewd.recordlabel.supermodels.*;
+import com.andrewd.recordlabel.web.models.*;
+import com.andrewd.recordlabel.web.components.*;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.*;

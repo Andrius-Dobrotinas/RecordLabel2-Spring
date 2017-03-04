@@ -1,7 +1,7 @@
 package com.andrewd.recordlabel.web.api;
 
-import com.andrewd.recordlabel.data.service.ReleaseService;
-import com.andrewd.recordlabel.supermodel.MediaType;
+import com.andrewd.recordlabel.data.services.ReleaseService;
+import com.andrewd.recordlabel.supermodels.MediaType;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.*;

@@ -2,9 +2,9 @@ package com.andrewd.recordlabel.web.api;
 
 import com.andrewd.recordlabel.WebConfig;
 import com.andrewd.recordlabel.common.*;
-import com.andrewd.recordlabel.data.service.ReleaseService;
-import com.andrewd.recordlabel.supermodel.*;
-import com.andrewd.recordlabel.web.model.*;
+import com.andrewd.recordlabel.data.services.ReleaseService;
+import com.andrewd.recordlabel.supermodels.*;
+import com.andrewd.recordlabel.web.models.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
@@ -32,18 +32,18 @@ public class ReleasesController {
 
 
     @RequestMapping(value = "post", method = RequestMethod.POST)
-    public ResponseEntity post(@RequestBody com.andrewd.recordlabel.supermodel.ReleaseSlim model) {
+    public ResponseEntity post(@RequestBody com.andrewd.recordlabel.supermodels.ReleaseSlim model) {
         return save(model);
     }
 
     /** This method is a work-around for my Angular JS front-end... because it adds id to the path*/
     @RequestMapping(value = "post/{id}", method = RequestMethod.POST)
     public ResponseEntity post(@PathVariable int id,
-                               @RequestBody com.andrewd.recordlabel.supermodel.ReleaseSlim model) {
+                               @RequestBody com.andrewd.recordlabel.supermodels.ReleaseSlim model) {
         return save(model);
     }
 
-    private ResponseEntity save(com.andrewd.recordlabel.supermodel.ReleaseSlim model) {
+    private ResponseEntity save(com.andrewd.recordlabel.supermodels.ReleaseSlim model) {
         // TODO: add model validations
         try {
             releaseSvc.save(model);

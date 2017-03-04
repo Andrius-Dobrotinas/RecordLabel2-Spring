@@ -1,8 +1,8 @@
 package com.andrewd.recordlabel.web.api;
 
 import com.andrewd.recordlabel.common.*;
-import com.andrewd.recordlabel.common.service.EnumDataGetter;
-import com.andrewd.recordlabel.web.model.Constants;
+import com.andrewd.recordlabel.common.components.EnumDataGetter;
+import com.andrewd.recordlabel.web.models.Constants;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;

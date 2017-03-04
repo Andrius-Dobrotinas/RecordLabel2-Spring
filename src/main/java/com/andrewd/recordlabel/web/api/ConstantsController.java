@@ -1,9 +1,9 @@
 package com.andrewd.recordlabel.web.api;
 
-import com.andrewd.recordlabel.common.service.EnumDataGetter;
-import com.andrewd.recordlabel.web.model.Constants;
+import com.andrewd.recordlabel.common.components.EnumDataGetter;
+import com.andrewd.recordlabel.web.models.Constants;
 import com.andrewd.recordlabel.common.*;
-import com.andrewd.recordlabel.supermodel.*;
+import com.andrewd.recordlabel.supermodels.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

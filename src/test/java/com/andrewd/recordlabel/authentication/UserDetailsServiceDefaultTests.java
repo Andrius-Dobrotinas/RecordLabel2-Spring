@@ -1,10 +1,7 @@
 package com.andrewd.recordlabel.authentication;
 
 import com.andrewd.recordlabel.authentication.data.*;
-import com.andrewd.recordlabel.authentication.service.UserDetailsServiceDefault;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.*;
 import org.mockito.runners.MockitoJUnitRunner;
