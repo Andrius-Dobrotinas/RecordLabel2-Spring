@@ -1,9 +1,8 @@
 package com.andrewd.recordlabel.web.api;
 
 import com.andrewd.recordlabel.WebConfig;
-import com.andrewd.recordlabel.data.entities.ContentBase;
-import com.andrewd.recordlabel.data.services.ReleaseService;
-import com.andrewd.recordlabel.web.components.UrlBuilderFunction;
+import com.andrewd.recordlabel.data.services.*;
+import com.andrewd.recordlabel.supermodels.Image;
 import com.andrewd.recordlabel.web.io.FileSaveException;
 import com.andrewd.recordlabel.web.models.ErrorResponse;
 import com.andrewd.recordlabel.web.components.*;
@@ -12,7 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
-import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/images/")
@@ -25,42 +25,50 @@ public class ImagesUploadController {
     public String imagesPhysicalPath;
 
     @Autowired
-    private MultipartFileUploader fileUploader;
+    private TransactionalMultipartFileUploader fileUploader;
 
     @Autowired
     private ReleaseService releaseSvc;
 
     @Autowired
-    private UrlBuilderFunction urlBuilder;
+    private ImagesService imagesSvc;
+
+    @Autowired
+    private ImageFilenameUrlifier imgUrlifier;
 
 
-    @RequestMapping(value = "upload/{id}", method = RequestMethod.POST)
-    public ResponseEntity upload(@PathVariable int id, @RequestParam("file") MultipartFile[] files)
+    @RequestMapping(value = "upload/{ownerId}", method = RequestMethod.POST)
+    public ResponseEntity upload(@PathVariable int ownerId, @RequestParam("file") MultipartFile[] files)
             throws FileSaveException {
-        if (id == 0)
+        if (ownerId == 0)
             return ResponseEntity.badRequest()
                 .body(new ErrorResponse("Invalid owner id"));
         if (files.length == 0)
             return ResponseEntity.badRequest()
                 .body(new ErrorResponse("No files posted"));
 
-        // Get owner object
-        ContentBase owner = releaseSvc.getObject(ContentBase.class, id);
-        if (owner == null) {
-            String message = String.format("Object with id %s does not exist", id);
+        // Check if owner object exists
+        if (!releaseSvc.objectExists(ownerId)) {
+            String message = String.format("Object with id %s does not exist", ownerId);
             return ResponseEntity.badRequest()
                     .body(new ErrorResponse(message));
         }
 
         // Upload files
         File targetDirectory = new File(imagesPhysicalPath);
-        String[] fileNames = fileUploader.uploadFiles(owner, files, targetDirectory);
 
-        // Generate urls for each file
-        String[] fileUrls = Arrays.stream(fileNames)
-                .map(name -> urlBuilder.build(imagesVirtualPath, name))
-                .toArray(size -> new String[size]);
+        List<Image> savedImages = fileUploader.uploadFiles(files, targetDirectory,
+                saveFiles -> {
+                    List<Image> images = saveFiles.stream()
+                            .map(x -> new Image(x.getName()))
+                            .collect(Collectors.toList());
 
-        return ResponseEntity.ok().body(fileUrls);
+                    return imagesSvc.save(ownerId, images);
+                });
+
+        // Replace each image's filename with url
+        savedImages.forEach(image -> imgUrlifier.urlify(image, imagesVirtualPath));
+
+        return ResponseEntity.ok().body(savedImages);
     }
 }

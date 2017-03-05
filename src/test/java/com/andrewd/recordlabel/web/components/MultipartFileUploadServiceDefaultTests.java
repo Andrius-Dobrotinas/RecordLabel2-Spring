@@ -1,7 +1,5 @@
 package com.andrewd.recordlabel.web.components;
 
-import com.andrewd.recordlabel.data.components.FileSaveToRepositoryService;
-import com.andrewd.recordlabel.data.entities.*;
 import com.andrewd.recordlabel.web.io.*;
 import org.junit.*;
 import org.junit.runner.RunWith;
@@ -9,6 +7,8 @@ import org.mockito.*;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
+import java.util.*;
+import java.util.function.Function;
 
 import static org.mockito.Mockito.times;
 
@@ -16,107 +16,128 @@ import static org.mockito.Mockito.times;
 public class MultipartFileUploadServiceDefaultTests {
 
     @InjectMocks
-    MultipartFileUploaderDefault svc;
+    TransactionalMultipartFileUploaderDefault svc;
 
     @Mock
     MultipartFileSaver multipartFileSaver;
 
-    @Mock
-    FileSaveToRepositoryService fileSaveToRepositoryService;
+    private File targetDirectory;
+    private MultipartFile fileToUpload1;
+    private MultipartFile fileToUpload2;
+    private MultipartFile[] filesToUpload;
 
-    ContentBase owner;
+    private File savedFile1;
+    private File savedFile2;
 
-    File targetDirectory;
-    MultipartFile file1;
-    String file1Name = "file1Name";
-
-    MultipartFile[] files;
-    String[] fileNames;
-
-    File savedFile1;
+    private Function<List<File>, List<String>> function;
+    private List<String> functionResult;
 
     @Before
     public void before() throws IOException {
-        owner = new Release();
-
         targetDirectory = new File("");
-        file1 = Mockito.mock(MultipartFile.class);
+        fileToUpload1 = Mockito.mock(MultipartFile.class);
+        fileToUpload2 = Mockito.mock(MultipartFile.class);
 
-        files = new MultipartFile[] { file1 };
-        fileNames = new String[] { file1Name };
+        filesToUpload = new MultipartFile[] { fileToUpload1, fileToUpload2 };
 
         savedFile1 = Mockito.mock(File.class);
+        savedFile2 = Mockito.mock(File.class);
 
-        Mockito.when(savedFile1.getName()).thenReturn(file1Name);
+        Mockito.when(multipartFileSaver
+                .saveFile(Matchers.eq(fileToUpload1), Matchers.any()))
+                .thenReturn(savedFile1);
+        Mockito.when(multipartFileSaver
+                .saveFile(Matchers.eq(fileToUpload2), Matchers.any()))
+                .thenReturn(savedFile2);
 
-        Mockito.when(multipartFileSaver.saveFile(Matchers.any(), Matchers.any())).thenReturn(savedFile1);
+        functionResult = new ArrayList<>();
+        functionResult.add("some data");
+
+        function = Mockito.mock(Function.class);
+        Mockito.when(function.apply(Matchers.anyListOf(File.class)))
+                .thenReturn(functionResult);
     }
 
     @Test
     public void uploadFiles_mustSaveEachFileToTheTargetDir() throws IOException, FileSaveException {
-        svc.uploadFiles(owner, files, targetDirectory);
+        svc.uploadFiles(filesToUpload, targetDirectory, function);
 
-        Mockito.verify(multipartFileSaver, times(1)).saveFile(Matchers.eq(file1), Matchers.any(File.class));
-    }
-
-    @Test
-    public void uploadFiles_mustSaveEachEntryToTheDatabase() throws FileSaveException {
-        svc.uploadFiles(owner, files, targetDirectory);
-
-        Mockito.verify(fileSaveToRepositoryService, times(1)).save(Matchers.eq(owner), Matchers.eq(fileNames));
-    }
-
-    @Test
-    public void uploadFiles_mustReturnFileNames() throws FileSaveException {
-        String[] result = svc.uploadFiles(owner, files, targetDirectory);
-
-        Assert.assertArrayEquals(fileNames, result);
+        Mockito.verify(multipartFileSaver, times(1))
+                .saveFile(Matchers.eq(fileToUpload1), Matchers.eq(targetDirectory));
+        Mockito.verify(multipartFileSaver, times(1))
+                .saveFile(Matchers.eq(fileToUpload2), Matchers.eq(targetDirectory));
     }
 
     @Test(expected = FileSaveException.class)
     public void uploadFiles_onErrorSavingFiles_mustThrowException() throws FileSaveException, IOException {
-
-        Mockito.when(multipartFileSaver.saveFile(Matchers.eq(file1), Matchers.any()))
+        Mockito.when(multipartFileSaver
+                .saveFile(Matchers.eq(fileToUpload1), Matchers.any()))
                 .thenThrow(IOException.class);
 
-        svc.uploadFiles(owner, files, targetDirectory);
+        svc.uploadFiles(filesToUpload, targetDirectory, function);
     }
 
+    /**
+     * First file will be saved successfully and an exception will be
+     * thrown saving the second file
+     */
     @Test
-    public void uploadFiles_onErrorSavingFiles_mustDeleteSavedFiles_whenAtLeastOneFileHasBeenSaved() throws IOException {
-
-        MultipartFile file2 = Mockito.mock(MultipartFile.class);
-        files = new MultipartFile[] { file1, file2 };
-
-        Mockito.when(multipartFileSaver.saveFile(Matchers.eq(file2), Matchers.any()))
+    public void uploadFiles_onErrorSavingFiles_whenAtLeastOneFileHasBeenSaved_mustDeleteSavedFiles() throws IOException {
+        Mockito.when(multipartFileSaver
+                .saveFile(Matchers.eq(fileToUpload2), Matchers.any()))
                 .thenThrow(IOException.class);
 
         try {
-            svc.uploadFiles(owner, files, targetDirectory);
+            svc.uploadFiles(filesToUpload, targetDirectory, function);
         }
         catch (FileSaveException e) { }
 
         Mockito.verify(savedFile1, times(1)).delete();
+    }
+
+    @Test
+    public void uploadFiles_mustRunTheFunctionWithSavedFiles() throws FileSaveException {
+        List<File> savedFiles = new ArrayList<>();
+        savedFiles.add(savedFile1);
+        savedFiles.add(savedFile2);
+
+        svc.uploadFiles(filesToUpload, targetDirectory, function);
+
+        Mockito.verify(function, times(1)).apply(Matchers.eq(savedFiles));
+    }
+
+    @Test
+    public void uploadFiles_mustReturnWhateverTheFunctionReturns()
+            throws FileSaveException {
+
+        List<String> result = svc.uploadFiles(filesToUpload, targetDirectory, function);
+
+        Assert.assertSame(functionResult, result);
     }
 
     @Test(expected = FileSaveException.class)
-    public void uploadFiles_onErrorSavingToTheDb_mustThrowException() throws FileSaveException {
-        Mockito.doThrow(IOException.class)
-                .when(fileSaveToRepositoryService).save(Matchers.any(), Matchers.any());
+    public void uploadFiles_onErrorRunningFunction_mustThrowException()
+            throws FileSaveException, IOException {
 
-        svc.uploadFiles(owner, files, targetDirectory);
+        Mockito.doThrow(Exception.class)
+                .when(function).apply(Matchers.any());
+
+        svc.uploadFiles(filesToUpload, targetDirectory, function);
     }
 
     @Test
-    public void uploadFiles_onErrorSavingToTheDb_deletedSavedFiles() {
-        Mockito.doThrow(IOException.class)
-                .when(fileSaveToRepositoryService).save(Matchers.any(), Matchers.any());
+    public void uploadFiles_onErrorRunningFunction_mustDeleteAllSavedFiles()
+            throws IOException {
+
+        Mockito.when(function.apply(Matchers.any()))
+                .thenThrow(Exception.class);
 
         try {
-            svc.uploadFiles(owner, files, targetDirectory);
+            svc.uploadFiles(filesToUpload, targetDirectory, function);
         }
         catch (FileSaveException e) { }
 
         Mockito.verify(savedFile1, times(1)).delete();
+        Mockito.verify(savedFile2, times(1)).delete();
     }
 }
