@@ -86,7 +86,7 @@ public class ReleaseRepositoryDefault implements ReleaseRepository {
 
     @Override
     public boolean objectExists(int id) {
-        return em.createQuery("select count(o) from ContentBase o where o.id=:id", Integer.class)
+        return em.createQuery("select count(o) from ContentBase o where o.id=:id", Long.class)
                 .setParameter("id", id)
                 .getSingleResult()  == 1;
     }

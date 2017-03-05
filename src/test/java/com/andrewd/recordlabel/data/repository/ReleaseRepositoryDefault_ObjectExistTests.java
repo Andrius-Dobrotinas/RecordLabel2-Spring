@@ -18,63 +18,62 @@ public class ReleaseRepositoryDefault_ObjectExistTests {
     @Mock
     EntityManager em;
 
-    TypedQuery queryMock;
-    int id;
-    int count;
+    private TypedQuery queryMock;
+    private int id = 711;
+    private final long count = 1;
+    private final long countZero = 0;
 
     @Before
     public void init() {
-        id = 711;
-
         queryMock = Mockito.mock(TypedQuery.class);
 
-        Mockito.when(em.createQuery(Matchers.anyString(), Matchers.any())).thenReturn(queryMock);
-        Mockito.when(queryMock.setParameter(Matchers.anyString(), Matchers.anyInt())).thenReturn(queryMock);
+        Mockito.when(em
+                .createQuery(Matchers.anyString(), Matchers.any()))
+                .thenReturn(queryMock);
+
+        Mockito.when(queryMock
+                .setParameter(Matchers.anyString(), Matchers.anyInt()))
+                .thenReturn(queryMock);
+
+        Mockito.when(queryMock
+                .getSingleResult())
+                .thenReturn(count);
     }
 
     @Test
     public void mustCreateQuery() {
-        Mockito.when(queryMock.getSingleResult()).thenReturn(count);
-
         repository.objectExists(id);
 
-        Mockito.verify(em, times(1)).createQuery(Matchers.anyString(), Matchers.eq(Integer.class));
+        Mockito.verify(em, times(1))
+                .createQuery(Matchers.anyString(), Matchers.eq(Long.class));
     }
 
     @Test
     public void mustSetQueryParameter () {
-        Mockito.when(queryMock.getSingleResult()).thenReturn(count);
-
         repository.objectExists(id);
 
-        Mockito.verify(queryMock, times(1)).setParameter(Matchers.anyString(), Matchers.eq(id));
+        Mockito.verify(queryMock, times(1))
+                .setParameter(Matchers.anyString(), Matchers.eq(id));
     }
 
     @Test
     public void mustGetQueryResult () {
-        Mockito.when(queryMock.getSingleResult()).thenReturn(count);
-
         repository.objectExists(id);
 
         Mockito.verify(queryMock, times(1)).getSingleResult();
     }
 
     @Test
-    public void mustReturnTrueWhenCountIs1 () {
-        int count = 1;
-
-        Mockito.when(queryMock.getSingleResult()).thenReturn(count);
-
+    public void mustReturnTrue_whenCountIs1 () {
         boolean result = repository.objectExists(id);
 
         Assert.assertTrue(result);
     }
 
     @Test
-    public void mustReturnTrueWhenCountIs0 () {
-        int count = 0;
-
-        Mockito.when(queryMock.getSingleResult()).thenReturn(count);
+    public void mustReturnTrue_whenCountIs0 () {
+        Mockito.when(queryMock.getSingleResult())
+                .thenReturn(countZero);
 
         boolean result = repository.objectExists(id);
 
