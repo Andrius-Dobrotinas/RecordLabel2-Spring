@@ -10,6 +10,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     public static final String IMAGES_VIRTUAL_PATH_SETTINGS_KEY = "recordlabel.img.virtualpath";
     public static final String IMAGES_PHYSICAL_PATH_SETTINGS_KEY = "recordlabel.img.path";
+    public static final String IMAGES_PREFIX = "recordlabel.img.prefix";
     public static final String ITEMS_PER_PAGE_SETTINGS_KEY = "recordlabel.web.itemsPerPage";
 
     @Autowired

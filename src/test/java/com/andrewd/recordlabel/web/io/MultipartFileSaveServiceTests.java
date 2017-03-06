@@ -13,15 +13,17 @@ import java.io.*;
 public class MultipartFileSaveServiceTests {
 
     MultipartFileSaverDefault component;
-    MultipartFile file;
-    String fileName;
-    File targetDirectory;
 
-    File result;
+    private MultipartFile file;
+    private String fileName;
+    private File targetDirectory;
+    private File result;
+    private String prefix = "img";
 
     @Before
     public void before() throws IOException {
         component = new MultipartFileSaverDefault();
+        component.fileNamePrefix = prefix;
 
         targetDirectory = Files.newTemporaryFolder();
 
@@ -60,6 +62,17 @@ public class MultipartFileSaveServiceTests {
         Assert.assertNotEquals(result.getName(), result2.getName());
 
         result2.delete();
+    }
+
+    @Test
+    public void mustSaveFileUsingThePrefix() throws IOException {
+        result = component.saveFile(file, targetDirectory);
+
+        String actualPrefix = result.getName().substring(0, 3);
+
+        Assert.assertEquals(prefix, actualPrefix);
+
+        result.delete();
     }
 
     @Test
