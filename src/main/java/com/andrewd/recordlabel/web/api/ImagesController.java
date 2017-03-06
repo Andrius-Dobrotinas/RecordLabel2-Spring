@@ -3,7 +3,7 @@ package com.andrewd.recordlabel.web.api;
 import com.andrewd.recordlabel.WebConfig;
 import com.andrewd.recordlabel.data.services.ImagesService;
 import com.andrewd.recordlabel.supermodels.Image;
-import com.andrewd.recordlabel.web.components.UrlBuilderFunction;
+import com.andrewd.recordlabel.web.components.ImageFilenameUrlifier;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -16,7 +16,7 @@ public class ImagesController {
     private ImagesService svc;
 
     @Autowired
-    private UrlBuilderFunction urlBuilder;
+    private ImageFilenameUrlifier imgUrlifier;
 
     @Value("${" + WebConfig.IMAGES_VIRTUAL_PATH_SETTINGS_KEY + "}")
     public String imagesVirtualPath;
@@ -26,8 +26,8 @@ public class ImagesController {
     public List<Image> get(@PathVariable int ownerId) {
         List<Image> images = svc.getImages(ownerId);
 
-        images.forEach(image ->
-                image.fileName = urlBuilder.build(imagesVirtualPath, image.fileName));
+        // Change images filenames to urls
+        images.forEach(image -> imgUrlifier.urlify(image, imagesVirtualPath));
 
         return images;
     }

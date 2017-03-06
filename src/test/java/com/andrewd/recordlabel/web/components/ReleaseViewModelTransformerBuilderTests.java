@@ -9,6 +9,8 @@ import org.mockito.*;
 import org.mockito.runners.MockitoJUnitRunner;
 import java.util.*;
 
+import static org.mockito.Mockito.times;
+
 @RunWith(MockitoJUnitRunner.class)
 public class ReleaseViewModelTransformerBuilderTests {
 
@@ -16,9 +18,9 @@ public class ReleaseViewModelTransformerBuilderTests {
     ReleaseViewModelBuilder builder;
 
     @Mock
-    UrlBuilderFunction urlBuilder;
+    ImageFilenameUrlifier imgUrlifier;
 
-    Release sourceModel;
+    private Release sourceModel;
 
     @Before
     public void Init() {
@@ -82,7 +84,7 @@ public class ReleaseViewModelTransformerBuilderTests {
         sourceModel.references = null;
 
         // Run
-        ReleaseViewModel result = builder.apply(sourceModel);
+        builder.apply(sourceModel);
     }
 
     @Test
@@ -101,10 +103,11 @@ public class ReleaseViewModelTransformerBuilderTests {
         ReleaseViewModel result = builder.apply(sourceModel);
 
         // Verify
-        Assert.assertNotNull("Result's youtubeReferences field must contain a list of youtube references",
-                result.youtubeReferences);
+        Assert.assertNotNull("Result's youtubeReferences field must contain a list" +
+                        " of youtube references", result.youtubeReferences);
         Assert.assertEquals("Result's youtubeReferences field must contain the same number of youtube " +
-                "references as there are in the source model", 2, result.youtubeReferences.size());
+                "references as there are in the source model",
+                2, result.youtubeReferences.size());
         Assert.assertTrue("Result's youtubeReferences field must contain a youtube reference",
                 result.youtubeReferences.contains(refYt1));
         Assert.assertTrue("Result's youtubeReferences field must contain a youtube reference",
@@ -126,10 +129,11 @@ public class ReleaseViewModelTransformerBuilderTests {
         // Run
         ReleaseViewModel result = builder.apply(sourceModel);
 
-        Assert.assertNotNull("Result's references field must contain a list of non-youtube references",
-                result.references);
+        Assert.assertNotNull("Result's references field must contain a list of non-youtube" +
+                        " references", result.references);
         Assert.assertEquals("Result's references field must contain the same number of non-youtube " +
-                "references as there are in the source model", 2, result.references.size());
+                "references as there are in the source model",
+                2, result.references.size());
         Assert.assertTrue("Result's references field must contain a non-youtube reference",
                 result.references.contains(ref1));
         Assert.assertTrue("Result's references field must contain a non-youtube reference",
@@ -161,67 +165,36 @@ public class ReleaseViewModelTransformerBuilderTests {
     }
 
     @Test
-    public void mustCopyImagesListInstance() {
+    public void mustCopyImagesList() {
         Image image1 = getImage("");
         sourceModel.images.add(image1);
 
         // Run
         ReleaseViewModel result = builder.apply(sourceModel);
 
-        Assert.assertEquals("Must copy images list instance", sourceModel.images, result.images);
+        Assert.assertArrayEquals("Must copy all list entries",
+                sourceModel.images.toArray(), result.images.toArray());
     }
 
-    /* This might not seem exactly right, but these instances of Image objects will
-     not be used anymore anyway
-      */
     @Test
-    public void mustBuildUrl_forEachImage() {
+    public void get_mustUseUrlifierToChangeEachImagesFileNameToAUrl() {
+        String imgVirtualPath = "/img/";
+        builder.imagesVirtualPath = imgVirtualPath;
+
         String name1 = "cover1.jpg";
         String name2 = "cover2.png";
-        String virtualPath = "/path/";
-        String expectedName1 = "expected name1";
-        String expectedName2 = "expected name2";
-
-        builder.imagesVirtualPath = virtualPath;
-        Mockito.when(urlBuilder.build(Matchers.anyString(), Matchers.eq(name1)))
-                .thenReturn(expectedName1);
-        Mockito.when(urlBuilder.build(Matchers.anyString(), Matchers.eq(name2)))
-                .thenReturn(expectedName2);
-
-        Image image1 = getImage(name1);
-        Image image2 = getImage(name2);
+        Image image1 = new Image(name1);
+        Image image2 = new Image(name2);
         sourceModel.images.add(image1);
         sourceModel.images.add(image2);
 
         // Run
         builder.apply(sourceModel);
 
-        // Verify
-        Assert.assertEquals(expectedName1, image1.fileName);
-        Assert.assertEquals(expectedName2, image2.fileName);
-    }
-
-    @Test
-    public void mustAssignUrlToEachImagesFileNameField() {
-        String name1 = "cover1.jpg";
-        String name2 = "cover2.png";
-        String virtualPath = "/path/";
-
-        builder.imagesVirtualPath = virtualPath;
-
-        Image image1 = getImage(name1);
-        Image image2 = getImage(name2);
-        sourceModel.images.add(image1);
-        sourceModel.images.add(image2);
-
-        // Run
-        builder.apply(sourceModel);
-
-        // Verify
-        Mockito.verify(urlBuilder, Mockito.times(1))
-                .build(Matchers.eq(virtualPath), Matchers.eq(name1));
-        Mockito.verify(urlBuilder, Mockito.times(1))
-                .build(Matchers.eq(virtualPath), Matchers.eq(name1));
+        Mockito.verify(imgUrlifier, times(1))
+                .urlify(Matchers.eq(image1), Matchers.eq(imgVirtualPath));
+        Mockito.verify(imgUrlifier, times(1))
+                .urlify(Matchers.eq(image2), Matchers.eq(imgVirtualPath));
     }
 
     private static Image getImage(String fileName) {

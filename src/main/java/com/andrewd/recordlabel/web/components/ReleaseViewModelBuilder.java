@@ -18,7 +18,7 @@ public class ReleaseViewModelBuilder implements Function<Release, ReleaseViewMod
     public String imagesVirtualPath;
 
     @Autowired
-    private UrlBuilderFunction urlBuilder;
+    private ImageFilenameUrlifier imgUrlifier;
 
     @Override
     public ReleaseViewModel apply(Release source) {
@@ -27,19 +27,17 @@ public class ReleaseViewModelBuilder implements Function<Release, ReleaseViewMod
 
         if (source.references != null && source.references.size() > 0) {
             youtubeReferences = source.references.stream()
-                    .filter(x -> (x.type == ReferenceType.Youtube) ? true : false)
+                    .filter(x -> x.type == ReferenceType.Youtube)
                     .collect(Collectors.toList());
 
             references = source.references.stream()
-                    .filter(x -> (x.type != ReferenceType.Youtube) ? true : false)
+                    .filter(x -> x.type != ReferenceType.Youtube)
                     .collect(Collectors.toList());
         }
 
         if (source.images != null && source.images.size() > 0) {
-            source.images.stream()
-                    .forEach(
-                            image -> image.fileName =
-                                    urlBuilder.build(imagesVirtualPath, image.fileName));
+            source.images
+                    .forEach(image -> imgUrlifier.urlify(image, imagesVirtualPath));
         }
 
         ReleaseViewModel result = new ReleaseViewModel();

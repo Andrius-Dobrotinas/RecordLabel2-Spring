@@ -21,12 +21,12 @@ public class ImagesControllerTests {
     ImagesService svc;
 
     @Mock
-    public UrlBuilderFunction urlBuilder;
+    ImageFilenameUrlifier imgUrlifier;
 
-    final String imgVirtualPath = "/img/";
-    final int ownerId = 1;
+    private final String imgVirtualPath = "/img/";
+    private final int ownerId = 1;
 
-    List<Image> images;
+    private List<Image> images;
 
     @Before
     public void before() {
@@ -53,52 +53,20 @@ public class ImagesControllerTests {
     }
 
     @Test
-    public void get_mustBuildUrlsForEachImage() {
+    public void get_mustUseUrlifierToChangeEachImagesFileNameToAUrl() {
         String name1 = "cover1.jpg";
         String name2 = "cover2.png";
-        images.add(getImage(name1));
-        images.add(getImage(name2));
-
-        // Run
-        controller.get(ownerId);
-
-        // Verify
-        Mockito.verify(urlBuilder, times(1))
-                .build(Matchers.eq(imgVirtualPath), Matchers.eq(name1));
-        Mockito.verify(urlBuilder, times(1))
-                .build(Matchers.eq(imgVirtualPath), Matchers.eq(name2));
-    }
-
-    /* This might not seem exactly right, but these instances of Image objects will
-     not be used anymore anyway
-      */
-    @Test
-    public void get_mustAssignUrlToEachImagesFileNameField() {
-        String name1 = "cover1.jpg";
-        String name2 = "cover2.png";
-        String expectedName1 = "expected name1";
-        String expectedName2 = "expected name2";
-        Image image1 = getImage(name1);
-        Image image2 = getImage(name2);
+        Image image1 = new Image(name1);
+        Image image2 = new Image(name2);
         images.add(image1);
         images.add(image2);
 
-        Mockito.when(urlBuilder.build(Matchers.anyString(), Matchers.eq(name1)))
-                .thenReturn(expectedName1);
-        Mockito.when(urlBuilder.build(Matchers.anyString(), Matchers.eq(name2)))
-                .thenReturn(expectedName2);
-
         // Run
         controller.get(ownerId);
 
-        // Verify
-        Assert.assertEquals(expectedName1, image1.fileName);
-        Assert.assertEquals(expectedName2, image2.fileName);
-    }
-
-    private Image getImage(String name) {
-        Image image = new Image();
-        image.fileName = name;
-        return image;
+        Mockito.verify(imgUrlifier, times(1))
+                .urlify(Matchers.eq(image1), Matchers.eq(imgVirtualPath));
+        Mockito.verify(imgUrlifier, times(1))
+                .urlify(Matchers.eq(image2), Matchers.eq(imgVirtualPath));
     }
 }
