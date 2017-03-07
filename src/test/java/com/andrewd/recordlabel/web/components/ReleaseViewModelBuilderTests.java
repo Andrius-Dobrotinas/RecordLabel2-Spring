@@ -12,7 +12,7 @@ import java.util.*;
 import static org.mockito.Mockito.times;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ReleaseViewModelTransformerBuilderTests {
+public class ReleaseViewModelBuilderTests {
 
     @InjectMocks
     ReleaseViewModelBuilder builder;
