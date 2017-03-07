@@ -1,8 +1,8 @@
 package com.andrewd.recordlabel.data.repository;
 
 import com.andrewd.recordlabel.data.SortDirection;
-import com.andrewd.recordlabel.data.entity.IdComparer;
 import com.andrewd.recordlabel.data.entities.*;
+import com.andrewd.recordlabel.data.entity.EntitySaver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import javax.persistence.*;
@@ -16,7 +16,7 @@ public class ReleaseRepositoryDefault implements ReleaseRepository {
     private EntityManager em;
 
     @Autowired
-    private IdComparer idComparer;
+    private EntitySaver saver;
 
     @Autowired
     private BatchedQueryBuilder batchedQueryBuilder;
@@ -24,26 +24,15 @@ public class ReleaseRepositoryDefault implements ReleaseRepository {
     @Override
     @Transactional
     public <T> T save(T entity) {
-        saveNoFlush(entity);
+        saver.save(em, entity);
         em.flush();
-        return entity;
-    }
-
-    private <T> T saveNoFlush(T entity) {
-        if (idComparer.isIdDefault(entity)) {
-            em.persist(entity);
-        } else {
-            entity = em.merge(entity);
-        }
         return entity;
     }
 
     @Override
     @Transactional
     public <T> T[] save(T[] entities) {
-        for (T entity : entities) {
-            saveNoFlush(entity);
-        }
+        saver.save(em, entities);
         em.flush();
         return entities;
     }

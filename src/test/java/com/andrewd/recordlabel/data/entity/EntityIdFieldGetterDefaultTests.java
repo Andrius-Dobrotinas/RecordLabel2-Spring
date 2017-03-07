@@ -10,30 +10,30 @@ public class EntityIdFieldGetterDefaultTests {
     EntityIdFieldGetter getter;
 
     @Before
-    public void Init() {
+    public void init() {
         getter = new EntityIdFieldGetter();
     }
 
     @Test(expected = EntityIdPropertyGetterException.class)
-    public void MustRequireTypeAnnotatedWithEntity() throws Exception {
+    public void mustRequireTypeAnnotatedWithEntity() throws Exception {
         NonEntityType instance = new NonEntityType();
         getter.get(instance);
     }
 
     @Test(expected = NoIdPropertyException.class)
-    public void MustThrowWheNoIdFieldFound() throws Exception {
+    public void mustThrowExceptionWhenNoIdFieldFound() throws Exception {
         EntityTypeBadNoIds instance = new EntityTypeBadNoIds();
         getter.get(instance);
     }
 
     @Test(expected = NotSupportedException.class)
-    public void MustThrowWhenMoreThanOneIdFieldFound() throws Exception {
+    public void mustThrowExceptionWhenMoreThanOneIdFieldFound() throws Exception {
         EntityTypeBad instance = new EntityTypeBad();
         getter.get(instance);
     }
 
     @Test
-    public void MustReturnFieldAnnotatedWithId() throws Exception {
+    public void mustReturnFieldAnnotatedWithId() throws Exception {
         EntityType instance = new EntityType();
         Field result = getter.get(instance);
 

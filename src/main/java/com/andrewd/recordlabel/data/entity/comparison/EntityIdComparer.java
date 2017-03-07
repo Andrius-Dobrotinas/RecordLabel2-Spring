@@ -1,6 +1,7 @@
-package com.andrewd.recordlabel.data.entity;
+package com.andrewd.recordlabel.data.entity.comparison;
 
 import com.andrewd.recordlabel.common.NotSupportedException;
+import com.andrewd.recordlabel.data.entity.EntityIdPropertyGetter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.lang.reflect.Field;

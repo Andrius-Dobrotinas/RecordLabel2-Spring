@@ -1,6 +1,7 @@
-package com.andrewd.recordlabel.data.entity;
+package com.andrewd.recordlabel.data.entity.comparison;
 
 import com.andrewd.recordlabel.common.*;
+import com.andrewd.recordlabel.data.entity.EntityIdPropertyGetter;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.*;

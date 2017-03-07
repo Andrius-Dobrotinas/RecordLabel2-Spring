@@ -1,9 +1,8 @@
 package com.andrewd.recordlabel.data.repository;
 
 import com.andrewd.recordlabel.data.SortDirection;
-import com.andrewd.recordlabel.data.entity.IdComparer;
+import com.andrewd.recordlabel.data.entity.comparison.IdComparer;
 import com.andrewd.recordlabel.data.entities.*;
-import com.andrewd.recordlabel.data.repository.*;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.*;
@@ -21,9 +20,6 @@ public class ReleaseRepositoryDefaultTests {
 
     @Mock
     EntityManager em;
-
-    @Mock
-    IdComparer idComparer;
 
     @Mock
     BatchedQueryBuilder batchedQueryBuilder;

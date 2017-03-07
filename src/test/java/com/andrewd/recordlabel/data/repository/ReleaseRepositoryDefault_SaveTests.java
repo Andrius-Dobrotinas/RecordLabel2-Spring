@@ -1,8 +1,7 @@
 package com.andrewd.recordlabel.data.repository;
 
-import com.andrewd.recordlabel.data.entity.IdComparer;
+import com.andrewd.recordlabel.data.entity.EntitySaver;
 import com.andrewd.recordlabel.data.entities.*;
-import com.andrewd.recordlabel.data.repository.ReleaseRepositoryDefault;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.*;
@@ -20,100 +19,47 @@ public class ReleaseRepositoryDefault_SaveTests {
     EntityManager em;
 
     @Mock
-    IdComparer idComparer;
+    EntitySaver saver;
+
+    private final Reference entity = new Reference();
 
     @Test
-    public void mustCompareIds() {
-        Reference entity = new Reference();
-
+    public void mustSaveEntityUsingEntitySaver() {
         repository.save(entity);
 
-        Mockito.verify(idComparer, times(1)).isIdDefault(Matchers.eq(entity));
-    }
-
-    @Test
-    public void mustPersistIfIdIsDefault() {
-        Reference entity = new Reference();
-        Mockito.when(idComparer.isIdDefault(Matchers.eq(entity))).thenReturn(true);
-
-        // Run
-        repository.save(entity);
-
-        // Verify
-        Mockito.verify(em, times(1)).persist(Matchers.eq(entity));
-    }
-
-    @Test
-    public void mustMergeIfIdIsNotDefault() {
-        Reference entity = new Reference();
-        Mockito.when(idComparer.isIdDefault(Matchers.eq(entity))).thenReturn(false);
-
-        // Run
-        repository.save(entity);
-
-        // Verify
-        Mockito.verify(em, times(1)).merge(Matchers.eq(entity));
-    }
-
-    @Test
-    public void mustReturnEntityIfIdIsDefault() {
-        Reference entity = new Reference();
-        entity.target = "target";
-        Mockito.when(idComparer.isIdDefault(Matchers.eq(entity))).thenReturn(true);
-
-        // Run
-        Reference result = repository.save(entity);
-
-        // Verify
-        Assert.assertEquals(entity, result);
-    }
-
-    @Test
-    public void mustReturnEntityIfIdIsNotDefault() {
-        Reference entity = new Reference();
-        entity.target = "target";
-
-        Mockito.when(idComparer.isIdDefault(Matchers.eq(entity))).thenReturn(false);
-        Mockito.when(em.merge(Matchers.eq(entity))).thenReturn(entity);
-
-        // Run
-        Reference result = repository.save(entity);
-
-        // Verify
-        Assert.assertEquals(entity, result);
+        Mockito.verify(saver, times(1))
+                .save(Matchers.eq(em), Matchers.eq(entity));
     }
 
     @Test
     public void mustFlushAfterSaving() {
         Reference entity = new Reference();
 
-        Mockito.when(idComparer.isIdDefault(Matchers.eq(entity))).thenReturn(false);
-
         repository.save(entity);
 
         Mockito.verify(em, times(1)).flush();
     }
 
-
     @Test
-    public void savingAnArrayOfEntities_mustPersistEachEntityWhoseIdIsDefault() {
-        Reference entity = new Reference();
-        Reference entity2 = new Reference();
-        Reference[] entities = new Reference[] { entity, entity2 };
+    public void mustReturnEntity() {
+        Reference result = repository.save(entity);
 
-        Mockito.when(idComparer.isIdDefault(Matchers.any(Reference.class))).thenReturn(true);
-
-        // Run
-        repository.save(entities);
-
-        // Verify
-        Mockito.verify(em, times(1)).persist(Matchers.eq(entity));
-        Mockito.verify(em, times(1)).persist(Matchers.eq(entity2));
+        Assert.assertEquals(entity, result);
     }
 
     @Test
-    public void savingAnArrayOfEntities_mustFlushOnceAfterSavingAll() {
-        Reference entity = new Reference();
+    public void savingAnListOfEntities_mustSaveEntitiesUsingEntitySaver() {
+        Reference entity2 = new Reference();
+        Reference[] entities = new Reference[] { entity, entity2 };
+
+        repository.save(entities);
+
+        Mockito.verify(saver, times(1))
+                .save(Matchers.eq(em), Matchers.eq(entities));
+    }
+
+    @Test
+    public void savingAnListOfEntities_mustFlushOnceAfterSavingAll() {
         Reference entity2 = new Reference();
         Reference[] entities = new Reference[] { entity, entity2 };
 
@@ -121,6 +67,4 @@ public class ReleaseRepositoryDefault_SaveTests {
 
         Mockito.verify(em, times(1)).flush();
     }
-
-    // TODO?: getMetadataList()
 }

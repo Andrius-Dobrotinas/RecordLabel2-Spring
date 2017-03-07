@@ -1,4 +1,4 @@
-package com.andrewd.recordlabel.data.entity;
+package com.andrewd.recordlabel.data.entity.comparison;
 
 public class IdComparisonException extends RuntimeException {
 
