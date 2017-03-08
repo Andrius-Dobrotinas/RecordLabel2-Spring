@@ -2,7 +2,7 @@ package com.andrewd.recordlabel.data.services;
 
 import com.andrewd.recordlabel.data.entities.Image;
 import com.andrewd.recordlabel.data.repository.ImagesRepository;
-import com.andrewd.recordlabel.data.transformers.EntityToModelTransformer;
+import com.andrewd.recordlabel.data.transformers.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +15,10 @@ public class ImagesServiceDefault implements ImagesService {
     private ImagesRepository repository;
 
     @Autowired
-    EntityToModelTransformer transformer;
+    EntityToModelTransformer entityTransformer;
+
+    @Autowired
+    ModelToEntityTransformer modelTransformer;
 
     @Override
     public List<com.andrewd.recordlabel.supermodels.Image> getImages(int ownerId) {
@@ -23,14 +26,23 @@ public class ImagesServiceDefault implements ImagesService {
             throw new IllegalArgumentException("ownerId is 0");
 
         List<Image> images = repository.getImages(ownerId);
-        return transformer.transformList(images, transformer::getImage);
+
+        return entityTransformer
+                .transformList(images, entityTransformer::getImage);
     }
 
     @Override
     public List<com.andrewd.recordlabel.supermodels.Image> save(
             int ownerId, List<com.andrewd.recordlabel.supermodels.Image> images) {
-        // TODO: implement
-        // should return a list of images WITH their ids
-        return null;
+        if (ownerId == 0)
+            throw new IllegalArgumentException("ownerId is 0");
+
+        List<Image> entities = modelTransformer
+                .transformList(images, modelTransformer::getImage);
+
+        entities = repository.saveImages(ownerId, entities);
+
+        return entityTransformer
+                .transformList(entities, entityTransformer::getImage);
     }
 }

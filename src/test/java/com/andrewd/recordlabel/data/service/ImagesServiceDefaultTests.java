@@ -3,7 +3,7 @@ package com.andrewd.recordlabel.data.service;
 import com.andrewd.recordlabel.data.entities.Image;
 import com.andrewd.recordlabel.data.repository.ImagesRepository;
 import com.andrewd.recordlabel.data.services.ImagesServiceDefault;
-import com.andrewd.recordlabel.data.transformers.EntityToModelTransformer;
+import com.andrewd.recordlabel.data.transformers.*;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.*;
@@ -25,21 +25,27 @@ public class ImagesServiceDefaultTests {
     @Mock
     EntityToModelTransformer entityTransformer;
 
-    final int ownerId = 1;
+    @Mock
+    ModelToEntityTransformer modelTransformer;
 
-    List<Image> images;
+    private final int ownerId = 1;
+
+    private List<Image> images;
+    private List<com.andrewd.recordlabel.supermodels.Image> imagesModels;
 
     @Before
     public void init() {
         images = new ArrayList<>();
-        Mockito.when(repository.getImages(Matchers.eq(ownerId))).thenReturn(images);
+        Mockito.when(repository.getImages(Matchers.eq(ownerId)))
+                .thenReturn(images);
     }
 
     @Test
     public void getImages_MustHitTheRepositoryWithTheSuppliedArgument() {
         svc.getImages(ownerId);
 
-        Mockito.verify(repository, times(1)).getImages(Matchers.eq(ownerId));
+        Mockito.verify(repository, times(1))
+                .getImages(Matchers.eq(ownerId));
     }
 
     @Test
@@ -53,7 +59,9 @@ public class ImagesServiceDefaultTests {
         svc.getImages(ownerId);
 
         // Verify
-        Mockito.verify(entityTransformer, times(1)).transformList(Matchers.eq(images), Matchers.any(Function.class));
+        Mockito.verify(entityTransformer, times(1))
+                .transformList(
+                        Matchers.eq(images), Matchers.any(Function.class));
     }
 
     @Test
@@ -78,11 +86,58 @@ public class ImagesServiceDefaultTests {
                 .thenReturn(model2);
         Mockito.doAnswer(x -> expectedResult)
                 .when(entityTransformer)
-                .transformList(Matchers.eq(images), Matchers.any(Function.class));
+                .transformList(
+                        Matchers.eq(images), Matchers.any(Function.class));
 
         List<com.andrewd.recordlabel.supermodels.Image> result
                 = svc.getImages(ownerId);
 
         Assert.assertEquals(expectedResult, result);
     }
+
+    @Test
+    public void saveImages_mustTransformEachImageSuperModelIntoEntity() {
+        svc.save(ownerId, imagesModels);
+
+        Mockito.verify(modelTransformer, times(1))
+                .transformList(
+                        Matchers.eq(imagesModels), Matchers.any(Function.class));
+    }
+
+    @Test
+    public void saveImages_mustSaveTransformedEntitiesInRepository() {
+        Mockito.when(modelTransformer.transformList(
+                Matchers.eq(imagesModels), Matchers.any(Function.class)))
+                .thenAnswer(x -> images);
+
+        svc.save(ownerId, imagesModels);
+
+        Mockito.verify(repository, times(1))
+                .saveImages(Matchers.eq(ownerId), Matchers.eq(images));
+    }
+
+    @Test
+    public void saveImages_mustTransformEntitiesReturnedByRepositoryBackToSuperModels() {
+        Mockito.when(repository.saveImages(Matchers.eq(ownerId), Matchers.eq(images)))
+                .thenReturn(images);
+
+        svc.save(ownerId, imagesModels);
+
+        Mockito.verify(entityTransformer, times(1))
+                .transformList(
+                        Matchers.eq(images), Matchers.any(Function.class));
+    }
+
+    // Why on earth doesn't this work?
+    /*@Test
+    public void saveImages_mustReturnEntitiesReturnedByRepositoryTransformedToSuperModels() {
+        Mockito.when(entityTransformer.transformList(
+                Matchers.eq(images), Matchers.any(Function.class)))
+                .thenAnswer(x -> imagesModels);
+
+        List<com.andrewd.recordlabel.supermodels.Image> result
+                = svc.save(ownerId, imagesModels);
+
+        Assert.assertArrayEquals(imagesModels.toArray(), result.toArray());
+    }*/
 }

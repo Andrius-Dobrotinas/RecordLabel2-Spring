@@ -86,14 +86,25 @@ public class ModelToEntityTransformerDefault implements ModelToEntityTransformer
         return entity;
     }
 
-    private <TModel extends com.andrewd.recordlabel.supermodels.ContentBase, TEntity extends ContentBase>
+    @Override
+    public Image getImage(com.andrewd.recordlabel.supermodels.Image model) {
+        Image entity = new Image();
+        entity.id = model.id;
+        entity.fileName = model.fileName;
+        return entity;
+    }
+
+    private <TModel extends com.andrewd.recordlabel.supermodels.ContentBase,
+            TEntity extends ContentBase>
     void transformContentBase(TModel model, TEntity entity) {
         entity.metadata = transformList(model.metadata, this::getMetadata);
         entity.references = transformList(model.references, this::getReference);
     }
 
     @Override
-    public <TModel, TEntity> List<TEntity> transformList(List<TModel> list, Function<TModel, TEntity> transformFunction) {
+    public <TModel, TEntity> List<TEntity> transformList(
+            List<TModel> list, Function<TModel, TEntity> transformFunction) {
+
         List<TEntity> result = new ArrayList<>();
         for(TModel model : list) {
             result.add(transformFunction.apply(model));

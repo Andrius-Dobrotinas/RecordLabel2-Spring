@@ -1,12 +1,7 @@
 package com.andrewd.recordlabel.data.transformers;
 
 import com.andrewd.recordlabel.common.*;
-import com.andrewd.recordlabel.data.entities.Artist;
-import com.andrewd.recordlabel.data.entities.MediaType;
-import com.andrewd.recordlabel.data.entities.Metadata;
-import com.andrewd.recordlabel.data.entities.Reference;
-import com.andrewd.recordlabel.data.entities.Release;
-import com.andrewd.recordlabel.data.entities.Track;
+import com.andrewd.recordlabel.data.entities.*;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -173,6 +168,15 @@ public class ModelToEntityTransformerDefaultTests
     }
 
     @Test
+    public void transformImage() {
+        com.andrewd.recordlabel.supermodels.Image model = getImage();
+
+        Image entity = transformer.getImage(model);
+
+        EntityModelTransformationVerifiers.verifyImage(entity, model);
+    }
+
+    @Test
     public void transformList() {
         List<com.andrewd.recordlabel.supermodels.MediaType> list = new ArrayList<>();
         com.andrewd.recordlabel.supermodels.MediaType model = getMediaType();
@@ -223,6 +227,13 @@ public class ModelToEntityTransformerDefaultTests
         com.andrewd.recordlabel.supermodels.MediaType model = new com.andrewd.recordlabel.supermodels.MediaType();
         model.id = 1;
         model.text = "LP";
+        return model;
+    }
+
+    private com.andrewd.recordlabel.supermodels.Image getImage() {
+        com.andrewd.recordlabel.supermodels.Image model = new com.andrewd.recordlabel.supermodels.Image();
+        model.id = 1;
+        model.fileName = "img.img";
         return model;
     }
 }
