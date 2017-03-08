@@ -63,13 +63,13 @@ public class EntitySaverTests {
         Reference entity2 = new Reference();
         Reference[] entities = new Reference[] { entity, entity2 };
 
-        Mockito.when(idComparer.isIdDefault(Matchers.any(Reference.class))).thenReturn(true);
+        Mockito.when(idComparer.isIdDefault(Matchers.any(Reference.class)))
+                .thenReturn(true);
 
         // Run
         saver.save(em, entities);
 
         // Verify
-        Mockito.verify(em, times(1)).persist(Matchers.eq(entity));
-        Mockito.verify(em, times(1)).persist(Matchers.eq(entity2));
+        Mockito.verify(em).persist(Matchers.eq(entities));
     }
 }
