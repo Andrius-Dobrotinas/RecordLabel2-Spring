@@ -18,7 +18,7 @@ public class ReleaseViewModelBuilderTests {
     ReleaseViewModelBuilder builder;
 
     @Mock
-    ImageFilenameUrlifier imgUrlifier;
+    ImageFilenameUrifier imgUrifier;
 
     private Release sourceModel;
 
@@ -64,19 +64,29 @@ public class ReleaseViewModelBuilderTests {
 
         // Verify
         Assert.assertNotNull(result);
-        Assert.assertEquals("Result must contain id from the source model", id, result.id);
-        Assert.assertEquals("Result must contain catalogueNumber from the source model", catNo,
+        Assert.assertEquals(
+                "Result must contain id from the source model", id, result.id);
+        Assert.assertEquals(
+                "Result must contain catalogueNumber from the source model", catNo,
                 result.catalogueNumber);
-        Assert.assertEquals("Result must contain date from the source model", date, result.date);
-        Assert.assertEquals("Result must contain length from the source model", length, result.length);
-        Assert.assertEquals("Result must contain media from the source model", media, result.media);
-        Assert.assertEquals("Result must contain printStatus from the source model", status,
-                result.printStatus);
-        Assert.assertEquals("Result must contain text from the source model", text, result.text);
-        Assert.assertEquals("Result must contain title from the source model", title, result.title);
-        Assert.assertEquals("Result must contain artist from the source model", artist, result.artist);
-        Assert.assertEquals("Result must contain tracks from the source model", tracks, result.tracks);
-        Assert.assertEquals("Result must contain metadata from the source model", metadata, result.metadata);
+        Assert.assertEquals(
+                "Result must contain date from the source model", date, result.date);
+        Assert.assertEquals(
+                "Result must contain length from the source model", length, result.length);
+        Assert.assertEquals(
+                "Result must contain media from the source model", media, result.media);
+        Assert.assertEquals(
+                "Result must contain printStatus from the source model", status, result.printStatus);
+        Assert.assertEquals(
+                "Result must contain text from the source model", text, result.text);
+        Assert.assertEquals(
+                "Result must contain title from the source model", title, result.title);
+        Assert.assertEquals(
+                "Result must contain artist from the source model", artist, result.artist);
+        Assert.assertEquals(
+                "Result must contain tracks from the source model", tracks, result.tracks);
+        Assert.assertEquals(
+                "Result must contain metadata from the source model", metadata, result.metadata);
     }
 
     @Test
@@ -103,13 +113,17 @@ public class ReleaseViewModelBuilderTests {
         ReleaseViewModel result = builder.apply(sourceModel);
 
         // Verify
-        Assert.assertNotNull("Result's youtubeReferences field must contain a list" +
-                        " of youtube references", result.youtubeReferences);
-        Assert.assertEquals("Result's youtubeReferences field must contain the same number of youtube " +
-                "references as there are in the source model",
-                2, result.youtubeReferences.size());
+        Assert.assertNotNull(
+                "Result's youtubeReferences field must contain a list of youtube references",
+                result.youtubeReferences);
+
+        Assert.assertEquals(
+                "Result's youtubeReferences field must contain the same number of youtube " +
+                "references as there are in the source model", 2, result.youtubeReferences.size());
+
         Assert.assertTrue("Result's youtubeReferences field must contain a youtube reference",
                 result.youtubeReferences.contains(refYt1));
+
         Assert.assertTrue("Result's youtubeReferences field must contain a youtube reference",
                 result.youtubeReferences.contains(refYt2));
     }
@@ -129,13 +143,17 @@ public class ReleaseViewModelBuilderTests {
         // Run
         ReleaseViewModel result = builder.apply(sourceModel);
 
-        Assert.assertNotNull("Result's references field must contain a list of non-youtube" +
-                        " references", result.references);
-        Assert.assertEquals("Result's references field must contain the same number of non-youtube " +
-                "references as there are in the source model",
-                2, result.references.size());
+        Assert.assertNotNull(
+                "Result's references field must contain a list of non-youtube references",
+                result.references);
+
+        Assert.assertEquals(
+                "Result's references field must contain the same number of non-youtube " +
+                "references as there are in the source model", 2, result.references.size());
+
         Assert.assertTrue("Result's references field must contain a non-youtube reference",
                 result.references.contains(ref1));
+
         Assert.assertTrue("Result's references field must contain a non-youtube reference",
                 result.references.contains(ref2));
     }
@@ -148,7 +166,8 @@ public class ReleaseViewModelBuilderTests {
         // Run
         ReleaseViewModel result = builder.apply(sourceModel);
 
-        Assert.assertNotNull("Youtube references list must not be null even if there are no " +
+        Assert.assertNotNull(
+                "Youtube references list must not be null even if there are no " +
                         "youtube references in the source", result.youtubeReferences);
     }
 
@@ -160,7 +179,8 @@ public class ReleaseViewModelBuilderTests {
         // Run
         ReleaseViewModel result = builder.apply(sourceModel);
 
-        Assert.assertNotNull("References list must not be null even if there are no non-youtube " +
+        Assert.assertNotNull(
+                "References list must not be null even if there are no non-youtube " +
                 "references in the source at all", result.references);
     }
 
@@ -191,10 +211,14 @@ public class ReleaseViewModelBuilderTests {
         // Run
         builder.apply(sourceModel);
 
-        Mockito.verify(imgUrlifier, times(1))
-                .urlify(Matchers.eq(image1), Matchers.eq(imgVirtualPath));
-        Mockito.verify(imgUrlifier, times(1))
-                .urlify(Matchers.eq(image2), Matchers.eq(imgVirtualPath));
+        Mockito.verify(imgUrifier, times(1))
+                .urlify(
+                        Matchers.eq(image1),
+                        Matchers.eq(imgVirtualPath));
+        Mockito.verify(imgUrifier, times(1))
+                .urlify(
+                        Matchers.eq(image2),
+                        Matchers.eq(imgVirtualPath));
     }
 
     private static Image getImage(String fileName) {

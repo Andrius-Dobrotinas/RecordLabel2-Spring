@@ -6,10 +6,10 @@ import org.mockito.*;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class UrlBuilderTests {
+public class UriBuilderTests {
 
     @InjectMocks
-    UrlBuilder builder;
+    UriBuilder builder;
 
     @Test
     public void mustAppendFileNameToVirtualPath_ifVirtualPathEndsWithABackslash() {

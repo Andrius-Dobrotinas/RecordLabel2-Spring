@@ -12,10 +12,10 @@ import static org.mockito.Mockito.times;
 public class ImageFilenameUrlifierDefaultTests {
 
     @InjectMocks
-    ImageFilenameUrlifierDefault setter;
+    ImageFilenameUrifierDefault urifier;
 
     @Mock
-    UrlBuilderFunction urlBuilder;
+    UriBuilderFunction uriBuilder;
 
     private Image image;
 
@@ -29,21 +29,26 @@ public class ImageFilenameUrlifierDefaultTests {
 
     @Test
     public void mustBuildUrlForImage() {
-        setter.urlify(image, path);
+        urifier.urlify(image, path);
 
-        Mockito.verify(urlBuilder, times(1))
-                .build(Matchers.eq(path), Matchers.eq(name1));
+        Mockito.verify(uriBuilder, times(1))
+                .build(
+                        Matchers.eq(path),
+                        Matchers.eq(name1));
     }
 
     @Test
     public void mustChangeImageFilenameToUrl() {
         String expectedName1 = "expected name1";
 
-        Mockito.when(urlBuilder.build(Matchers.anyString(), Matchers.eq(name1)))
+        Mockito.when(uriBuilder
+                .build(
+                        Matchers.anyString(),
+                        Matchers.eq(name1)))
                 .thenReturn(expectedName1);
 
         // Run
-        setter.urlify(image, path);
+        urifier.urlify(image, path);
 
         // Verify
         Assert.assertEquals(expectedName1, image.fileName);

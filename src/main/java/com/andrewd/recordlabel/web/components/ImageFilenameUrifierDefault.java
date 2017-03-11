@@ -5,13 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ImageFilenameUrlifierDefault implements ImageFilenameUrlifier {
+public class ImageFilenameUrifierDefault implements ImageFilenameUrifier {
 
     @Autowired
-    private UrlBuilderFunction urlBuilder;
+    private UriBuilderFunction uriBuilder;
 
     @Override
     public void urlify(Image image, String virtualPath) {
-        image.fileName = urlBuilder.build(virtualPath, image.fileName);
+        image.fileName = uriBuilder.build(virtualPath, image.fileName);
     }
 }

@@ -7,7 +7,7 @@ import com.andrewd.recordlabel.supermodels.Image;
  * with a Url to this image.
  */
 @FunctionalInterface
-public interface ImageFilenameUrlifier {
+public interface ImageFilenameUrifier {
 
     /**
      * Replaces Image's filename with a Url to this image

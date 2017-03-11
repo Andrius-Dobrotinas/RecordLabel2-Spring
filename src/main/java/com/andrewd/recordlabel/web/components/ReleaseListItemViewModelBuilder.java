@@ -14,13 +14,13 @@ public class ReleaseListItemViewModelBuilder implements Function<Release, Releas
     public String imagesVirtualPath;
 
     @Autowired
-    private UrlBuilderFunction urlBuilder;
+    private UriBuilderFunction uriBuilder;
 
     @Override
     public ReleaseListItemViewModel apply(Release source) {
         String thumbnailUrl = null;
         if (source.thumbnail != null) {
-            thumbnailUrl = urlBuilder.build(imagesVirtualPath, source.thumbnail.fileName);
+            thumbnailUrl = uriBuilder.build(imagesVirtualPath, source.thumbnail.fileName);
         }
         return new ReleaseListItemViewModel(source, thumbnailUrl);
     }

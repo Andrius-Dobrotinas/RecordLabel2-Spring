@@ -34,12 +34,14 @@ public class ImagesUploadController {
     private ImagesService imagesSvc;
 
     @Autowired
-    private ImageFilenameUrlifier imgUrlifier;
+    private ImageFilenameUrifier imgUrifier;
 
 
     @RequestMapping(value = "upload/{ownerId}", method = RequestMethod.POST)
-    public ResponseEntity upload(@PathVariable int ownerId, @RequestParam("file") MultipartFile[] files)
+    public ResponseEntity upload(@PathVariable int ownerId,
+                                 @RequestParam("file") MultipartFile[] files)
             throws FileSaveException {
+
         if (ownerId == 0)
             return ResponseEntity.badRequest()
                 .body(new ErrorResponse("Invalid owner id"));
@@ -49,7 +51,9 @@ public class ImagesUploadController {
 
         // Check if owner object exists
         if (!releaseSvc.objectExists(ownerId)) {
-            String message = String.format("Object with id %s does not exist", ownerId);
+            String message = String.format(
+                    "Object with id %s does not exist", ownerId);
+
             return ResponseEntity.badRequest()
                     .body(new ErrorResponse(message));
         }
@@ -67,7 +71,7 @@ public class ImagesUploadController {
                 });
 
         // Replace each image's filename with url
-        savedImages.forEach(image -> imgUrlifier.urlify(image, imagesVirtualPath));
+        savedImages.forEach(image -> imgUrifier.urlify(image, imagesVirtualPath));
 
         return ResponseEntity.ok().body(savedImages);
     }

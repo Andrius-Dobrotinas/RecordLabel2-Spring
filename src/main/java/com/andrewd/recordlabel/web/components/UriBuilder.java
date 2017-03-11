@@ -3,7 +3,7 @@ package com.andrewd.recordlabel.web.components;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UrlBuilder implements UrlBuilderFunction {
+public class UriBuilder implements UriBuilderFunction {
 
     @Override
     public String build(String virtualPath, String fileName) {

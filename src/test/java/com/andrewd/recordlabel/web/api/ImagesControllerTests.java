@@ -21,7 +21,7 @@ public class ImagesControllerTests {
     ImagesService svc;
 
     @Mock
-    ImageFilenameUrlifier imgUrlifier;
+    ImageFilenameUrifier imgUrifier;
 
     private final String imgVirtualPath = "/img/";
     private final int ownerId = 1;
@@ -33,13 +33,14 @@ public class ImagesControllerTests {
         controller.imagesVirtualPath = imgVirtualPath;
         images = new ArrayList<>();
 
-        Mockito.when(svc.getImages(Matchers.anyInt()))
+        Mockito.when(svc
+                .getImages(Matchers.anyInt()))
                 .thenReturn(images);
     }
 
     @Test
     public void get_mustRetrieveImagesFromTheService() {
-        List<Image> result = controller.get(ownerId);
+        controller.get(ownerId);
 
         Mockito.verify(svc, times(1))
                 .getImages(Matchers.eq(ownerId));
@@ -64,9 +65,14 @@ public class ImagesControllerTests {
         // Run
         controller.get(ownerId);
 
-        Mockito.verify(imgUrlifier, times(1))
-                .urlify(Matchers.eq(image1), Matchers.eq(imgVirtualPath));
-        Mockito.verify(imgUrlifier, times(1))
-                .urlify(Matchers.eq(image2), Matchers.eq(imgVirtualPath));
+        Mockito.verify(imgUrifier, times(1))
+                .urlify(
+                        Matchers.eq(image1),
+                        Matchers.eq(imgVirtualPath));
+
+        Mockito.verify(imgUrifier, times(1))
+                .urlify(
+                        Matchers.eq(image2),
+                        Matchers.eq(imgVirtualPath));
     }
 }

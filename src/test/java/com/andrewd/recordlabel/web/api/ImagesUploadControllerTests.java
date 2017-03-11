@@ -34,7 +34,7 @@ public class ImagesUploadControllerTests {
     private ImagesService imagesSvc;
 
     @Mock
-    ImageFilenameUrlifier imgUrlifier;
+    ImageFilenameUrifier imgUrifier;
 
     @Captor
     ArgumentCaptor<Function<List<File>, List<Image>>> funcCaptor;
@@ -72,13 +72,21 @@ public class ImagesUploadControllerTests {
         savedFiles.add(file1);
         savedFiles.add(file2);
 
-        Mockito.when(releaseSvc.objectExists(Matchers.anyInt())).thenReturn(true);
+        Mockito.when(releaseSvc
+                .objectExists(Matchers.anyInt()))
+                .thenReturn(true);
 
-        Mockito.when(imagesSvc.save(Matchers.anyInt(), Matchers.anyListOf(Image.class)))
+        Mockito.when(imagesSvc
+                .save(
+                        Matchers.anyInt(),
+                        Matchers.anyListOf(Image.class)))
                 .thenReturn(savedImages);
 
-        Mockito.when(fileUploader.uploadFiles(Matchers.any(MultipartFile[].class),
-                Matchers.any(File.class), Matchers.any(Function.class)))
+        Mockito.when(fileUploader
+                .uploadFiles(
+                        Matchers.any(MultipartFile[].class),
+                        Matchers.any(File.class),
+                        Matchers.any(Function.class)))
                 .thenAnswer(x -> savedImages);
     }
 
@@ -92,7 +100,9 @@ public class ImagesUploadControllerTests {
 
     @Test
     public void uploadImage_ifObjectDoesNotExist_mustReturnBadRequest() throws Exception {
-        Mockito.when(releaseSvc.objectExists(Matchers.anyInt())).thenReturn(false);
+        Mockito.when(releaseSvc
+                .objectExists(Matchers.anyInt()))
+                .thenReturn(false);
 
         ResponseEntity response = controller.upload(objectId, files);
 
@@ -101,7 +111,9 @@ public class ImagesUploadControllerTests {
 
     @Test
     public void uploadImage_ifObjectDoesNotExist_responseBodyMustBeErrorResponse() throws Exception {
-        Mockito.when(releaseSvc.objectExists(Matchers.anyInt())).thenReturn(false);
+        Mockito.when(releaseSvc
+                .objectExists(Matchers.anyInt()))
+                .thenReturn(false);
 
         ResponseEntity response = controller.upload(objectId, files);
 
@@ -114,7 +126,9 @@ public class ImagesUploadControllerTests {
         controller.upload(objectId, files);
 
         Mockito.verify(fileUploader, times(1))
-                .uploadFiles(Matchers.eq(files), Matchers.any(File.class),
+                .uploadFiles(
+                        Matchers.eq(files),
+                        Matchers.any(File.class),
                         Matchers.any());
     }
 
@@ -123,7 +137,9 @@ public class ImagesUploadControllerTests {
         controller.upload(objectId, files);
 
         Mockito.verify(fileUploader, times(1))
-                .uploadFiles(Matchers.eq(files), Matchers.any(File.class),
+                .uploadFiles(
+                        Matchers.eq(files),
+                        Matchers.any(File.class),
                         funcCaptor.capture());
 
         Function<List<File>, List<Image>> function = null;
@@ -133,16 +149,20 @@ public class ImagesUploadControllerTests {
             e.printStackTrace();
         }
 
-        Assert.assertNotNull("Must use Function<List<File>, List<Image>> type function", function);
+        Assert.assertNotNull(
+                "Must use Function<List<File>, List<Image>> type function", function);
     }
 
     // Runs a test with standard arguments and returns a function that was passed to fileUploader.uploadFiles
     private Function<List<File>, List<Image>> uploadImage_runAndCaptureTheFunction()
             throws FileSaveException {
+
         controller.upload(objectId, files);
 
         Mockito.verify(fileUploader)
-                .uploadFiles(Matchers.eq(files), Matchers.any(File.class),
+                .uploadFiles(
+                        Matchers.eq(files),
+                        Matchers.any(File.class),
                         funcCaptor.capture());
 
         return funcCaptor.getValue();
@@ -155,7 +175,9 @@ public class ImagesUploadControllerTests {
         function.apply(savedFiles);
 
         Mockito.verify(imagesSvc, times(1))
-                .save(Matchers.eq(objectId), Matchers.anyListOf(Image.class));
+                .save(
+                        Matchers.eq(objectId),
+                        Matchers.anyListOf(Image.class));
     }
 
     @Test
@@ -164,7 +186,8 @@ public class ImagesUploadControllerTests {
 
         List<Image> result = function.apply(savedFiles);
 
-        Assert.assertSame("Function must return the same list that is returned by ImagesService's Save",
+        Assert.assertSame(
+                "Function must return the same list that is returned by ImagesService's Save",
                 savedImages, result);
     }
 
@@ -175,7 +198,11 @@ public class ImagesUploadControllerTests {
         function.apply(savedFiles);
 
         ArgumentCaptor<List<Image>> imgCaptor = new ArgumentCaptor<>();
-        Mockito.verify(imagesSvc, times(1)).save(Matchers.eq(objectId), imgCaptor.capture());
+
+        Mockito.verify(imagesSvc, times(1))
+                .save(
+                        Matchers.eq(objectId),
+                        imgCaptor.capture());
 
         List<Image> imagesToSave = imgCaptor.getValue();
 
@@ -187,8 +214,15 @@ public class ImagesUploadControllerTests {
     public void get_mustUseUrlifierToChangeEachImagesFileNameToAUrl() throws FileSaveException {
         controller.upload(objectId, files);
 
-        Mockito.verify(imgUrlifier, times(1)).urlify(Matchers.eq(savedImage1), Matchers.eq(imgVirtualPath));
-        Mockito.verify(imgUrlifier, times(1)).urlify(Matchers.eq(savedImage1), Matchers.eq(imgVirtualPath));
+        Mockito.verify(imgUrifier, times(1))
+                .urlify(
+                        Matchers.eq(savedImage1),
+                        Matchers.eq(imgVirtualPath));
+
+        Mockito.verify(imgUrifier, times(1))
+                .urlify(
+                        Matchers.eq(savedImage1),
+                        Matchers.eq(imgVirtualPath));
     }
 
     @Test

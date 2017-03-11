@@ -18,7 +18,7 @@ public class ReleaseViewModelBuilder implements Function<Release, ReleaseViewMod
     public String imagesVirtualPath;
 
     @Autowired
-    private ImageFilenameUrlifier imgUrlifier;
+    private ImageFilenameUrifier imgUrifier;
 
     @Override
     public ReleaseViewModel apply(Release source) {
@@ -37,7 +37,8 @@ public class ReleaseViewModelBuilder implements Function<Release, ReleaseViewMod
 
         if (source.images != null && source.images.size() > 0) {
             source.images
-                    .forEach(image -> imgUrlifier.urlify(image, imagesVirtualPath));
+                    .forEach(image -> imgUrifier
+                            .urlify(image, imagesVirtualPath));
         }
 
         ReleaseViewModel result = new ReleaseViewModel();

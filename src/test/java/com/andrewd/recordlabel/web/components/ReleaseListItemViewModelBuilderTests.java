@@ -16,12 +16,12 @@ public class ReleaseListItemViewModelBuilderTests {
     ReleaseListItemViewModelBuilder builder;
 
     @Mock
-    UrlBuilderFunction urlBuilder;
+    UriBuilderFunction uriBuilder;
 
-    Release release;
+    private Release release;
 
-    final String img0Path = "path 0";
-    final String imgVirtualPath = "/img/";
+    private final String img0Path = "path 0";
+    private final String imgVirtualPath = "/img/";
 
     @Before
     public void before() {
@@ -45,8 +45,10 @@ public class ReleaseListItemViewModelBuilderTests {
         Assert.assertEquals("Must copy id", model.id, release.id);
         Assert.assertEquals("Must copy title", model.title, release.title);
         Assert.assertEquals("Must copy date", model.date, release.date);
-        Assert.assertEquals("Must copy catalogueNumber", model.catalogueNumber, release.catalogueNumber);
-        Assert.assertEquals("Must copy printStatus", model.printStatus, release.printStatus);
+        Assert.assertEquals("Must copy catalogueNumber",
+                model.catalogueNumber, release.catalogueNumber);
+        Assert.assertEquals("Must copy printStatus",
+                model.printStatus, release.printStatus);
         Assert.assertEquals("Must copy media", model.media, release.media);
     }
 
@@ -63,9 +65,11 @@ public class ReleaseListItemViewModelBuilderTests {
         thumbnail.fileName = img0Path;
         release.thumbnail = thumbnail;
 
-        ReleaseListItemViewModel model = builder.apply(release);
+        builder.apply(release);
 
-        Mockito.verify(urlBuilder, times(1)).build(Matchers.eq(imgVirtualPath), Matchers.eq(img0Path));
+        Mockito.verify(uriBuilder, times(1))
+                .build(Matchers.eq(imgVirtualPath),
+                        Matchers.eq(img0Path));
     }
 
     @Test
