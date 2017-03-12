@@ -32,6 +32,12 @@ public class ImagesServiceDefault implements ImagesService {
     }
 
     @Override
+    public com.andrewd.recordlabel.supermodels.Image get(int imageId) {
+        // TODO: implement
+        return null;
+    }
+
+    @Override
     public List<com.andrewd.recordlabel.supermodels.Image> save(
             int ownerId, List<com.andrewd.recordlabel.supermodels.Image> images) {
         if (ownerId == 0)
@@ -44,5 +50,11 @@ public class ImagesServiceDefault implements ImagesService {
 
         return entityTransformer
                 .transformList(entities, entityTransformer::getImage);
+    }
+
+    @Override
+    public void saveThumbnail(int objectId, String fileName) {
+        // TODO: implement
+        // probably create a separate service for thumbnails?
     }
 }

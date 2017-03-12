@@ -1,5 +1,8 @@
 package com.andrewd.recordlabel.io;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class FileExtensionGetterDefault implements FileExtensionGetter {
 
     public String getFileExtension(String fileName) {

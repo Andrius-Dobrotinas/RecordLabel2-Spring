@@ -11,6 +11,12 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     public static final String IMAGES_VIRTUAL_PATH_SETTINGS_KEY = "recordlabel.img.virtualpath";
     public static final String IMAGES_PHYSICAL_PATH_SETTINGS_KEY = "recordlabel.img.path";
     public static final String IMAGES_PREFIX = "recordlabel.img.prefix";
+
+    public static final String THUMBNAILS_PHYSICAL_PATH_SETTINGS_KEY = "recordlabel.thumb.path";
+    public static final String THUMBNAILS_WIDTH_SETTINGS_KEY = "recordlabel.thumb.width";
+    public static final String THUMBNAILS_PREFIX_SETTINGS_KEY = "recordlabel.thumb.prefix";
+    public static final String THUMBNAILS_RESIZE_METHOD_SETTINGS_KEY = "recordlabel.thumb.resizemethod";
+
     public static final String ITEMS_PER_PAGE_SETTINGS_KEY = "recordlabel.web.itemsPerPage";
 
     @Autowired
