@@ -30,10 +30,6 @@ public class EntityToModelTransformerDefault implements EntityToModelTransformer
         model.tracks = transformList(entity.tracks, this::getTrack);
         model.images = transformList(entity.images, this::getImage);
 
-        if (entity.thumbnail != null) {
-            model.thumbnail = getThumbnail(entity.thumbnail);
-        }
-
         transformContentBase(entity, model);
         return model;
     }
@@ -136,6 +132,10 @@ public class EntityToModelTransformerDefault implements EntityToModelTransformer
     void transformContentBase(TEntity entity, TModel model) {
         model.metadata = transformList(entity.metadata, this::getMetadata);
         model.references = transformList(entity.references, this::getReference);
+
+        if (entity.thumbnail != null) {
+            model.thumbnail = getThumbnail(entity.thumbnail);
+        }
     }
 
     private <TEntity extends ContentBase, TModel extends ContentBaseSlim>

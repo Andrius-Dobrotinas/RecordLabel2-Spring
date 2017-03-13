@@ -29,6 +29,4 @@ public interface ImagesService {
      * @return a list of saved images
      */
     List<Image> save(int ownerId, List<Image> images);
-
-    void saveThumbnail(int objectId, String fileName);
 }

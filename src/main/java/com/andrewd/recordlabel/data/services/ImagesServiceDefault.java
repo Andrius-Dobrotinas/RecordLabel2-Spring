@@ -51,10 +51,4 @@ public class ImagesServiceDefault implements ImagesService {
         return entityTransformer
                 .transformList(entities, entityTransformer::getImage);
     }
-
-    @Override
-    public void saveThumbnail(int objectId, String fileName) {
-        // TODO: implement
-        // probably create a separate service for thumbnails?
-    }
 }

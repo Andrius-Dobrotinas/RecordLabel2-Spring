@@ -1,17 +1,15 @@
 package com.andrewd.recordlabel.web.api;
 
 import com.andrewd.recordlabel.data.EntityDoesNotExistException;
-import com.andrewd.recordlabel.data.services.ImagesService;
-import com.andrewd.recordlabel.image.resize.ImageResizer;
+import com.andrewd.recordlabel.data.services.*;
+import com.andrewd.recordlabel.image.resize.ImageFileResizer;
 import com.andrewd.recordlabel.io.*;
-import com.andrewd.recordlabel.supermodels.Image;
-import com.andrewd.recordlabel.web.components.UriBuilder;
+import com.andrewd.recordlabel.supermodels.*;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.*;
 import org.mockito.runners.MockitoJUnitRunner;
 import java.io.*;
-import java.util.function.Function;
 
 import static org.mockito.Mockito.times;
 
@@ -22,59 +20,61 @@ public class ThumbnailsControllerTests {
     ThumbnailsController controller;
 
     @Mock
+    ReleaseService releasesSvc;
+
+    @Mock
     ImagesService imageSvc;
 
     @Mock
-    Function<String, File> fileFactory;
+    ThumbnailsService thumbnailsSvc;
+
+    @Mock
+    FileFactory fileFactory;
 
     @Mock
     RandomFileCreator randomFileCreator;
 
     @Mock
-    IOFunction<File, FileInputStream> fileInputStreamFactory;
-
-    @Mock
-    IOFunction<File, FileOutputStream> fileOutputStreamFactory;
-
-    @Mock
-    ImageResizer imageResizer;
-
-    @Mock
-    UriBuilder uriBuilder;
-
-    @Mock
     FileExtensionGetter fileExtensionGetter;
 
+    @Mock
+    ImageFileResizer imageFileResizer;
+
+    private final String imagesPhysicalPath = "/img/";
     private final String thumbsPhysicalPath = "/thumbs/";
     private final String thumbFileNamePrefix = "tmb";
     private final String thumbFileName = "thumb.jpg";
-    private final int thumbWidth = 150;
+    private final int thumbSize = 150;
     private final int objectId = 1;
     private final int imageId = 2;
     private final String imageFileName = "image.jpg";
     private final String fullImagePath = "img/image.jpg";
     private final String extension = "jpg";
 
+    private final String origThumbName = "original thumbnail.png";
+
     private Image image;
     private File imageFile;
     private File thumbFile;
     private File thumbsDirectory;
-    private FileInputStream imageFileInputStream;
-    private FileOutputStream thumbFileOutputStream;
+    private ContentBase targetObject;
+    private Thumbnail origThumnail;
+    private File origThumbFile;
 
     @Before
-    public void before() throws IOException {
+    public void before() throws Exception {
         image = new Image(imageFileName);
         imageFile = new File(fullImagePath);
         thumbFile = Mockito.mock(File.class);
         thumbsDirectory = new File(thumbsPhysicalPath);
+        targetObject = Mockito.mock(ContentBase.class);
+        origThumnail = Mockito.mock(Thumbnail.class);
+        origThumbFile = Mockito.mock(File.class);
 
-        thumbFileOutputStream = Mockito.mock(FileOutputStream.class);
-        imageFileInputStream = Mockito.mock(FileInputStream.class);
-
+        controller.imagesPhysicalPath = imagesPhysicalPath;
         controller.thumbsPhysicalPath = thumbsPhysicalPath;
         controller.thumbFileNamePrefix = thumbFileNamePrefix;
-        controller.thumbWidth = thumbWidth;
+        controller.thumbSize = thumbSize;
 
         Mockito.when(thumbFile
                 .getName())
@@ -82,22 +82,30 @@ public class ThumbnailsControllerTests {
 
         Mockito.when(imageSvc
                 .get(
-                        Matchers.anyInt()))
+                        Matchers.eq(imageId)))
                 .thenReturn(image);
 
-        Mockito.when(uriBuilder
-                .build(
-                        Matchers.anyString(),
-                        Matchers.anyString()))
-                .thenReturn(fullImagePath);
+        Mockito.when(releasesSvc
+                .getObject(
+                        Matchers.eq(ContentBase.class),
+                        Matchers.eq(objectId)))
+                .thenReturn(targetObject);
 
         Mockito.when(fileFactory
-                .apply(Matchers.eq(fullImagePath)))
+                .getFile(
+                        Matchers.eq(imagesPhysicalPath),
+                        Matchers.eq(imageFileName)))
                 .thenReturn(imageFile);
 
         Mockito.when(fileFactory
-                .apply(Matchers.eq(thumbsPhysicalPath)))
+                .getFile(Matchers.eq(thumbsPhysicalPath)))
                 .thenReturn(thumbsDirectory);
+
+        Mockito.when(fileFactory
+                .getFile(
+                        Matchers.eq(thumbsPhysicalPath),
+                        Matchers.eq(origThumbName)))
+                .thenReturn(origThumbFile);
 
         Mockito.when(fileExtensionGetter
                 .getFileExtension(
@@ -105,20 +113,12 @@ public class ThumbnailsControllerTests {
                         Matchers.eq(false)))
                 .thenReturn(extension);
 
-        Mockito.when(fileInputStreamFactory
-                .apply(Matchers.any(File.class)))
-                .thenReturn(imageFileInputStream);
-
         Mockito.when(randomFileCreator
                 .createFile(
                         Matchers.anyString(),
                         Matchers.anyString(),
                         Matchers.any(File.class)))
                 .thenReturn(thumbFile);
-
-        Mockito.when(fileOutputStreamFactory
-                .apply(Matchers.any(File.class)))
-                .thenReturn(thumbFileOutputStream);
     }
 
     @Test
@@ -131,22 +131,22 @@ public class ThumbnailsControllerTests {
 
     @Test(expected = EntityDoesNotExistException.class)
     public void get_whenImageDoesNotExist_mustThrowException() throws Exception {
-        Mockito.when(imageSvc
-                .get(
-                        Matchers.anyInt()))
-                .thenReturn(null);
-
-        controller.create(objectId, imageId);
+        controller.create(objectId, 0);
     }
 
     @Test
-    public void get_mustGetFullPathToImage() throws Exception {
+    public void get_mustRetrieveTargetObjectFromTheDatastore() throws Exception {
         controller.create(objectId, imageId);
 
-        Mockito.verify(uriBuilder, times(1))
-                .build(
-                        Matchers.eq(thumbsPhysicalPath),
-                        Matchers.eq(imageFileName));
+        Mockito.verify(releasesSvc, times(1))
+                .getObject(
+                        Matchers.eq(ContentBase.class),
+                        Matchers.eq(objectId));
+    }
+
+    @Test(expected = EntityDoesNotExistException.class)
+    public void get_whenTargetObjectDoesNotExist_mustThrowException() throws Exception {
+        controller.create(0, imageId);
     }
 
     @Test
@@ -154,15 +154,9 @@ public class ThumbnailsControllerTests {
         controller.create(objectId, imageId);
 
         Mockito.verify(fileFactory, times(1))
-                .apply(Matchers.eq(fullImagePath));
-    }
-
-    @Test
-    public void get_mustGetImageFileAsFileInputStream() throws Exception {
-        controller.create(objectId, imageId);
-
-        Mockito.verify(fileInputStreamFactory, times(1))
-                .apply(Matchers.eq(imageFile));
+                .getFile(
+                        Matchers.eq(imagesPhysicalPath),
+                        Matchers.eq(imageFileName));
     }
 
     @Test
@@ -180,7 +174,7 @@ public class ThumbnailsControllerTests {
         controller.create(objectId, imageId);
 
         Mockito.verify(fileFactory, times(1))
-                .apply(Matchers.eq(thumbsPhysicalPath));
+                .getFile(Matchers.eq(thumbsPhysicalPath));
     }
 
     @Test
@@ -195,72 +189,31 @@ public class ThumbnailsControllerTests {
     }
 
     @Test
-    public void get_mustGetThumbnailFileOutputStream() throws Exception {
+    public void get_mustResizeImageFile() throws Exception {
         controller.create(objectId, imageId);
 
-        Mockito.verify(fileOutputStreamFactory, times(1))
-                .apply(Matchers.eq(thumbFile));
-    }
-
-    @Test
-    public void get_mustResizeImage() throws Exception {
-        controller.create(objectId, imageId);
-
-        Mockito.verify(imageResizer, times(1))
-                .resizeImage(
-                        Matchers.eq(imageFileInputStream),
-                        Matchers.eq(thumbFileOutputStream),
+        Mockito.verify(imageFileResizer, times(1))
+                .resize(
+                        Matchers.eq(imageFile),
+                        Matchers.eq(thumbFile),
                         Matchers.eq(extension),
-                        Matchers.eq(thumbWidth));
-    }
-
-    @Test
-    public void get_mustCloseFileInputStream() throws Exception {
-        controller.create(objectId, imageId);
-
-        Mockito.verify(imageFileInputStream, times(1))
-                .close();
-    }
-
-    @Test
-    public void get_mustCloseTheOutputStream() throws Exception {
-        controller.create(objectId, imageId);
-
-        Mockito.verify(thumbFileOutputStream, times(1))
-                .close();
+                        Matchers.eq(thumbSize));
     }
 
     @Test
     public void get_mustSaveThumbnailToTheMetadatastore() throws Exception {
         controller.create(objectId, imageId);
 
-        Mockito.verify(imageSvc, times(1))
-                .saveThumbnail(
+        Mockito.verify(thumbnailsSvc, times(1))
+                .save(
                         Matchers.eq(objectId),
                         Matchers.eq(thumbFileName));
     }
 
     @Test
-    public void get_inCaseOfExceptionResizingImage_mustCloseInputAndOutputStreams()
-            throws Exception {
-
-        setResizerToThrowException();
-
-        try {
-            controller.create(objectId, imageId);
-        } catch(Exception e) {}
-
-        Mockito.verify(thumbFileOutputStream)
-                .close();
-
-        Mockito.verify(imageFileInputStream)
-                .close();
-    }
-
-    @Test
     public void get_inCaseOfExceptionResizingImage_mustDeleteThumbnailFile()
-            throws Exception {
-
+            throws Exception
+    {
         setResizerToThrowException();
 
         testThumbFileDeletion();
@@ -268,8 +221,8 @@ public class ThumbnailsControllerTests {
 
     @Test(expected = Exception.class)
     public void get_inCaseOfExceptionResizingImage_mustRethrowException()
-            throws Exception {
-
+            throws Exception
+    {
         setResizerToThrowException();
 
         controller.create(objectId, imageId);
@@ -277,8 +230,8 @@ public class ThumbnailsControllerTests {
 
     @Test
     public void get_inCaseOfExceptionSavingToTheMetadatastore_mustDeleteThumbnailFile()
-            throws Exception {
-
+            throws Exception
+    {
         setServiceSaveThumbnailToThrowException();
 
         testThumbFileDeletion();
@@ -286,11 +239,76 @@ public class ThumbnailsControllerTests {
 
     @Test(expected = Exception.class)
     public void get_inCaseOfExceptionSavingToTheMetadatastore_mustRethrowException()
-            throws Exception {
-
+            throws Exception
+    {
         setServiceSaveThumbnailToThrowException();
 
         controller.create(objectId, imageId);
+    }
+
+    @Test
+    public void get_ifObjectOriginallyHadAThumbnail_mustGetOriginalThumbFile() throws Exception {
+        addOrigThumbnailToTargetObject();
+
+        controller.create(objectId, imageId);
+
+        Mockito.verify(fileFactory, times(1))
+                .getFile(
+                        Matchers.eq(thumbsPhysicalPath),
+                        Matchers.eq(origThumbName));
+    }
+
+    @Test
+    public void get_ifObjectOriginallyHadAThumbnail_mustDeleteOriginalThumbFile() throws Exception {
+        addOrigThumbnailToTargetObject();
+
+        controller.create(objectId, imageId);
+
+        Mockito.verify(origThumbFile, times(1))
+                .delete();
+    }
+
+    @Test
+    public void get_inCaseOfExceptionSavingToTheMetadatastore_mustNotDeleteOriginalThumbFile() throws Exception {
+        setServiceSaveThumbnailToThrowException();
+
+        testOrigThumbNonDeletion();
+    }
+
+    @Test
+    public void get_inCaseOfExceptionResizingImage_mustNotDeleteOriginalThumbFile() throws Exception {
+        setResizerToThrowException();
+
+        testOrigThumbNonDeletion();
+    }
+
+    @Test
+    public void get_inCaseOfExceptionDeletingOriginalThumb_mustContinueExecution() throws Exception {
+        addOrigThumbnailToTargetObject();
+
+        Mockito.doThrow(Exception.class)
+                .when(origThumbFile).delete();
+
+        controller.create(objectId, imageId);
+    }
+
+
+    private void setResizerToThrowException() throws Exception {
+        Mockito.doThrow(Exception.class)
+                .when(imageFileResizer)
+                .resize(
+                        Matchers.any(File.class),
+                        Matchers.any(File.class),
+                        Matchers.anyString(),
+                        Matchers.anyInt());
+    }
+
+    private void setServiceSaveThumbnailToThrowException() throws Exception {
+        Mockito.doThrow(Exception.class)
+                .when(thumbnailsSvc)
+                .save(
+                        Matchers.anyInt(),
+                        Matchers.anyString());
     }
 
     private void testThumbFileDeletion() {
@@ -301,25 +319,17 @@ public class ThumbnailsControllerTests {
         Mockito.verify(thumbFile, times(1)).delete();
     }
 
-    private void setResizerToThrowException() throws Exception {
-        Mockito.doThrow(Exception.class)
-                .when(imageResizer)
-                .resizeImage(
-                        Matchers.any(InputStream.class),
-                        Matchers.any(OutputStream.class),
-                        Matchers.anyString(),
-                        Matchers.anyInt());
+    private void testOrigThumbNonDeletion() {
+        try {
+            controller.create(objectId, imageId);
+        } catch(Exception e) {}
+
+
+        Mockito.verifyNoMoreInteractions(origThumbFile);
     }
 
-    private void setServiceSaveThumbnailToThrowException() throws Exception {
-        Mockito.doThrow(Exception.class)
-                .when(imageSvc)
-                .saveThumbnail(
-                        Matchers.anyInt(),
-                        Matchers.anyString());
+    private void addOrigThumbnailToTargetObject() {
+        targetObject.thumbnail = origThumnail;
+        origThumnail.fileName = origThumbName;
     }
-
-    // TODO: might want to verify that streams are closed AFTER resizing and BEFORE saving to the database
-    // TODO: check if object already contains a thumbnail
-    // TODO: delete preexisting thumbnail if exists - only after successful saving of the new one
 }

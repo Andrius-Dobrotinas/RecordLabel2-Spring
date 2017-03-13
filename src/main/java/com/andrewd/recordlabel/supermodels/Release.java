@@ -15,5 +15,4 @@ public class Release extends ContentBase {
     public PrintStatus printStatus;
     public List<Track> tracks = new ArrayList<>();
     public List<Image> images = new ArrayList<>();
-    public Thumbnail thumbnail;
 }
