@@ -49,4 +49,9 @@ class ImagesRepositoryDefault implements ImagesRepository {
 
         return images;
     }
+
+    @Override
+    public Image get(int id) {
+        return em.find(Image.class, id);
+    }
 }

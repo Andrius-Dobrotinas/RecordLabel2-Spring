@@ -15,10 +15,10 @@ public class ImagesServiceDefault implements ImagesService {
     private ImagesRepository repository;
 
     @Autowired
-    EntityToModelTransformer entityTransformer;
+    private EntityToModelTransformer entityTransformer;
 
     @Autowired
-    ModelToEntityTransformer modelTransformer;
+    private ModelToEntityTransformer modelTransformer;
 
     @Override
     public List<com.andrewd.recordlabel.supermodels.Image> getImages(int ownerId) {
@@ -33,8 +33,11 @@ public class ImagesServiceDefault implements ImagesService {
 
     @Override
     public com.andrewd.recordlabel.supermodels.Image get(int imageId) {
-        // TODO: implement
-        return null;
+        if (imageId == 0)
+            throw new IllegalArgumentException("imageId is 0");
+
+        Image entity = repository.get(imageId);
+        return entityTransformer.getImage(entity);
     }
 
     @Override

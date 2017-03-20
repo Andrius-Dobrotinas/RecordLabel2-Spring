@@ -140,4 +140,30 @@ public class ImagesServiceDefaultTests {
 
         Assert.assertArrayEquals(imagesModels.toArray(), result.toArray());
     }*/
+
+    @Test
+    public void get_mustGetImageFromRepository() {
+        int imageId = 711;
+
+        svc.get(imageId);
+
+        Mockito.verify(repository, times(1))
+                .get(Matchers.eq(imageId));
+    }
+
+    @Test
+    public void get_mustTransformEntityToModel() {
+        int imageId = 711;
+
+        Image image = new Image();
+        Mockito.when(repository.get(Matchers.anyInt()))
+                .thenReturn(image);
+
+        // Run
+        svc.get(imageId);
+
+        // Verify
+        Mockito.verify(entityTransformer, times(1))
+                .getImage(Matchers.eq(image));
+    }
 }

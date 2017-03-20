@@ -25,4 +25,6 @@ public interface ImagesRepository {
      * @return an list of saved images
      */
     List<Image> saveImages(int ownerId, List<Image> images);
+
+    Image get(int id);
 }
