@@ -16,4 +16,16 @@ public class ThumbnailsRepositoryDefault implements ThumbnailsRepository {
         em.flush();
         return thumbnail;
     }
+
+    @Override
+    public Thumbnail get(int id) {
+        return em.find(Thumbnail.class, id);
+    }
+
+    @Override
+    public Thumbnail getByOwner(int ownerId) {
+        return em.createQuery("select i from Thumbnail i where i.owner.id =:ownerId", Thumbnail.class)
+                .setParameter("ownerId", ownerId)
+                .getSingleResult();
+    }
 }

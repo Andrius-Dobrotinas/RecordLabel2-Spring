@@ -13,6 +13,7 @@ public interface ModelToEntityTransformer {
     Metadata getMetadata(com.andrewd.recordlabel.supermodels.Metadata model);
     MediaType getMediaType(com.andrewd.recordlabel.supermodels.MediaType model);
     Image getImage(com.andrewd.recordlabel.supermodels.Image model);
+    Thumbnail getThumbnail(com.andrewd.recordlabel.supermodels.Thumbnail model);
 
     <TModel, TEntity> List<TEntity>
     transformList(List<TModel> list, Function<TModel, TEntity> transformFunction);

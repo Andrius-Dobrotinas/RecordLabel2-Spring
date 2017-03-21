@@ -110,14 +110,16 @@ public class EntityToModelTransformerDefaultTests {
 
     @Test
     public void transformRelease_MustTransformThumbnail() {
-        Release entity = new Release();
-        Thumbnail thumbnail = getThumbnail();
+        int releaseId = 5;
+        Release entity = getRelease(releaseId);
+        Thumbnail thumbnail = getThumbnail(entity);
         entity.thumbnail = thumbnail;
 
         com.andrewd.recordlabel.supermodels.Release model = transformer.getRelease(entity);
 
         Assert.assertNotNull("Must transform release thumbnail", model.thumbnail);
         EntityModelTransformationVerifiers.verifyThumbnail(thumbnail, model.thumbnail);
+        Assert.assertEquals(releaseId, model.thumbnail.ownerId);
     }
 
     @Test
@@ -227,11 +229,14 @@ public class EntityToModelTransformerDefaultTests {
 
     @Test
     public void transformThumbnail() {
-        Thumbnail entity = getThumbnail();
+        int releaseId = 711;
+        Release release = getRelease(releaseId);
+        Thumbnail entity = getThumbnail(release);
 
         com.andrewd.recordlabel.supermodels.Thumbnail model = transformer.getThumbnail(entity);
 
         EntityModelTransformationVerifiers.verifyThumbnail(entity, model);
+        Assert.assertEquals(releaseId, model.ownerId);
     }
 
     @Test
@@ -357,10 +362,17 @@ public class EntityToModelTransformerDefaultTests {
         return entity;
     }
 
-    private Thumbnail getThumbnail() {
+    private Thumbnail getThumbnail(Release release) {
         Thumbnail entity = new Thumbnail();
         entity.id = 1;
         entity.fileName = "thumb.img";
+        entity.owner = release;
+        return entity;
+    }
+
+    private Release getRelease(int id) {
+        Release entity = new Release();
+        entity.id = id;
         return entity;
     }
 }

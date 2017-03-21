@@ -177,6 +177,15 @@ public class ModelToEntityTransformerDefaultTests
     }
 
     @Test
+    public void transformThumbnail() {
+        com.andrewd.recordlabel.supermodels.Thumbnail model = getThumbnail();
+
+        Thumbnail entity = transformer.getThumbnail(model);
+
+        EntityModelTransformationVerifiers.verifyThumbnail(entity, model);
+    }
+
+    @Test
     public void transformList() {
         List<com.andrewd.recordlabel.supermodels.MediaType> list = new ArrayList<>();
         com.andrewd.recordlabel.supermodels.MediaType model = getMediaType();
@@ -232,6 +241,13 @@ public class ModelToEntityTransformerDefaultTests
 
     private com.andrewd.recordlabel.supermodels.Image getImage() {
         com.andrewd.recordlabel.supermodels.Image model = new com.andrewd.recordlabel.supermodels.Image();
+        model.id = 1;
+        model.fileName = "img.img";
+        return model;
+    }
+
+    private com.andrewd.recordlabel.supermodels.Thumbnail getThumbnail() {
+        com.andrewd.recordlabel.supermodels.Thumbnail model = new com.andrewd.recordlabel.supermodels.Thumbnail();
         model.id = 1;
         model.fileName = "img.img";
         return model;

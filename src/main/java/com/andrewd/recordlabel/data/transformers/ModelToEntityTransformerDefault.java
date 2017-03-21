@@ -94,6 +94,14 @@ public class ModelToEntityTransformerDefault implements ModelToEntityTransformer
         return entity;
     }
 
+    @Override
+    public Thumbnail getThumbnail(com.andrewd.recordlabel.supermodels.Thumbnail model) {
+        Thumbnail entity = new Thumbnail();
+        entity.id = model.id;
+        entity.fileName = model.fileName;
+        return entity;
+    }
+
     private <TModel extends com.andrewd.recordlabel.supermodels.ContentBase,
             TEntity extends ContentBase>
     void transformContentBase(TModel model, TEntity entity) {
