@@ -5,6 +5,11 @@ import com.andrewd.recordlabel.data.entities.*;
 import java.util.*;
 import java.util.function.Function;
 
+/**
+ * Transforms domain models into entity types that are stored in the database.
+ * All methods are guaranteed to work with null instances, in which case
+ * they return null
+ */
 public interface ModelToEntityTransformer {
     Release getRelease(com.andrewd.recordlabel.supermodels.ReleaseSlim model);
     Artist getArtist(com.andrewd.recordlabel.supermodels.Artist model);

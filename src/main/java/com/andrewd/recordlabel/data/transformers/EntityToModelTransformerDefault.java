@@ -13,6 +13,9 @@ public class EntityToModelTransformerDefault implements EntityToModelTransformer
 
     @Override
     public com.andrewd.recordlabel.supermodels.Release getRelease(Release entity) {
+        if (entity == null)
+            return null;
+
         com.andrewd.recordlabel.supermodels.Release model = new com.andrewd.recordlabel.supermodels.Release();
         model.date = entity.date;
         model.id = entity.id;
@@ -36,6 +39,9 @@ public class EntityToModelTransformerDefault implements EntityToModelTransformer
 
     @Override
     public com.andrewd.recordlabel.supermodels.ReleaseSlim getReleaseSlim(Release entity) {
+        if (entity == null)
+            return null;
+
         com.andrewd.recordlabel.supermodels.ReleaseSlim model = new com.andrewd.recordlabel.supermodels.ReleaseSlim();
         model.date = entity.date;
         model.id = entity.id;
@@ -58,6 +64,9 @@ public class EntityToModelTransformerDefault implements EntityToModelTransformer
 
     @Override
     public com.andrewd.recordlabel.supermodels.Artist getArtist(Artist entity) {
+        if (entity == null)
+            return null;
+
         com.andrewd.recordlabel.supermodels.Artist model = new com.andrewd.recordlabel.supermodels.Artist();
         model.id = entity.id;
         model.name = entity.name;
@@ -69,6 +78,9 @@ public class EntityToModelTransformerDefault implements EntityToModelTransformer
 
     @Override
     public com.andrewd.recordlabel.supermodels.ArtistBarebones getArtistBarebones(Artist entity) {
+        if (entity == null)
+            return null;
+
         com.andrewd.recordlabel.supermodels.ArtistBarebones model = new com.andrewd.recordlabel.supermodels.ArtistBarebones();
         model.id = entity.id;
         model.name = entity.name;
@@ -78,6 +90,9 @@ public class EntityToModelTransformerDefault implements EntityToModelTransformer
 
     @Override
     public com.andrewd.recordlabel.supermodels.Metadata getMetadata(Metadata entity) {
+        if (entity == null)
+            return null;
+
         com.andrewd.recordlabel.supermodels.Metadata model = new com.andrewd.recordlabel.supermodels.Metadata();
         model.id = entity.id;
         model.text = entity.text;
@@ -87,6 +102,9 @@ public class EntityToModelTransformerDefault implements EntityToModelTransformer
 
     @Override
     public com.andrewd.recordlabel.supermodels.Reference getReference(Reference entity) {
+        if (entity == null)
+            return null;
+
         com.andrewd.recordlabel.supermodels.Reference model = new com.andrewd.recordlabel.supermodels.Reference();
         model.id = entity.id;
         model.target = entity.target;
@@ -97,6 +115,9 @@ public class EntityToModelTransformerDefault implements EntityToModelTransformer
 
     @Override
     public com.andrewd.recordlabel.supermodels.Track getTrack(Track entity) {
+        if (entity == null)
+            return null;
+
         com.andrewd.recordlabel.supermodels.Track model = new com.andrewd.recordlabel.supermodels.Track();
         model.id = entity.id;
         model.reference = entity.reference;
@@ -106,6 +127,9 @@ public class EntityToModelTransformerDefault implements EntityToModelTransformer
 
     @Override
     public com.andrewd.recordlabel.supermodels.MediaType getMediaType(MediaType entity) {
+        if (entity == null)
+            return null;
+
         com.andrewd.recordlabel.supermodels.MediaType model = new com.andrewd.recordlabel.supermodels.MediaType();
         model.id = entity.id;
         model.text = entity.text;
@@ -114,6 +138,9 @@ public class EntityToModelTransformerDefault implements EntityToModelTransformer
 
     @Override
     public com.andrewd.recordlabel.supermodels.Image getImage(Image entity) {
+        if (entity == null)
+            return null;
+
         com.andrewd.recordlabel.supermodels.Image model = new com.andrewd.recordlabel.supermodels.Image();
         model.id = entity.id;
         model.fileName = entity.fileName;
@@ -122,6 +149,9 @@ public class EntityToModelTransformerDefault implements EntityToModelTransformer
 
     @Override
     public com.andrewd.recordlabel.supermodels.Thumbnail getThumbnail(Thumbnail entity) {
+        if (entity == null)
+            return null;
+
         com.andrewd.recordlabel.supermodels.Thumbnail model = new com.andrewd.recordlabel.supermodels.Thumbnail();
         model.id = entity.id;
         model.fileName = entity.fileName;
@@ -147,6 +177,9 @@ public class EntityToModelTransformerDefault implements EntityToModelTransformer
 
     @Override
     public <T, Tm> List<Tm> transformList(List<T> list, Function<T, Tm> function) {
+        if (list == null)
+            return null;
+
         ArrayList<Tm> superModels = new ArrayList<Tm>();
         for (T item : list) {
             superModels.add(function.apply(item));

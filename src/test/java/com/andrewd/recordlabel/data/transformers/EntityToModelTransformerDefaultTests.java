@@ -33,6 +33,13 @@ public class EntityToModelTransformerDefaultTests {
     }
 
     @Test
+    public void transformRelease_whenEntityIsNull_mustReturnNull() {
+        com.andrewd.recordlabel.supermodels.Release model = transformer.getRelease(null);
+
+        Assert.assertNull(model);
+    }
+
+    @Test
     public void transformRelease_MustTransformArtist() {
         Release entity = new Release();
         entity.artist = getArtistEntity();
@@ -80,6 +87,14 @@ public class EntityToModelTransformerDefaultTests {
         // Verify
         Assert.assertEquals(1, results.size());
         EntityModelTransformationVerifiers.verifyRelease(entity1, results.get(0));
+    }
+
+    @Test
+    public void transformListOfEntities_whenEntityIsNull_mustReturnNull() {
+        List<com.andrewd.recordlabel.supermodels.Release> results =
+                transformer.transformList(null, transformer::getRelease);
+
+        Assert.assertNull(results);
     }
 
     @Test
@@ -145,6 +160,13 @@ public class EntityToModelTransformerDefaultTests {
     }
 
     @Test
+    public void transformArtist_whenEntityIsNull_mustReturnNull() {
+        com.andrewd.recordlabel.supermodels.Artist model = transformer.getArtist(null);
+
+        Assert.assertNull(model);
+    }
+
+    @Test
     public void transformArtist_MustTransformMetadata() {
         Artist entity = new Artist();
         Metadata meta = getMetadata();
@@ -183,12 +205,26 @@ public class EntityToModelTransformerDefaultTests {
     }
 
     @Test
+    public void transformArtistToBarebones_whenEntityIsNull_mustReturnNull() {
+        com.andrewd.recordlabel.supermodels.ArtistBarebones model = transformer.getArtistBarebones(null);
+
+        Assert.assertNull(model);
+    }
+
+    @Test
     public void transformMetadata() {
         Metadata entity = getMetadata();
 
         com.andrewd.recordlabel.supermodels.Metadata model = transformer.getMetadata(entity);
 
         EntityModelTransformationVerifiers.verifyMetadata(entity, model);
+    }
+
+    @Test
+    public void transformMetadata_whenEntityIsNull_mustReturnNull() {
+        com.andrewd.recordlabel.supermodels.Metadata model = transformer.getMetadata(null);
+
+        Assert.assertNull(model);
     }
 
     @Test
@@ -201,12 +237,26 @@ public class EntityToModelTransformerDefaultTests {
     }
 
     @Test
+    public void transformReference_whenEntityIsNull_mustReturnNull() {
+        com.andrewd.recordlabel.supermodels.Reference model = transformer.getReference(null);
+
+        Assert.assertNull(model);
+    }
+
+    @Test
     public void transformTrack() {
         Track entity = getTrack();
 
         com.andrewd.recordlabel.supermodels.Track model = transformer.getTrack(entity);
 
         EntityModelTransformationVerifiers.verifyTrack(entity, model);
+    }
+
+    @Test
+    public void transformTrack_whenEntityIsNull_mustReturnNull() {
+        com.andrewd.recordlabel.supermodels.Track model = transformer.getTrack(null);
+
+        Assert.assertNull(model);
     }
 
     @Test
@@ -219,12 +269,26 @@ public class EntityToModelTransformerDefaultTests {
     }
 
     @Test
+    public void transformMediaType_whenEntityIsNull_mustReturnNull() {
+        com.andrewd.recordlabel.supermodels.MediaType model = transformer.getMediaType(null);
+
+        Assert.assertNull(model);
+    }
+
+    @Test
     public void transformImage() {
         Image entity = getImage();
 
         com.andrewd.recordlabel.supermodels.Image model = transformer.getImage(entity);
 
         EntityModelTransformationVerifiers.verifyImage(entity, model);
+    }
+
+    @Test
+    public void transformImage_whenEntityIsNull_mustReturnNull() {
+        com.andrewd.recordlabel.supermodels.Image model = transformer.getImage(null);
+
+        Assert.assertNull(model);
     }
 
     @Test
@@ -237,6 +301,13 @@ public class EntityToModelTransformerDefaultTests {
 
         EntityModelTransformationVerifiers.verifyThumbnail(entity, model);
         Assert.assertEquals(releaseId, model.ownerId);
+    }
+
+    @Test
+    public void transformThumbnail_whenEntityIsNull_mustReturnNull() {
+        com.andrewd.recordlabel.supermodels.Thumbnail model = transformer.getThumbnail(null);
+
+        Assert.assertNull(model);
     }
 
     @Test
@@ -253,6 +324,13 @@ public class EntityToModelTransformerDefaultTests {
         com.andrewd.recordlabel.supermodels.ReleaseSlim model = transformer.getReleaseSlim(entity);
 
         EntityModelTransformationVerifiers.verifyReleaseSlim(entity, model);
+    }
+
+    @Test
+    public void transformToReleaseSlim_whenEntityIsNull_mustReturnNull() {
+        com.andrewd.recordlabel.supermodels.ReleaseSlim model = transformer.getReleaseSlim(null);
+
+        Assert.assertNull(model);
     }
 
     @Test

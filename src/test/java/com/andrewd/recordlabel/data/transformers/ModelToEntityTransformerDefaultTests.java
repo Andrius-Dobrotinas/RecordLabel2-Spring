@@ -35,6 +35,13 @@ public class ModelToEntityTransformerDefaultTests
     }
 
     @Test
+    public void transformReleaseSlim_whenModelIsNull_mustReturnNull() {
+        Release entity = transformer.getRelease(null);
+
+        Assert.assertNull(entity);
+    }
+
+    @Test
     public void transformReleaseSlim_MustTransformArtist() {
         com.andrewd.recordlabel.supermodels.ReleaseSlim model = new com.andrewd.recordlabel.supermodels.ReleaseSlim();
         model.artistId = 5;
@@ -106,6 +113,13 @@ public class ModelToEntityTransformerDefaultTests
     }
 
     @Test
+    public void transformArtist_whenModelIsNull_mustReturnNull() {
+        Artist entity = transformer.getArtist(null);
+
+        Assert.assertNull(entity);
+    }
+
+    @Test
     public void transformArtist_MustTransformMetadata() {
         com.andrewd.recordlabel.supermodels.Artist model = new com.andrewd.recordlabel.supermodels.Artist();
         com.andrewd.recordlabel.supermodels.Metadata meta = getMetadata();
@@ -141,12 +155,26 @@ public class ModelToEntityTransformerDefaultTests
     }
 
     @Test
+    public void transformMetadata_whenModelIsNull_mustReturnNull() {
+        Metadata entity = transformer.getMetadata(null);
+
+        Assert.assertNull(entity);
+    }
+
+    @Test
     public void transformReference() {
         com.andrewd.recordlabel.supermodels.Reference model = getReference();
 
         Reference entity = transformer.getReference(model);
 
         EntityModelTransformationVerifiers.verifyReference(entity, model);
+    }
+
+    @Test
+    public void transformReference_whenModelIsNull_mustReturnNull() {
+        Reference entity = transformer.getReference(null);
+
+        Assert.assertNull(entity);
     }
 
     @Test
@@ -159,12 +187,26 @@ public class ModelToEntityTransformerDefaultTests
     }
 
     @Test
+    public void transformMediaType_whenModelIsNull_mustReturnNull() {
+        MediaType entity = transformer.getMediaType(null);
+
+        Assert.assertNull(entity);
+    }
+
+    @Test
     public void transformTrack() {
         com.andrewd.recordlabel.supermodels.Track model = getTrack();
 
         Track entity = transformer.getTrack(model);
 
         EntityModelTransformationVerifiers.verifyTrack(entity, model);
+    }
+
+    @Test
+    public void transformTrack_whenModelIsNull_mustReturnNull() {
+        Track entity = transformer.getTrack(null);
+
+        Assert.assertNull(entity);
     }
 
     @Test
@@ -177,12 +219,26 @@ public class ModelToEntityTransformerDefaultTests
     }
 
     @Test
+    public void transformImage_whenModelIsNull_mustReturnNull() {
+        Image entity = transformer.getImage(null);
+
+        Assert.assertNull(entity);
+    }
+
+    @Test
     public void transformThumbnail() {
         com.andrewd.recordlabel.supermodels.Thumbnail model = getThumbnail();
 
         Thumbnail entity = transformer.getThumbnail(model);
 
         EntityModelTransformationVerifiers.verifyThumbnail(entity, model);
+    }
+
+    @Test
+    public void transformThumbnail_whenModelIsNull_mustReturnNull() {
+        Thumbnail entity = transformer.getThumbnail(null);
+
+        Assert.assertNull(entity);
     }
 
     @Test
@@ -198,6 +254,12 @@ public class ModelToEntityTransformerDefaultTests
         EntityModelTransformationVerifiers.verifyMediaType(result.get(0), model);
     }
 
+    @Test
+    public void transformList_whenModelIsNull_mustReturnNull() {
+        List<MediaType> entity = transformer.transformList(null, transformer::getMediaType);
+
+        Assert.assertNull(entity);
+    }
 
     private com.andrewd.recordlabel.supermodels.Artist getArtistEntity() {
         com.andrewd.recordlabel.supermodels.Artist model = new com.andrewd.recordlabel.supermodels.Artist();
