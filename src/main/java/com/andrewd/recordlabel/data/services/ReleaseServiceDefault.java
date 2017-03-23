@@ -4,10 +4,14 @@ import com.andrewd.recordlabel.common.BatchedResult;
 import com.andrewd.recordlabel.common.components.BatchCountCalculator;
 import com.andrewd.recordlabel.data.EntityDoesNotExistException;
 import com.andrewd.recordlabel.data.SortDirection;
+import com.andrewd.recordlabel.data.entities.Artist;
+import com.andrewd.recordlabel.data.entities.Image;
+import com.andrewd.recordlabel.data.entities.MediaType;
+import com.andrewd.recordlabel.data.entities.Metadata;
+import com.andrewd.recordlabel.data.entities.Release;
 import com.andrewd.recordlabel.data.transformers.EntityToModelTransformer;
 import com.andrewd.recordlabel.data.transformers.ModelToEntityTransformer;
 import com.andrewd.recordlabel.data.repository.ReleaseRepository;
-import com.andrewd.recordlabel.data.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -96,11 +100,6 @@ public class ReleaseServiceDefault implements ReleaseService {
     @Override
     public boolean objectExists(int id) {
         return repository.objectExists(id);
-    }
-
-    @Override
-    public <T> T getObject(Class<T> type, int id) {
-        return repository.getObject(type, id);
     }
 
     @Override

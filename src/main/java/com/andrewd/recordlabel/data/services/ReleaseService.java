@@ -16,6 +16,5 @@ public interface ReleaseService {
     List<ArtistBarebones> getArtistBarebonesList();
 
     boolean objectExists(int id);
-    <T> T getObject(Class<T> type, int id);
     void save(Image[] images);
 }

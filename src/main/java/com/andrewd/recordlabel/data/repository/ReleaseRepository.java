@@ -19,5 +19,5 @@ public interface ReleaseRepository {
     List<Metadata> getMetadataList();
 
     boolean objectExists(int id);
-    <T> T getObject(Class<T> type, int id);
+    <T extends ContentBase> T getObject(Class<T> type, int id);
 }

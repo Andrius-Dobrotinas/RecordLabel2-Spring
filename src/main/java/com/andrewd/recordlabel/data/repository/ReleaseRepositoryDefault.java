@@ -43,11 +43,6 @@ public class ReleaseRepositoryDefault implements ReleaseRepository {
     }
 
     @Override
-    public <T> T getObject(Class<T> type, int id) {
-        return em.find(type, id);
-    }
-
-    @Override
     public List<Release> getReleases(int batchNumber, int batchSize, String orderByProperty,
                                      SortDirection direction) {
        return batchedQueryBuilder
@@ -86,5 +81,10 @@ public class ReleaseRepositoryDefault implements ReleaseRepository {
     @Override
     public List<Artist> getAllArtists() {
         return em.createQuery("select i from Artist i", Artist.class).getResultList();
+    }
+
+    @Override
+    public <T extends ContentBase> T getObject(Class<T> type, int id) {
+        return em.find(type, id);
     }
 }
