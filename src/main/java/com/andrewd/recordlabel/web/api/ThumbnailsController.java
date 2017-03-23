@@ -58,10 +58,12 @@ public class ThumbnailsController {
         if (image == null)
             throw new EntityDoesNotExistException(imageId);
 
-        // get target object from the data store
-        ContentBase targetObject = releasesSvc.getObject(ContentBase.class, objectId);
-        if (targetObject == null)
+        // check if the target object exists
+        boolean targetObjExists = releasesSvc.objectExists(objectId);
+        if (targetObjExists == false)
             throw new EntityDoesNotExistException(objectId);
+
+        Thumbnail origThumb = thumbnailsSvc.getByOwner(objectId);
 
         // get actual source image
         File imageFile = fileFactory.getFile(imagesPhysicalPath, image.fileName);
@@ -73,14 +75,18 @@ public class ThumbnailsController {
         // create thumbnail file
         File thumbsDirectory = fileFactory.getFile(thumbsPhysicalPath);
         File thumbFile = randomFileCreator
-                .createFile(thumbFileNamePrefix, extension, thumbsDirectory);
+                .createFile(thumbFileNamePrefix, "." + extension, thumbsDirectory);
 
         // resize the image and write the result to the file
         try {
             imageFileResizer.resize(imageFile, thumbFile, extension, thumbSize);
 
             // save thumbnail to the metadata store
-            thumbnailsSvc.save(objectId, thumbFile.getName());
+            Thumbnail thumb = new Thumbnail(thumbFile.getName(), objectId);
+            if (origThumb != null) {
+                thumb.id = origThumb.id;
+            }
+            thumbnailsSvc.save(thumb);
         }
         catch (Exception e) {
             thumbFile.delete();
@@ -88,9 +94,9 @@ public class ThumbnailsController {
         }
 
         // delete original thumbnail if the target object had one
-        if (targetObject.thumbnail != null) {
+        if (origThumb != null) {
             File oldThumbFile = fileFactory
-                    .getFile(thumbsPhysicalPath, targetObject.thumbnail.fileName);
+                    .getFile(thumbsPhysicalPath, origThumb.fileName);
 
             try {
                 oldThumbFile.delete();

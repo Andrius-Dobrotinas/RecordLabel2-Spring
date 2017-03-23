@@ -21,13 +21,19 @@ public class ThumbnailsServiceDefault implements ThumbnailsService {
 
     @Override
     public Thumbnail save(Thumbnail thumbnail) {
+        if (thumbnail.ownerId == 0)
+            throw new IllegalArgumentException(
+                    "thumbnail's ownerId is 0, which is illegal");
+
         com.andrewd.recordlabel.data.entities.Thumbnail entity
                 = modelTransformer.getThumbnail(thumbnail);
 
-        repository.save(entity);
+        int id = repository.save(entity, thumbnail.ownerId);
 
-        return null;
-        /* TODO: I'll need the original image id too.*/
+        com.andrewd.recordlabel.data.entities.Thumbnail saved
+                = repository.get(id);
+
+        return entityTransformer.getThumbnail(saved);
     }
 
     @Override

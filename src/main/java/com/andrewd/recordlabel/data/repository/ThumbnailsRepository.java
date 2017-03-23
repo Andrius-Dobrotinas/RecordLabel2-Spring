@@ -3,7 +3,16 @@ package com.andrewd.recordlabel.data.repository;
 import com.andrewd.recordlabel.data.entities.Thumbnail;
 
 public interface ThumbnailsRepository {
-    Thumbnail save(Thumbnail thumbnail);
+
+    /**
+     * Saves thumbnail metadata in the repository
+     * @param thumbnail
+     * @param ownerId object with which thumbnail is to be associated
+     * @return id that is assigned to the thumbnail when it is being
+     * saved
+     */
+    int save(Thumbnail thumbnail, int ownerId);
+
     Thumbnail get(int id);
 
     /**

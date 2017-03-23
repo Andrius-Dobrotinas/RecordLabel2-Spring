@@ -14,6 +14,6 @@ public class Thumbnail {
     @NotNull
     public String fileName;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     public ContentBase owner;
 }

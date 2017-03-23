@@ -32,14 +32,27 @@ public class ThumbnailsServiceDefaultTests {
     ModelToEntityTransformer modelTransformer;
 
     private final int thumbId = 711;
+    private final int savedThumbId = 667;
     private final int ownerId = 6;
     private Thumbnail thumb;
-    private com.andrewd.recordlabel.data.entities.Thumbnail entity;
+    private com.andrewd.recordlabel.data.entities.Thumbnail savedthumbEntity;
+    private com.andrewd.recordlabel.data.entities.Thumbnail thumbEntity;
 
     @Before
     public void init() {
         thumb = new Thumbnail();
-        entity = new com.andrewd.recordlabel.data.entities.Thumbnail();
+        thumb.ownerId = ownerId;
+        savedthumbEntity = new com.andrewd.recordlabel.data.entities.Thumbnail();
+        thumbEntity = new com.andrewd.recordlabel.data.entities.Thumbnail();
+
+        Mockito.when(repository
+                .save(
+                        Matchers.any(com.andrewd.recordlabel.data.entities.Thumbnail.class),
+                        Matchers.anyInt()))
+                .thenReturn(savedThumbId);
+
+        Mockito.when(repository.get(Matchers.anyInt()))
+                .thenReturn(savedthumbEntity);
     }
 
     @Test
@@ -54,12 +67,33 @@ public class ThumbnailsServiceDefaultTests {
     public void save_mustSaveTransformedEntityInRepository() {
         Mockito.when(modelTransformer
                 .getThumbnail(Matchers.eq(thumb)))
-                .thenReturn(entity);
+                .thenReturn(thumbEntity);
 
         svc.save(thumb);
 
         Mockito.verify(repository, times(1))
-                .save(Matchers.eq(entity));
+                .save(Matchers.eq(thumbEntity), Matchers.eq(ownerId));
+    }
+
+    @Test
+    public void save_mustRetrievedSavedEntityFromTheRepository() {
+        svc.save(thumb);
+
+        Mockito.verify(repository, times(1))
+                .get(Matchers.eq(savedThumbId));
+    }
+
+    @Test
+    public void save_mustTransformSavedEntityToModel() {
+        Mockito.when(repository
+                .save(Matchers.any(com.andrewd.recordlabel.data.entities.Thumbnail.class),
+                        Matchers.anyInt()))
+                .thenReturn(savedThumbId);
+
+        svc.save(thumb);
+
+        Mockito.verify(entityTransformer, times(1))
+                .getThumbnail(Matchers.eq(savedthumbEntity));
     }
 
     @Test
@@ -74,12 +108,12 @@ public class ThumbnailsServiceDefaultTests {
     public void get_mustTransformThumbnailEntityIntoSuperModel() {
         Mockito.when(repository
                 .get(Matchers.eq(thumbId)))
-                .thenReturn(entity);
+                .thenReturn(thumbEntity);
 
         svc.get(thumbId);
 
         Mockito.verify(entityTransformer, times(1))
-                .getThumbnail(Matchers.eq(entity));
+                .getThumbnail(Matchers.eq(thumbEntity));
     }
 
     @Test
@@ -94,11 +128,11 @@ public class ThumbnailsServiceDefaultTests {
     public void getByOwner_mustTransformThumbnailEntityIntoSuperModel() {
         Mockito.when(repository
                 .getByOwner(Matchers.eq(ownerId)))
-                .thenReturn(entity);
+                .thenReturn(thumbEntity);
 
         svc.getByOwner(ownerId);
 
         Mockito.verify(entityTransformer, times(1))
-                .getThumbnail(Matchers.eq(entity));
+                .getThumbnail(Matchers.eq(thumbEntity));
     }
 }

@@ -155,7 +155,9 @@ public class EntityToModelTransformerDefault implements EntityToModelTransformer
         com.andrewd.recordlabel.supermodels.Thumbnail model = new com.andrewd.recordlabel.supermodels.Thumbnail();
         model.id = entity.id;
         model.fileName = entity.fileName;
-        model.ownerId = entity.owner.id;
+        if (entity.owner != null) {
+            model.ownerId = entity.owner.id;
+        }
         return model;
     }
 

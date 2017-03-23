@@ -52,13 +52,13 @@ public class ThumbnailsControllerTests {
     private final String extension = "jpg";
 
     private final String origThumbName = "original thumbnail.png";
+    private final int originalThumbId = 7;
 
     private Image image;
     private File imageFile;
     private File thumbFile;
     private File thumbsDirectory;
-    private ContentBase targetObject;
-    private Thumbnail origThumnail;
+    private Thumbnail origThumbnail;
     private File origThumbFile;
 
     @Before
@@ -67,8 +67,9 @@ public class ThumbnailsControllerTests {
         imageFile = new File(fullImagePath);
         thumbFile = Mockito.mock(File.class);
         thumbsDirectory = new File(thumbsPhysicalPath);
-        targetObject = Mockito.mock(ContentBase.class);
-        origThumnail = Mockito.mock(Thumbnail.class);
+        origThumbnail = Mockito.mock(Thumbnail.class);
+        origThumbnail.fileName = origThumbName;
+        origThumbnail.id = originalThumbId;
         origThumbFile = Mockito.mock(File.class);
 
         controller.imagesPhysicalPath = imagesPhysicalPath;
@@ -86,10 +87,9 @@ public class ThumbnailsControllerTests {
                 .thenReturn(image);
 
         Mockito.when(releasesSvc
-                .getObject(
-                        Matchers.eq(ContentBase.class),
+                .objectExists(
                         Matchers.eq(objectId)))
-                .thenReturn(targetObject);
+                .thenReturn(true);
 
         Mockito.when(fileFactory
                 .getFile(
@@ -135,18 +135,26 @@ public class ThumbnailsControllerTests {
     }
 
     @Test
-    public void get_mustRetrieveTargetObjectFromTheDatastore() throws Exception {
+    public void get_mustCheckIfTargetObjectExists() throws Exception {
         controller.create(objectId, imageId);
 
         Mockito.verify(releasesSvc, times(1))
-                .getObject(
-                        Matchers.eq(ContentBase.class),
+                .objectExists(
                         Matchers.eq(objectId));
     }
 
     @Test(expected = EntityDoesNotExistException.class)
     public void get_whenTargetObjectDoesNotExist_mustThrowException() throws Exception {
         controller.create(0, imageId);
+    }
+
+    @Test
+    public void get_mustRetrieveCurrentThumbnailFromTheDatastore() throws Exception {
+        controller.create(objectId, imageId);
+
+        Mockito.verify(thumbnailsSvc, times(1))
+                .getByOwner(
+                        Matchers.eq(objectId));
     }
 
     @Test
@@ -184,7 +192,7 @@ public class ThumbnailsControllerTests {
         Mockito.verify(randomFileCreator, times(1))
                 .createFile(
                         Matchers.eq(thumbFileNamePrefix),
-                        Matchers.eq(extension),
+                        Matchers.eq("." + extension),
                         Matchers.eq(thumbsDirectory));
     }
 
@@ -205,9 +213,52 @@ public class ThumbnailsControllerTests {
         controller.create(objectId, imageId);
 
         Mockito.verify(thumbnailsSvc, times(1))
-                .save(
-                        Matchers.eq(objectId),
-                        Matchers.eq(thumbFileName));
+                .save(Matchers.any(Thumbnail.class));
+    }
+
+    @Test
+    public void get_mustSaveThumbnailToTheMetadatastoreWithTheRightFilename() throws Exception {
+        controller.create(objectId, imageId);
+
+        Mockito.verify(thumbnailsSvc, times(1))
+                .save(Matchers.argThat(new ArgumentMatcher<Thumbnail>() {
+
+                    @Override
+                    public boolean matches(Object argument) {
+                        return thumbFileName.equals(
+                                ((Thumbnail)argument).fileName);
+                    }
+                }));
+    }
+
+    @Test
+    public void get_mustSaveThumbnailToTheMetadatastoreWithTheRightOwnerId() throws Exception {
+        controller.create(objectId, imageId);
+
+        Mockito.verify(thumbnailsSvc, times(1))
+                .save(Matchers.argThat(new ArgumentMatcher<Thumbnail>() {
+
+                    @Override
+                    public boolean matches(Object argument) {
+                        return objectId == ((Thumbnail)argument).ownerId;
+                    }
+                }));
+    }
+
+    @Test
+    public void get_mustSaveThumbnailToTheMetadatastoreWithTheOriginalId_ifThumbnailAlreadyExisted() throws Exception {
+        setupToReturnOriginalThumbnail();
+
+        controller.create(objectId, imageId);
+
+        Mockito.verify(thumbnailsSvc, times(1))
+                .save(Matchers.argThat(new ArgumentMatcher<Thumbnail>() {
+
+                    @Override
+                    public boolean matches(Object argument) {
+                        return originalThumbId == ((Thumbnail)argument).id;
+                    }
+                }));
     }
 
     @Test
@@ -248,7 +299,7 @@ public class ThumbnailsControllerTests {
 
     @Test
     public void get_ifObjectOriginallyHadAThumbnail_mustGetOriginalThumbFile() throws Exception {
-        addOrigThumbnailToTargetObject();
+        setupToReturnOriginalThumbnail();
 
         controller.create(objectId, imageId);
 
@@ -260,7 +311,7 @@ public class ThumbnailsControllerTests {
 
     @Test
     public void get_ifObjectOriginallyHadAThumbnail_mustDeleteOriginalThumbFile() throws Exception {
-        addOrigThumbnailToTargetObject();
+        setupToReturnOriginalThumbnail();
 
         controller.create(objectId, imageId);
 
@@ -284,7 +335,7 @@ public class ThumbnailsControllerTests {
 
     @Test
     public void get_inCaseOfExceptionDeletingOriginalThumb_mustContinueExecution() throws Exception {
-        addOrigThumbnailToTargetObject();
+        setupToReturnOriginalThumbnail();
 
         Mockito.doThrow(Exception.class)
                 .when(origThumbFile).delete();
@@ -306,9 +357,7 @@ public class ThumbnailsControllerTests {
     private void setServiceSaveThumbnailToThrowException() throws Exception {
         Mockito.doThrow(Exception.class)
                 .when(thumbnailsSvc)
-                .save(
-                        Matchers.anyInt(),
-                        Matchers.anyString());
+                .save(Matchers.any(Thumbnail.class));
     }
 
     private void testThumbFileDeletion() {
@@ -328,8 +377,10 @@ public class ThumbnailsControllerTests {
         Mockito.verifyNoMoreInteractions(origThumbFile);
     }
 
-    private void addOrigThumbnailToTargetObject() {
-        targetObject.thumbnail = origThumnail;
-        origThumnail.fileName = origThumbName;
+    private void setupToReturnOriginalThumbnail() {
+        Mockito.when(thumbnailsSvc
+                .getByOwner(
+                        Matchers.eq(objectId)))
+                .thenReturn(origThumbnail);
     }
 }
