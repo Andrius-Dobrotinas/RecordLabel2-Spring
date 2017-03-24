@@ -175,6 +175,10 @@ public class EntityToModelTransformerDefault implements EntityToModelTransformer
     void transformContentBaseSlim(TEntity entity, TModel model) {
         model.metadataIds = entity.metadata.stream().mapToInt(x -> x.id).boxed().collect(Collectors.toList());
         model.references = transformList(entity.references, this::getReference);
+
+        if (entity.thumbnail != null) {
+            model.thumbnail = getThumbnail(entity.thumbnail);
+        }
     }
 
     @Override

@@ -64,5 +64,8 @@ public class EntityModelTransformationVerifiers {
     public static void verifyThumbnail(Thumbnail entity, com.andrewd.recordlabel.supermodels.Thumbnail superModel) {
         Assert.assertEquals("Thumbnail ids must match", entity.id, superModel.id);
         Assert.assertEquals("Thumbnail filenames must match", entity.fileName, superModel.fileName);
+        if (entity.owner != null) {
+            Assert.assertEquals("Thumbnail owner ids must match", entity.owner.id, superModel.ownerId);
+        }
     }
 }

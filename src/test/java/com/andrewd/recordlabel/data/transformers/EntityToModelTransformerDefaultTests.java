@@ -138,6 +138,22 @@ public class EntityToModelTransformerDefaultTests {
     }
 
     @Test
+    public void transformRelease_MustTransformThumbnail_whenOwnerIsNotNull() {
+        int releaseId = 5;
+        Release entity = getRelease(releaseId);
+        Thumbnail thumbnail = getThumbnail(entity);
+        entity.thumbnail = thumbnail;
+        thumbnail.owner = entity;
+
+        com.andrewd.recordlabel.supermodels.Release model = transformer.getRelease(entity);
+
+        Assert.assertNotNull("Must transform release thumbnail", model.thumbnail);
+        EntityModelTransformationVerifiers.verifyThumbnail(thumbnail, model.thumbnail);
+        Assert.assertEquals(releaseId, model.thumbnail.ownerId);
+    }
+
+
+    @Test
     public void transformRelease_MustTransformReferences() {
         Release entity = new Release();
         Reference ref = getReference();
@@ -391,6 +407,35 @@ public class EntityToModelTransformerDefaultTests {
         // Verify
         Assert.assertEquals("Must transform references", 1, model.references.size());
         EntityModelTransformationVerifiers.verifyReference(ref, model.references.get(0));
+    }
+
+    @Test
+    public void transformRelease_mustTransformThumbnail() {
+        int releaseId = 5;
+        Release entity = getRelease(releaseId);
+        Thumbnail thumbnail = getThumbnail(entity);
+        entity.thumbnail = thumbnail;
+
+        com.andrewd.recordlabel.supermodels.ReleaseSlim model = transformer.getReleaseSlim(entity);
+
+        Assert.assertNotNull("Must transform release thumbnail", model.thumbnail);
+        EntityModelTransformationVerifiers.verifyThumbnail(thumbnail, model.thumbnail);
+        Assert.assertEquals(releaseId, model.thumbnail.ownerId);
+    }
+
+    @Test
+    public void transformRelease_mustTransformThumbnail_whenOwnerIsNotNull() {
+        int releaseId = 5;
+        Release entity = getRelease(releaseId);
+        Thumbnail thumbnail = getThumbnail(entity);
+        entity.thumbnail = thumbnail;
+        thumbnail.owner = entity;
+
+        com.andrewd.recordlabel.supermodels.ReleaseSlim model = transformer.getReleaseSlim(entity);
+
+        Assert.assertNotNull("Must transform release thumbnail", model.thumbnail);
+        EntityModelTransformationVerifiers.verifyThumbnail(thumbnail, model.thumbnail);
+        Assert.assertEquals(releaseId, model.thumbnail.ownerId);
     }
 
     private Artist getArtistEntity() {
