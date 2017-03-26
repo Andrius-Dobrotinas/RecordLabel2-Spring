@@ -301,6 +301,16 @@ public class EntityToModelTransformerDefaultTests {
     }
 
     @Test
+    public void transformImage_whenOwnerIsNotNull() {
+        Image entity = getImage();
+        entity.owner = getRelease(711);
+
+        com.andrewd.recordlabel.supermodels.Image model = transformer.getImage(entity);
+
+        EntityModelTransformationVerifiers.verifyImage(entity, model);
+    }
+
+    @Test
     public void transformImage_whenEntityIsNull_mustReturnNull() {
         com.andrewd.recordlabel.supermodels.Image model = transformer.getImage(null);
 
@@ -309,14 +319,21 @@ public class EntityToModelTransformerDefaultTests {
 
     @Test
     public void transformThumbnail() {
-        int releaseId = 711;
-        Release release = getRelease(releaseId);
+        Thumbnail entity = getThumbnail(null);
+
+        com.andrewd.recordlabel.supermodels.Thumbnail model = transformer.getThumbnail(entity);
+
+        EntityModelTransformationVerifiers.verifyThumbnail(entity, model);
+    }
+
+    @Test
+    public void transformThumbnail_whenOwnerIsNotNull() {
+        Release release = getRelease(711);
         Thumbnail entity = getThumbnail(release);
 
         com.andrewd.recordlabel.supermodels.Thumbnail model = transformer.getThumbnail(entity);
 
         EntityModelTransformationVerifiers.verifyThumbnail(entity, model);
-        Assert.assertEquals(releaseId, model.ownerId);
     }
 
     @Test

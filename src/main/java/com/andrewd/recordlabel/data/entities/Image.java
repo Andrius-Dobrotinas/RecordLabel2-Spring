@@ -14,6 +14,6 @@ public class Image {
     @NotNull
     public String fileName;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     public ContentBase owner;
 }
