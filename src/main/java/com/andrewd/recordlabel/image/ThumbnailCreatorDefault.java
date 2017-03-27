@@ -2,23 +2,26 @@ package com.andrewd.recordlabel.image;
 
 import com.andrewd.recordlabel.WebConfig;
 import com.andrewd.recordlabel.data.EntityDoesNotExistException;
-import com.andrewd.recordlabel.data.services.*;
+import com.andrewd.recordlabel.data.services.ReleaseService;
+import com.andrewd.recordlabel.data.services.ThumbnailsService;
 import com.andrewd.recordlabel.image.resize.ImageFileResizer;
-import com.andrewd.recordlabel.io.*;
-import com.andrewd.recordlabel.supermodels.*;
-import org.springframework.beans.factory.annotation.*;
-import org.springframework.web.bind.annotation.*;
-import java.io.*;
+import com.andrewd.recordlabel.io.FileExtensionGetter;
+import com.andrewd.recordlabel.io.FileFactory;
+import com.andrewd.recordlabel.io.RandomFileCreator;
+import com.andrewd.recordlabel.supermodels.Image;
+import com.andrewd.recordlabel.supermodels.Thumbnail;
+import com.andrewd.recordlabel.web.components.ThumbnailCreator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
-@RestController
-@RequestMapping(value = "api/thumbnails/")
-public class ThumbnailCreatorDefault {
+import java.io.File;
+
+@Component
+public class ThumbnailCreatorDefault implements ThumbnailCreator {
 
     @Autowired
     private ReleaseService releasesSvc;
-
-    @Autowired
-    private ImagesService imagesSvc;
 
     @Autowired
     private ThumbnailsService thumbnailsSvc;
@@ -35,7 +38,6 @@ public class ThumbnailCreatorDefault {
     @Autowired
     private ImageFileResizer imageFileResizer;
 
-
     @Value("${" + WebConfig.IMAGES_PHYSICAL_PATH_SETTINGS_KEY + "}")
     public String imagesPhysicalPath;
 
@@ -48,15 +50,16 @@ public class ThumbnailCreatorDefault {
     @Value("${" + WebConfig.THUMBNAILS_WIDTH_SETTINGS_KEY + "}")
     public int thumbSize;
 
+    public void createThumbnail(Image sourceImage) throws Exception {
+        if (sourceImage == null) {
+            throw new IllegalArgumentException("sourceImage is null");
+        }
+        if (sourceImage.ownerId == 0) {
+            throw new IllegalArgumentException(
+                    "sourceImage's ownerId is 0 which means it is not associated with any object");
+        }
 
-    @RequestMapping(value = "create", method = RequestMethod.POST)
-    public void create(@RequestParam int objectId, @RequestParam int imageId)
-            throws Exception
-    {
-        // get source image from the metadata store
-        Image image = imagesSvc.get(imageId);
-        if (image == null)
-            throw new EntityDoesNotExistException(imageId);
+        int objectId = sourceImage.ownerId;
 
         // check if the target object exists
         boolean targetObjExists = releasesSvc.objectExists(objectId);
@@ -66,11 +69,11 @@ public class ThumbnailCreatorDefault {
         Thumbnail origThumb = thumbnailsSvc.getByOwner(objectId);
 
         // get actual source image
-        File imageFile = fileFactory.getFile(imagesPhysicalPath, image.fileName);
+        File imageFile = fileFactory.getFile(imagesPhysicalPath, sourceImage.fileName);
 
         // get image type
         String extension = fileExtensionGetter
-                .getFileExtension(image.fileName, false);
+                .getFileExtension(sourceImage.fileName, false);
 
         // create thumbnail file
         File thumbsDirectory = fileFactory.getFile(thumbsPhysicalPath);
@@ -82,7 +85,7 @@ public class ThumbnailCreatorDefault {
             imageFileResizer.resize(imageFile, thumbFile, extension, thumbSize);
 
             // save thumbnail to the metadata store
-            Thumbnail thumb = new Thumbnail(thumbFile.getName(), objectId);
+            Thumbnail thumb = new Thumbnail(thumbFile.getName(), sourceImage.ownerId);
             if (origThumb != null) {
                 thumb.id = origThumb.id;
             }

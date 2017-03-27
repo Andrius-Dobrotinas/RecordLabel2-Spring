@@ -2,7 +2,6 @@ package com.andrewd.recordlabel.image;
 
 import com.andrewd.recordlabel.data.EntityDoesNotExistException;
 import com.andrewd.recordlabel.data.services.*;
-import com.andrewd.recordlabel.image.ThumbnailCreatorDefault;
 import com.andrewd.recordlabel.image.resize.ImageFileResizer;
 import com.andrewd.recordlabel.io.*;
 import com.andrewd.recordlabel.supermodels.*;
@@ -18,13 +17,10 @@ import static org.mockito.Mockito.times;
 public class ThumbnailCreatorDefaultTests {
 
     @InjectMocks
-    ThumbnailCreatorDefault controller;
+    ThumbnailCreatorDefault component;
 
     @Mock
     ReleaseService releasesSvc;
-
-    @Mock
-    ImagesService imageSvc;
 
     @Mock
     ThumbnailsService thumbnailsSvc;
@@ -46,8 +42,8 @@ public class ThumbnailCreatorDefaultTests {
     private final String thumbFileNamePrefix = "tmb";
     private final String thumbFileName = "thumb.jpg";
     private final int thumbSize = 150;
-    private final int objectId = 1;
-    private final int imageId = 2;
+    private final int ownerId = 711;
+    private final int sourceImageId = 2;
     private final String imageFileName = "image.jpg";
     private final String fullImagePath = "img/image.jpg";
     private final String extension = "jpg";
@@ -55,7 +51,7 @@ public class ThumbnailCreatorDefaultTests {
     private final String origThumbName = "original thumbnail.png";
     private final int originalThumbId = 7;
 
-    private Image image;
+    private Image sourceImage;
     private File imageFile;
     private File thumbFile;
     private File thumbsDirectory;
@@ -64,7 +60,9 @@ public class ThumbnailCreatorDefaultTests {
 
     @Before
     public void before() throws Exception {
-        image = new Image(imageFileName);
+        sourceImage = new Image(imageFileName);
+        sourceImage.id = sourceImageId;
+        sourceImage.ownerId = ownerId;
         imageFile = new File(fullImagePath);
         thumbFile = Mockito.mock(File.class);
         thumbsDirectory = new File(thumbsPhysicalPath);
@@ -73,23 +71,18 @@ public class ThumbnailCreatorDefaultTests {
         origThumbnail.id = originalThumbId;
         origThumbFile = Mockito.mock(File.class);
 
-        controller.imagesPhysicalPath = imagesPhysicalPath;
-        controller.thumbsPhysicalPath = thumbsPhysicalPath;
-        controller.thumbFileNamePrefix = thumbFileNamePrefix;
-        controller.thumbSize = thumbSize;
+        component.imagesPhysicalPath = imagesPhysicalPath;
+        component.thumbsPhysicalPath = thumbsPhysicalPath;
+        component.thumbFileNamePrefix = thumbFileNamePrefix;
+        component.thumbSize = thumbSize;
 
         Mockito.when(thumbFile
                 .getName())
                 .thenReturn(thumbFileName);
 
-        Mockito.when(imageSvc
-                .get(
-                        Matchers.eq(imageId)))
-                .thenReturn(image);
-
         Mockito.when(releasesSvc
                 .objectExists(
-                        Matchers.eq(objectId)))
+                        Matchers.eq(ownerId)))
                 .thenReturn(true);
 
         Mockito.when(fileFactory
@@ -123,44 +116,33 @@ public class ThumbnailCreatorDefaultTests {
     }
 
     @Test
-    public void get_mustRetrieveImageFromTheMetadatastore() throws Exception {
-        controller.create(objectId, imageId);
-
-        Mockito.verify(imageSvc, times(1))
-                .get(Matchers.eq(imageId));
-    }
-
-    @Test(expected = EntityDoesNotExistException.class)
-    public void get_whenImageDoesNotExist_mustThrowException() throws Exception {
-        controller.create(objectId, 0);
-    }
-
-    @Test
-    public void get_mustCheckIfTargetObjectExists() throws Exception {
-        controller.create(objectId, imageId);
+    public void mustCheckIfTargetObjectExists() throws Exception {
+        component.createThumbnail(sourceImage);
 
         Mockito.verify(releasesSvc, times(1))
                 .objectExists(
-                        Matchers.eq(objectId));
+                        Matchers.eq(ownerId));
     }
 
     @Test(expected = EntityDoesNotExistException.class)
-    public void get_whenTargetObjectDoesNotExist_mustThrowException() throws Exception {
-        controller.create(0, imageId);
+    public void whenTargetObjectDoesNotExist_mustThrowException() throws Exception {
+        sourceImage.ownerId = 1; // id of a supposedly non-existent object
+
+        component.createThumbnail(sourceImage);
     }
 
     @Test
-    public void get_mustRetrieveCurrentThumbnailFromTheDatastore() throws Exception {
-        controller.create(objectId, imageId);
+    public void mustRetrieveCurrentThumbnailFromTheDatastore() throws Exception {
+        component.createThumbnail(sourceImage);
 
         Mockito.verify(thumbnailsSvc, times(1))
                 .getByOwner(
-                        Matchers.eq(objectId));
+                        Matchers.eq(ownerId));
     }
 
     @Test
-    public void get_mustReadImageFile() throws Exception {
-        controller.create(objectId, imageId);
+    public void mustReadImageFile() throws Exception {
+        component.createThumbnail(sourceImage);
 
         Mockito.verify(fileFactory, times(1))
                 .getFile(
@@ -169,8 +151,8 @@ public class ThumbnailCreatorDefaultTests {
     }
 
     @Test
-    public void get_mustGetFileExtension() throws Exception {
-        controller.create(objectId, imageId);
+    public void mustGetFileExtension() throws Exception {
+        component.createThumbnail(sourceImage);
 
         Mockito.verify(fileExtensionGetter, times(1))
                 .getFileExtension(
@@ -179,16 +161,16 @@ public class ThumbnailCreatorDefaultTests {
     }
 
     @Test
-    public void get_mustGetPhysicalThumbsDirectory() throws Exception {
-        controller.create(objectId, imageId);
+    public void mustGetPhysicalThumbsDirectory() throws Exception {
+        component.createThumbnail(sourceImage);
 
         Mockito.verify(fileFactory, times(1))
                 .getFile(Matchers.eq(thumbsPhysicalPath));
     }
 
     @Test
-    public void get_mustCreateThumbnailFile() throws Exception {
-        controller.create(objectId, imageId);
+    public void mustCreateThumbnailFile() throws Exception {
+        component.createThumbnail(sourceImage);
 
         Mockito.verify(randomFileCreator, times(1))
                 .createFile(
@@ -198,8 +180,8 @@ public class ThumbnailCreatorDefaultTests {
     }
 
     @Test
-    public void get_mustResizeImageFile() throws Exception {
-        controller.create(objectId, imageId);
+    public void mustResizeImageFile() throws Exception {
+        component.createThumbnail(sourceImage);
 
         Mockito.verify(imageFileResizer, times(1))
                 .resize(
@@ -210,16 +192,16 @@ public class ThumbnailCreatorDefaultTests {
     }
 
     @Test
-    public void get_mustSaveThumbnailToTheMetadatastore() throws Exception {
-        controller.create(objectId, imageId);
+    public void mustSaveThumbnailToTheMetadatastore() throws Exception {
+        component.createThumbnail(sourceImage);
 
         Mockito.verify(thumbnailsSvc, times(1))
                 .save(Matchers.any(Thumbnail.class));
     }
 
     @Test
-    public void get_mustSaveThumbnailToTheMetadatastoreWithTheRightFilename() throws Exception {
-        controller.create(objectId, imageId);
+    public void mustSaveThumbnailToTheMetadatastoreWithTheRightFilename() throws Exception {
+        component.createThumbnail(sourceImage);
 
         Mockito.verify(thumbnailsSvc, times(1))
                 .save(Matchers.argThat(new ArgumentMatcher<Thumbnail>() {
@@ -233,24 +215,24 @@ public class ThumbnailCreatorDefaultTests {
     }
 
     @Test
-    public void get_mustSaveThumbnailToTheMetadatastoreWithTheRightOwnerId() throws Exception {
-        controller.create(objectId, imageId);
+    public void mustSaveThumbnailToTheMetadatastoreWithTheRightOwnerId() throws Exception {
+        component.createThumbnail(sourceImage);
 
         Mockito.verify(thumbnailsSvc, times(1))
                 .save(Matchers.argThat(new ArgumentMatcher<Thumbnail>() {
 
                     @Override
                     public boolean matches(Object argument) {
-                        return objectId == ((Thumbnail)argument).ownerId;
+                        return ownerId == ((Thumbnail)argument).ownerId;
                     }
                 }));
     }
 
     @Test
-    public void get_mustSaveThumbnailToTheMetadatastoreWithTheOriginalId_ifThumbnailAlreadyExisted() throws Exception {
+    public void mustSaveThumbnailToTheMetadatastoreWithTheOriginalId_ifThumbnailAlreadyExisted() throws Exception {
         setupToReturnOriginalThumbnail();
 
-        controller.create(objectId, imageId);
+        component.createThumbnail(sourceImage);
 
         Mockito.verify(thumbnailsSvc, times(1))
                 .save(Matchers.argThat(new ArgumentMatcher<Thumbnail>() {
@@ -263,7 +245,7 @@ public class ThumbnailCreatorDefaultTests {
     }
 
     @Test
-    public void get_inCaseOfExceptionResizingImage_mustDeleteThumbnailFile()
+    public void inCaseOfExceptionResizingImage_mustDeleteThumbnailFile()
             throws Exception
     {
         setResizerToThrowException();
@@ -272,16 +254,16 @@ public class ThumbnailCreatorDefaultTests {
     }
 
     @Test(expected = Exception.class)
-    public void get_inCaseOfExceptionResizingImage_mustRethrowException()
+    public void inCaseOfExceptionResizingImage_mustRethrowException()
             throws Exception
     {
         setResizerToThrowException();
 
-        controller.create(objectId, imageId);
+        component.createThumbnail(sourceImage);
     }
 
     @Test
-    public void get_inCaseOfExceptionSavingToTheMetadatastore_mustDeleteThumbnailFile()
+    public void inCaseOfExceptionSavingToTheMetadatastore_mustDeleteThumbnailFile()
             throws Exception
     {
         setServiceSaveThumbnailToThrowException();
@@ -290,19 +272,19 @@ public class ThumbnailCreatorDefaultTests {
     }
 
     @Test(expected = Exception.class)
-    public void get_inCaseOfExceptionSavingToTheMetadatastore_mustRethrowException()
+    public void inCaseOfExceptionSavingToTheMetadatastore_mustRethrowException()
             throws Exception
     {
         setServiceSaveThumbnailToThrowException();
 
-        controller.create(objectId, imageId);
+        component.createThumbnail(sourceImage);
     }
 
     @Test
-    public void get_ifObjectOriginallyHadAThumbnail_mustGetOriginalThumbFile() throws Exception {
+    public void ifObjectOriginallyHadAThumbnail_mustGetOriginalThumbFile() throws Exception {
         setupToReturnOriginalThumbnail();
 
-        controller.create(objectId, imageId);
+        component.createThumbnail(sourceImage);
 
         Mockito.verify(fileFactory, times(1))
                 .getFile(
@@ -311,37 +293,37 @@ public class ThumbnailCreatorDefaultTests {
     }
 
     @Test
-    public void get_ifObjectOriginallyHadAThumbnail_mustDeleteOriginalThumbFile() throws Exception {
+    public void ifObjectOriginallyHadAThumbnail_mustDeleteOriginalThumbFile() throws Exception {
         setupToReturnOriginalThumbnail();
 
-        controller.create(objectId, imageId);
+        component.createThumbnail(sourceImage);
 
         Mockito.verify(origThumbFile, times(1))
                 .delete();
     }
 
     @Test
-    public void get_inCaseOfExceptionSavingToTheMetadatastore_mustNotDeleteOriginalThumbFile() throws Exception {
+    public void inCaseOfExceptionSavingToTheMetadatastore_mustNotDeleteOriginalThumbFile() throws Exception {
         setServiceSaveThumbnailToThrowException();
 
         testOrigThumbNonDeletion();
     }
 
     @Test
-    public void get_inCaseOfExceptionResizingImage_mustNotDeleteOriginalThumbFile() throws Exception {
+    public void inCaseOfExceptionResizingImage_mustNotDeleteOriginalThumbFile() throws Exception {
         setResizerToThrowException();
 
         testOrigThumbNonDeletion();
     }
 
     @Test
-    public void get_inCaseOfExceptionDeletingOriginalThumb_mustContinueExecution() throws Exception {
+    public void inCaseOfExceptionDeletingOriginalThumb_mustContinueExecution() throws Exception {
         setupToReturnOriginalThumbnail();
 
         Mockito.doThrow(Exception.class)
                 .when(origThumbFile).delete();
 
-        controller.create(objectId, imageId);
+        component.createThumbnail(sourceImage);
     }
 
 
@@ -363,7 +345,7 @@ public class ThumbnailCreatorDefaultTests {
 
     private void testThumbFileDeletion() {
         try {
-            controller.create(objectId, imageId);
+            component.createThumbnail(sourceImage);
         } catch(Exception e) {}
 
         Mockito.verify(thumbFile, times(1)).delete();
@@ -371,7 +353,7 @@ public class ThumbnailCreatorDefaultTests {
 
     private void testOrigThumbNonDeletion() {
         try {
-            controller.create(objectId, imageId);
+            component.createThumbnail(sourceImage);
         } catch(Exception e) {}
 
 
@@ -381,7 +363,7 @@ public class ThumbnailCreatorDefaultTests {
     private void setupToReturnOriginalThumbnail() {
         Mockito.when(thumbnailsSvc
                 .getByOwner(
-                        Matchers.eq(objectId)))
+                        Matchers.eq(ownerId)))
                 .thenReturn(origThumbnail);
     }
 }
