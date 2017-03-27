@@ -14,10 +14,10 @@ import java.io.*;
 import static org.mockito.Mockito.times;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ThumbnailsControllerTests {
+public class ThumbnailCreatorDefaultTests {
 
     @InjectMocks
-    ThumbnailsController controller;
+    ThumbnailCreatorDefault controller;
 
     @Mock
     ReleaseService releasesSvc;

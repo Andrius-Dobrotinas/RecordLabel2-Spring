@@ -12,7 +12,7 @@ import java.io.*;
 
 @RestController
 @RequestMapping(value = "api/thumbnails/")
-public class ThumbnailsController {
+public class ThumbnailCreatorDefault {
 
     @Autowired
     private ReleaseService releasesSvc;
