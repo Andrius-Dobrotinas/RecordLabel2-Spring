@@ -1,7 +1,8 @@
-package com.andrewd.recordlabel.web.api;
+package com.andrewd.recordlabel.image;
 
 import com.andrewd.recordlabel.data.EntityDoesNotExistException;
 import com.andrewd.recordlabel.data.services.*;
+import com.andrewd.recordlabel.image.ThumbnailCreatorDefault;
 import com.andrewd.recordlabel.image.resize.ImageFileResizer;
 import com.andrewd.recordlabel.io.*;
 import com.andrewd.recordlabel.supermodels.*;
