@@ -1,4 +1,4 @@
-package com.andrewd.recordlabel.image;
+package com.andrewd.recordlabel.web.components;
 
 import com.andrewd.recordlabel.data.EntityDoesNotExistException;
 import com.andrewd.recordlabel.data.services.*;
