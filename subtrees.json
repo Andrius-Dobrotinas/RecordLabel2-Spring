@@ -1,0 +1,7 @@
+{ 
+    "AngularJS" : {
+        "localFolder": "src/main/resources/public/Angular",
+        "repository": "https://github.com/Andrius-Dobrotinas/RecordLabel2-Angular.git",
+        "branch": "master"
+    }
+}
