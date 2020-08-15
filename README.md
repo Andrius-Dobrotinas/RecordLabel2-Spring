@@ -1,2 +1,2 @@
 ﻿# RecordLabel 2 (Spring)
-An other version of RecordLabel web application using AngularJS for the front end and Java/Spring REST + Hibernate + MySQL for back end.
+A Java + Spring + Hibernate version of RecordLabel web application. A backend for https://github.com/Andrius-Dobrotinas/RecordLabel2-Angular
